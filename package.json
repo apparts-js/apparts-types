@@ -1,6 +1,6 @@
 {
   "name": "apparts-types",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Typechecking for requests and in general",
   "main": "index.js",
   "scripts": {
@@ -18,8 +18,8 @@
   "author": "Philipp Uhl",
   "license": "UNLICENSED",
   "dependencies": {
-    "apparts-error": "git+ssh://git@ph-uhl.com:Apparts/apparts-error.git#semver:1.0.0",
-    "apparts-model": "git+ssh://git@ph-uhl.com:Apparts/apparts-model.git#semver:1.0.0",
+    "apparts-error": "git+ssh://git@ph-uhl.com:Apparts/apparts-error.git#semver:^1.0.0",
+    "apparts-model": "git+ssh://git@ph-uhl.com:Apparts/apparts-model.git#semver:^1.0.0",
     "uuid": "^3.3.2",
     "xss": "^1.0.3"
   }
