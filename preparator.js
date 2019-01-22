@@ -7,7 +7,7 @@ const uuidv1 = require('uuid/v1');
 const authorizationHeader = require('./authorizationHeader.js');
 const types = require('./types');
 
-const config = require('apparts-config').get('types-config.json');
+const config = require('apparts-config').get('types-config');
 
 /**
  * Stuffs type-assertions before the call of the 'next'-function
