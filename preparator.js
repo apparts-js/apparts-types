@@ -8,6 +8,7 @@ const authorizationHeader = require('./authorizationHeader.js');
 const types = require('./types');
 
 const config = require('apparts-config').get('types-config');
+const logger = require('apparts-logger');
 
 /**
  * Stuffs type-assertions before the call of the 'next'-function
@@ -67,6 +68,7 @@ var prepare = (assertions, next, options) => {
       })
       .catch(e => {
         const errorObj = constructErrorObj(req);
+        logger.error(errorObj);
         res.status(500);
         res.send(`SERVER ERROR! ${ errorObj.ID } Please consider sending`
                  + ` this error-message along with a description of what`
