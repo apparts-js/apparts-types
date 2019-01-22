@@ -3,7 +3,7 @@
 const { HttpError, exceptionTo } = require('apparts-error');
 const { NotFound } = require('apparts-model');
 
-const prepare = require('./preperator');
+const prepare = require('./preparator');
 const authorizationHeader = require('./authorizationHeader.js');
 
 
