@@ -7,6 +7,8 @@ const uuidv1 = require('uuid/v1');
 const authorizationHeader = require('./authorizationHeader.js');
 const types = require('./types');
 
+const config = require('apparts-config').get('types-config.json');
+
 /**
  * Stuffs type-assertions before the call of the 'next'-function
  * @param {Object} assertions
@@ -69,7 +71,7 @@ var prepare = (assertions, next, options) => {
         res.send(`SERVER ERROR! ${ errorObj.ID } Please consider sending`
                  + ` this error-message along with a description of what`
                  + ` happend and what you where doing to this email-address:`
-                 + ` ${ serverConfig.bugreportEmail }.`);
+                 + ` ${ config.bugreportEmail }.`);
       });
   };
 };
@@ -158,10 +160,10 @@ const constructErrorObj = req => {
     }
   };
   if(Object.keys(req.body).length > 0){
-    obj.REQUEST.body = req.body;
+    errorObj.REQUEST.body = req.body;
   }
   if(Object.keys(req.params).length > 0){
-    obj.REQUEST.params = req.params;
+    errorObj.REQUEST.params = req.params;
   }
   if(Object.keys(req.cookies).length > 0){
     errorObj.REQUEST.cookies = req.cookies;
