@@ -67,7 +67,7 @@ var prepare = (assertions, next, options) => {
         }
       })
       .catch(e => {
-        const errorObj = constructErrorObj(req);
+        const errorObj = constructErrorObj(req, e);
         logger.error(errorObj);
         res.status(500);
         res.send(`SERVER ERROR! ${ errorObj.ID } Please consider sending`
@@ -159,7 +159,8 @@ const constructErrorObj = req => {
       url: req.originalUrl,
       method: req.method,
       ip: req.ip
-    }
+    },
+    ERROR: e
   };
   if(Object.keys(req.body).length > 0){
     errorObj.REQUEST.body = req.body;
