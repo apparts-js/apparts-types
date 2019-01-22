@@ -151,7 +151,7 @@ const check = (wanted, given) => {
   return true;
 };
 
-const constructErrorObj = req => {
+const constructErrorObj = (req, error) => {
   const errorObj = {
     ID: uuidv1(),
     USER: authorizationHeader(req)[0],
@@ -160,7 +160,7 @@ const constructErrorObj = req => {
       method: req.method,
       ip: req.ip
     },
-    ERROR: e
+    ERROR: error
   };
   if(Object.keys(req.body).length > 0){
     errorObj.REQUEST.body = req.body;
