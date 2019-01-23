@@ -1,7 +1,7 @@
 "use strict";
 
 const xss = require("xss");
-const HttpError = require('apparts-error');
+const { HttpError } = require('apparts-error');
 const uuidv1 = require('uuid/v1');
 
 const authorizationHeader = require('./authorizationHeader.js');
@@ -160,7 +160,8 @@ const constructErrorObj = (req, error) => {
       method: req.method,
       ip: req.ip
     },
-    ERROR: error
+    ERROR: error,
+    TRACE: error.stack
   };
   if(Object.keys(req.body).length > 0){
     errorObj.REQUEST.body = req.body;
