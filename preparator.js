@@ -59,8 +59,7 @@ var prepare = (assertions, next, options) => {
     }
     next(req)
       .then(data => {
-        if(typeof data === 'object' && data.constructor &&
-           data.constructor.name === 'HttpError'){
+        if(typeof data === 'object' && data.type === 'HttpError'){
           res.status(data.code);
           res.send(JSON.stringify({ error: data.message }));
         } else {
@@ -68,8 +67,7 @@ var prepare = (assertions, next, options) => {
         }
       })
       .catch(e => {
-        if(typeof e === 'object' && e.constructor &&
-           e.constructor.name === 'HttpError'){
+        if(typeof e === 'object' && e.type === 'HttpError'){
           res.status(e.code);
           res.send(JSON.stringify({ error: e.message }));
           return;
