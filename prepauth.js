@@ -11,10 +11,6 @@ let User = function(){
   throw "Prepauth: Usermodel not set";
 };
 
-module.exports.setUserModel = (pUser) => {
-  User = pUser;
-};
-
 module.exports = (dbs, assertions, fun, options, usePw) => {
   return prepare(
     assertions,
@@ -38,3 +34,8 @@ module.exports = (dbs, assertions, fun, options, usePw) => {
     },
     options);
 };
+
+module.exports.setUserModel = (pUser) => {
+  User = pUser;
+};
+

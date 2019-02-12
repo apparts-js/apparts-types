@@ -59,7 +59,8 @@ var prepare = (assertions, next, options) => {
     }
     next(req)
       .then(data => {
-        if(data instanceof HttpError){
+        if(typeof data === 'object' && data.constructor &&
+           data.constructor.name === 'HttpError'){
           res.status(data.code);
           res.send(JSON.stringify({ error: data.message }));
         } else {
@@ -67,6 +68,13 @@ var prepare = (assertions, next, options) => {
         }
       })
       .catch(e => {
+        if(typeof e === 'object' && e.constructor &&
+           e.constructor.name === 'HttpError'){
+          res.status(e.code);
+          res.send(JSON.stringify({ error: e.message }));
+          return;
+        }
+
         const errorObj = constructErrorObj(req, e);
         logger.error(errorObj);
         res.status(500);
@@ -161,7 +169,7 @@ const constructErrorObj = (req, error) => {
       ip: req.ip
     },
     ERROR: error,
-    TRACE: error.stack
+    TRACE: (error || {}).stack
   };
   if(Object.keys(req.body).length > 0){
     errorObj.REQUEST.body = req.body;
