@@ -35,9 +35,35 @@ module.exports = {
              /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(x)
   },
   'array': { check: x => Array.isArray(x) },
-  'array_id': { check: x => Array.isArray(x)
-                && x.reduce((acc, v) => acc
-                            && module.exports.hex.check(v), true)
+  'array_int': { conv: x => JSON.parse(x),
+                 check: x => {
+                   let arr;
+                   try {
+                     arr = JSON.parse(x);
+                   } catch (e) {
+                     return false;
+                   }
+                   if (!Array.isArray(arr)) {
+                     return false;
+                   }
+                   return arr.reduce((acc, v) => acc
+                                     && module.exports.int.check(v), true);
+                 },
+               },
+  'array_id': { conv: x => JSON.parse(x),
+                check: x => {
+                  let arr;
+                  try {
+                    arr = JSON.parse(x);
+                  } catch (e) {
+                    return false;
+                  }
+                  if (!Array.isArray(arr)) {
+                    return false;
+                  }
+                  return arr.reduce((acc, v) => acc
+                                    && module.exports.int.check(v), true);
+                }
               },
   'arrayS': { conv: x => JSON.parse(x),
               check: x => {
