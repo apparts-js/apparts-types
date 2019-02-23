@@ -11,18 +11,22 @@ const bfalse = function (value) {
 
 module.exports = {
   '/': { check: x => true },
-  'int': { check: (x) => /^-?\d+$/.test(x),
+  'int': { check: (x) => typeof x === 'number' && Math.round(x) === x,
            conv: x => parseInt(x) },
-  'float': { check: (x) => /^-?\d+(\.\d+)?$/.test(x),
-           conv: x => parseInt(x) },
-
-  'hex': { check: x => /^[0-9a-f]+$/i.test(x)
-         },
+  'float': { check: (x) => typeof x === 'number',
+           conv: x => parseFloat(x) },
+  'hex': { check: x => /^[0-9a-f]+$/i.test(x) },
   'base64': { check: x =>
               /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/i.test(x)
   },
-  'bool': { check: x => btrue(x) || bfalse(x),
-            conv: x => btrue(x)
+  'bool': { check: x => typeof x === "boolean",
+            conv: x => {
+              const t = btrue(x);
+              if(t || bfalse(x)){
+                return t;
+              }
+              throw "Not a boolean";
+            }
   },
   'string': { check: x => {
     try {
@@ -34,58 +38,31 @@ module.exports = {
   'email': { check: x =>
              /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(x)
   },
-  'array': { check: x => Array.isArray(x) },
+  'array': { conv: x => JSON.parse(x),
+             check: x => Array.isArray(x) },
   'array_int': { conv: x => JSON.parse(x),
                  check: x => {
-                   let arr;
-                   try {
-                     arr = JSON.parse(x);
-                   } catch (e) {
+                   if (!Array.isArray(x)) {
                      return false;
                    }
-                   if (!Array.isArray(arr)) {
-                     return false;
-                   }
-                   return arr.reduce((acc, v) => acc
-                                     && module.exports.int.check(v), true);
+                   return x.reduce((a, v) => a && module.exports.int.check(v),
+                                   true);
                  },
                },
   'array_id': { conv: x => JSON.parse(x),
                 check: x => {
-                  let arr;
-                  try {
-                    arr = JSON.parse(x);
-                  } catch (e) {
+                  if (!Array.isArray(x)) {
                     return false;
                   }
-                  if (!Array.isArray(arr)) {
-                    return false;
-                  }
-                  return arr.reduce((acc, v) => acc
-                                    && module.exports.int.check(v), true);
+                  return x.reduce((a, v) => a
+                                  && module.exports.id.check(v), true);
                 }
               },
-  'arrayS': { conv: x => JSON.parse(x),
-              check: x => {
-                var changes;
-                try {
-                  changes = JSON.parse(x);
-                } catch (e) {
-                  return false;
-                }
-                if (!Array.isArray(changes)) {
-                  return false;
-                }
-                return true;
-              }},
-  'password': { check: x => {
-    if (x.length < 5) {
-      return false;
-    }
-    return /^(.*\d.*\D.*)|(.*\D.*\d.*)$/i.test(x);
-  }},
+  'password': { check: x => typeof x === 'string'},
   'time': { check: x => module.exports.int.check(x),
             conv: x => module.exports.int.conv(x) },
+  'array_time': { check: x => module.exports.array_int.check(x),
+            conv: x => module.exports.array_int.conv(x) },
   'id': { check: x => module.exports.int.check(x),
           conv: x => module.exports.int.conv(x)}
 };
