@@ -1,6 +1,6 @@
 {
   "name": "apparts-types",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Typechecking for requests and in general",
   "main": "index.js",
   "scripts": {
@@ -25,6 +25,6 @@
     "apparts-config": "git+ssh://git@ph-uhl.com:Apparts/apparts-config.git#semver:^1.0.0",
     "apparts-error": "git+ssh://git@ph-uhl.com:Apparts/apparts-error.git#semver:^1.0.0",
     "apparts-logger": "git+ssh://git@ph-uhl.com:Apparts/apparts-logger.git#semver:^1.0.0",
-    "apparts-model": "git+ssh://git@ph-uhl.com:Apparts/apparts-model.git#semver:^1.0.1"
+    "apparts-model": "git+ssh://git@ph-uhl.com:Apparts/apparts-model.git#semver:^2.0.0"
   }
 }
