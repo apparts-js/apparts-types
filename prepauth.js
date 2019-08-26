@@ -1,7 +1,7 @@
 "use strict";
 
-const { HttpError, exceptionTo } = require('apparts-error');
-const { NotFound } = require('apparts-model');
+const { HttpError, exceptionTo } = require('@apparts/error');
+const { NotFound } = require('@apparts/model');
 
 const prepare = require('./preparator');
 const authorizationHeader = require('./authorizationHeader.js');

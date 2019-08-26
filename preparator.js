@@ -1,14 +1,14 @@
 "use strict";
 
 const xss = require("xss");
-const { HttpError } = require('apparts-error');
+const { HttpError } = require('@apparts/error');
 const uuidv1 = require('uuid/v1');
 
 const authorizationHeader = require('./authorizationHeader.js');
 const types = require('./types');
 
-const config = require('apparts-config').get('types-config');
-const logger = require('apparts-logger');
+const config = require('@apparts/config').get('types-config');
+const logger = require('@apparts/logger');
 
 /**
  * Stuffs type-assertions before the call of the 'next'-function
