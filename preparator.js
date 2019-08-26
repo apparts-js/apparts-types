@@ -109,29 +109,30 @@ const check = (wanted, given) => {
       // does the argument only have one possible type...
       if (wanted[param].hasOwnProperty('type')) {
         // does the argument match the prescribed type?
-        if(types[wanted[param]['type']].conv){
+        if(types[wanted[param]['type']].conv) {
           try {
-            const temp = types[wanted[param]['type']].conv(given[param]);
-            if (types[wanted[param]['type']].check(temp)) {
-              given[param] = temp;
-              foundMatch = true;
-            }
-          } finally { }
+            given[param] = types[wanted[param]['type']].conv(given[param]);
+            foundMatch = true;
+          } catch(e) { }
+        } else if(types[wanted[param]['type']].check(given[param])) {
+          foundMatch = true;
         }
-      } else
-      // ... or can it have multiple types?
-/*      if (wanted[param].hasOwnProperty('types')) {
-        for (var i = 0; i < wanted[param]['types'].length; i++) {
+      } else {
+        throw 'Multi-type not supported';
+        // ... or can it have multiple types?
+        /*      if (wanted[param].hasOwnProperty('types')) {
+          for (var i = 0; i < wanted[param]['types'].length; i++) {
           var type = wanted[param]['types'][i];
           if (types[type].check(given[param])) {
-            foundMatch = true;
-            if(types[type].conv){
-              given[param] = types[type].conv(given[param]);
-            }
-            break;
+          foundMatch = true;
+          if(types[type].conv){
+          given[param] = types[type].conv(given[param]);
           }
-        }
-      } */
+          break;
+          }
+          }
+          } */
+      }
       // note, if this doesn't apply, programm will jump right to return true
       if (!foundMatch) {
         var res = {};

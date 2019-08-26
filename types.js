@@ -23,7 +23,7 @@ case 'UUIDv4':
 case undefined:
 case 'int':
   id = { check: x => module.exports.int.check(x),
-             conv: x => module.exports.int.conv(x)};
+         conv: x => module.exports.int.conv(x)};
   break;
 default:
   id = { check: x => new RegExp(config.idType).test(x) };
@@ -32,9 +32,20 @@ default:
 module.exports = {
   '/': { check: x => true },
   'int': { check: (x) => typeof x === 'number' && Math.round(x) === x,
-           conv: x => parseInt(x) },
+           conv: x => {
+             if(!module.exports.int.check(x)){
+               throw 'Not an int';
+             }
+             return parseInt(x);
+           }},
   'float': { check: (x) => typeof x === 'number',
-           conv: x => parseFloat(x) },
+             conv: x => {
+               if(!module.exports.float.check(x)){
+                 throw 'Not a float';
+               }
+               return parseFloat(x);
+             }
+           },
   'hex': { check: x => /^[0-9a-f]+$/i.test(x) },
   'base64': { check: x =>
               /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/i.test(x)
@@ -58,9 +69,21 @@ module.exports = {
   'email': { check: x =>
              /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(x)
   },
-  'array': { conv: x => JSON.parse(x),
+  'array': { conv: x => {
+    const conved = JSON.parse(x);
+    if(!module.exports.array.check(conved)){
+      throw 'Not an array';
+    }
+    return conved;
+  },
              check: x => Array.isArray(x) },
-  'array_int': { conv: x => JSON.parse(x),
+  'array_int': { conv: x => {
+    const conved = JSON.parse(x);
+    if(!module.exports.array_int.check(conved)){
+      throw 'Not an array_int';
+    }
+    return conved;
+  },
                  check: x => {
                    if (!Array.isArray(x)) {
                      return false;
@@ -69,7 +92,13 @@ module.exports = {
                                    true);
                  },
                },
-  'array_id': { conv: x => JSON.parse(x),
+  'array_id': { conv: x => {
+    const conved = JSON.parse(x);
+    if(!module.exports.array_id.check(conved)){
+      throw 'Not an array_id';
+    }
+    return conved;
+  },
                 check: x => {
                   if (!Array.isArray(x)) {
                     return false;
