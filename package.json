@@ -1,5 +1,5 @@
 {
-  "name": "apparts-types",
+  "name": "@apparts/types",
   "version": "2.0.2",
   "description": "Typechecking for requests and in general",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@ph-uhl.com:Apparts/apparts-types.git"
+    "url": "git@github.com:phuhl/apparts-types.git"
   },
   "keywords": [
     "apparts",
@@ -16,7 +16,7 @@
     "express"
   ],
   "author": "Philipp Uhl",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dependencies": {
     "uuid": "^3.3.2",
     "xss": "^1.0.3"
