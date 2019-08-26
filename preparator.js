@@ -173,13 +173,13 @@ const constructErrorObj = (req, error) => {
     ERROR: error,
     TRACE: (error || {}).stack
   };
-  if(Object.keys(req.body).length > 0){
+  if(Object.keys(req.body || {}).length > 0){
     errorObj.REQUEST.body = req.body;
   }
-  if(Object.keys(req.params).length > 0){
+  if(Object.keys(req.params || {}).length > 0){
     errorObj.REQUEST.params = req.params;
   }
-  if(Object.keys(req.cookies).length > 0){
+  if(Object.keys(req.cookies || {}).length > 0){
     errorObj.REQUEST.cookies = req.cookies;
   }
   return errorObj;
