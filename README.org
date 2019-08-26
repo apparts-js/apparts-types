@@ -1,0 +1,15 @@
+#+TITLE: Apparts-Types
+#+DATE: [2019-08-26 Mon]
+#+AUTHOR: Philipp Uhl
+
+
+* Configuration
+
+Under the configuration name =types-config= the following options exist:
+- ~bugreportEmail {string}~ :: An email address that will be shown in
+     case of a bug.
+- ~idType {string}~ :: Can be one of
+  - ~string~
+  - ~UUIDv4~
+  - ~int~
+  - A regular expression
