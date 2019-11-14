@@ -33,17 +33,19 @@ module.exports = {
   '/': { check: x => true },
   'int': { check: (x) => typeof x === 'number' && Math.round(x) === x,
            conv: x => {
-             if(!module.exports.int.check(x)){
+             const parsed = parseInt(x);
+             if(parsed != x || !module.exports.int.check(parsed)){
                throw 'Not an int';
              }
-             return parseInt(x);
+             return parsed;
            }},
   'float': { check: (x) => typeof x === 'number',
              conv: x => {
-               if(!module.exports.float.check(x)){
+               const parsed = parseFloat(x);
+               if(parsed != x || !module.exports.float.check(parsed)){
                  throw 'Not a float';
                }
-               return parseFloat(x);
+               return parsed;
              }
            },
   'hex': { check: x => /^[0-9a-f]+$/i.test(x) },
