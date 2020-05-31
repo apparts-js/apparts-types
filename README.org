@@ -13,3 +13,172 @@ Under the configuration name =types-config= the following options exist:
   - ~UUIDv4~
   - ~int~
   - A regular expression
+
+* Types
+
+- id
+  - As configured
+- uuidv4
+- /
+  - Catch all
+- float
+- hex
+- base64
+- bool
+- string
+- email
+- array
+- array_int
+- array_id
+- password
+  - Alias for string
+- time
+- array_time
+  - Alias for array_id
+
+* Usage
+
+#+BEGIN_SRC js
+  const { preparator } = require("@apparts/types");
+  const { HttpError } = require("@apparts/error");
+
+  const myEndpoint = preparator(
+    {
+      body: {
+        name: { type: "string", default: "no name" },
+      },
+      query: {
+        filter: { type: "string", optional: true }
+      },
+      params: {
+        id: { type: "id" }
+      }
+    },
+    async ({ body: { name }, query: { filter }, params: { id } }) => {
+      if (name.length > 100) {
+        new HttpError(400, "Name too long");
+      }
+      // filter might not be defined, as it is optional
+      if (filter) {
+        // Return values are JSONified automatically!
+        return {
+          arr: [{ a: 1 }, { a: 2}],
+          boo: true
+        };
+      }
+      // This produces "ok" (literally, with the quotes)
+      return "ok";
+    }
+  );
+  myEndpoint.returns = [
+    { status: 200, value: "ok" },
+    { status: 400, error: "Name too long" },
+    { status: 200, {
+      type: "object",
+      values: {
+        foo: { value: "really!" },
+        boo: { type: "bool" },
+        arr: { type: "array", 
+               value: { 
+                 type: "object",
+                 values: {
+                   a: { type: "int" }
+                 }
+               }
+             }
+      }
+    }
+  ];
+
+  module.exports = { myEndpoint };
+  // app.post("/v/1/endpoint/:id", myEndpoint);
+#+END_SRC
+
+* Generate API documentation
+
+Run:
+
+#+BEGIN_SRC sh
+export DIR="./path/to/your/routes/index.js";
+node genApiDoku.js
+#+END_SRC
+
+Prints into =api.html=
+
+* Test API Types
+
+Use =checkType= to check that the returned data has the format that
+you expect. Use =allChecked= to make sure, that all of your type
+definitions have occurred at least once in your tests.
+
+For =checkType=, you need to define a type definition for your
+endpoint. You do that by assigning a =returns= array to the endpoint
+function like shown above. The =returns= has the form of:
+
+Object with:
+- status :: Expected status code
+- on of
+  - value :: Expected exact value
+  - error :: Expected error text, as returned by =HttpError= from the
+    "@apparts/error" package
+  - type :: A type from =types.js= or =object= or =array=.
+    - object :: A key =values= specifies the possible keys in the
+      object and their types or values
+
+Functions:
+- =checkType(funktionContainer, response, functionName)=
+  - Parameters:
+    - =funktionContainer= <object> :: An object that contains the tested
+      function under the key as specified in =functionName=
+    - =response= :: The response, that should be checked
+    - =functionName= <string> :: The name of the function
+  - Returns:
+    - =true= :: Check passed
+    - =false= :: Check did not pass
+- =allChecked(funktionContainer, functionName)=
+  - Parameters:
+    - =funktionContainer= <object> :: An object that contains the tested
+      function under the key as specified in =functionName=
+    - =functionName= <string> :: The name of the function
+  - Returns:
+    - =true= :: All possible return combinations for the given
+      function have been tested
+    - =false= :: Not everything has been tested
+
+#+BEGIN_SRC js
+  const { checkApiTypes: {checkType: _checkType, allChecked} } = require("@apparts/types");
+  const request = require("supertest");
+
+  const myEndpoint = require("./myEndpoint");
+
+  const checkType = (res, name) => _checkType(myEndpoint, res, name);
+  ///const app = ...;
+  describe("myEndpoint", () => {
+    test("Test with default name", async () => {
+      const response = await request(app).put("/v/1/endpoint/3");
+      expect(checkType(response, "myEndpoint")).toBeTruthy();
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toBe("ok");
+    });
+    test("Test with too long name", async () => {
+      const response = await request(app).put("/v/1/endpoint/3", { name: "x".repeat(200) });
+      expect(checkType(response, "myEndpoint")).toBeTruthy();
+      expect(response.statusCode).toBe(400);
+    });
+    test("Test with filter", async () => {
+      const response = await request(app).put("/v/1/endpoint/3?filter=4");
+      expect(checkType(response, "myEndpoint")).toBeTruthy();
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toMatchObject({
+        arr: [{ a: 1 }, { a: 2}],
+        boo: true
+      });
+    });
+  });
+
+  describe("All possible responses tested", () => {
+    test("", () => {
+      expect(allChecked(myEndpoint, "myEndpoint")).toBeTruthy();
+    });
+  });
+#+END_SRC
