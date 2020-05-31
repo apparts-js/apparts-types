@@ -63,7 +63,8 @@ Under the configuration name =types-config= the following options exist:
         // Return values are JSONified automatically!
         return {
           arr: [{ a: 1 }, { a: 2}],
-          boo: true
+          boo: true,
+          foo: "really!"
         };
       }
       // This produces "ok" (literally, with the quotes)
