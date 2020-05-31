@@ -117,7 +117,7 @@ function like shown above. The =returns= has the form of:
 
 Object with:
 - status :: Expected status code
-- on of
+- One of
   - value :: Expected exact value
   - error :: Expected error text, as returned by =HttpError= from the
     "@apparts/error" package
