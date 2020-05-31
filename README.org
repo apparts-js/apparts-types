@@ -156,18 +156,19 @@ Functions:
   ///const app = ...;
   describe("myEndpoint", () => {
     test("Test with default name", async () => {
-      const response = await request(app).put("/v/1/endpoint/3");
+      const response = await request(app).post("/v/1/endpoint/3");
       expect(checkType(response, "myEndpoint")).toBeTruthy();
       expect(response.statusCode).toBe(200);
       expect(response.body).toBe("ok");
     });
     test("Test with too long name", async () => {
-      const response = await request(app).put("/v/1/endpoint/3", { name: "x".repeat(200) });
+      const response = await request(app).post("/v/1/endpoint/3")
+        .send({ name: "x".repeat(200) });
       expect(checkType(response, "myEndpoint")).toBeTruthy();
       expect(response.statusCode).toBe(400);
     });
     test("Test with filter", async () => {
-      const response = await request(app).put("/v/1/endpoint/3?filter=4");
+      const response = await request(app).post("/v/1/endpoint/3?filter=4");
       expect(checkType(response, "myEndpoint")).toBeTruthy();
       expect(response.statusCode).toBe(200);
       expect(response.body).toMatchObject({
