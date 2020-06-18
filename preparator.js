@@ -112,16 +112,25 @@ const check = (wanted, given) => {
     if (exists) {
       // does the argument only have one possible type...
       if (wanted[param].hasOwnProperty("type")) {
-        // does the argument match the prescribed type?
-        if (types[wanted[param]["type"]].conv) {
-          try {
-            given[param] = types[wanted[param]["type"]].conv(given[param]);
+        if (types[wanted[param]["type"]]) {
+          // does the argument match the prescribed type?
+          if (types[wanted[param]["type"]].conv) {
+            try {
+              given[param] = types[wanted[param]["type"]].conv(given[param]);
+              foundMatch = true;
+            } catch (e) {}
+          } else if (types[wanted[param]["type"]].check(given[param])) {
             foundMatch = true;
-          } catch (e) {}
-        } else if (types[wanted[param]["type"]].check(given[param])) {
-          foundMatch = true;
+          }
+        } else {
+          console.log(
+            "ERROR AT PREPERATOR: Unknown type",
+            types[wanted[param]["type"]]
+          );
+          throw "Unknown type";
         }
       } else {
+        console.log("ERROR AT PREPERATOR: Multi-type not supported");
         throw "Multi-type not supported";
         // ... or can it have multiple types?
         /*      if (wanted[param].hasOwnProperty('types')) {
