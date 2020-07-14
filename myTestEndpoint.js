@@ -25,6 +25,14 @@ const myEndpoint = preparator(
         arr: [{ a: 1 }, { a: 2 }],
         foo: "really!",
         boo: true,
+        objectWithUnknownKeys: {
+          baz: filter === "asstring" ? "77" : 77,
+          boo: 99,
+        },
+        objectWithUnknownKeysAndUnknownTypes: {
+          baz: 77,
+          boo: false,
+        },
       };
     }
     // This produces "ok" (literally, with the quotes)
@@ -48,6 +56,14 @@ myEndpoint.returns = [
             a: { type: "int" },
           },
         },
+      },
+      objectWithUnknownKeys: {
+        type: "object",
+        values: "int",
+      },
+      objectWithUnknownKeysAndUnknownTypes: {
+        type: "object",
+        values: "/",
       },
     },
   },

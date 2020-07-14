@@ -68,12 +68,22 @@ const recursiveCheck = (response, type) => {
   if (type.type === "object") {
     if (
       typeof response === "object" &&
+      typeof type.values === "object" &&
       Object.keys(response).reduce(
         (a, b) =>
           a && type.values[b] && recursiveCheck(response[b], type.values[b]),
         true
       ) &&
       Object.keys(response).length === Object.keys(type.values).length
+    ) {
+      return true;
+    } else if (
+      typeof response === "object" &&
+      typeof type.values === "string" &&
+      Object.keys(response).reduce(
+        (a, b) => a && checkTypes[type.values].check(response[b]),
+        true
+      )
     ) {
       return true;
     } else {

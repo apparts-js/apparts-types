@@ -16,25 +16,25 @@ Under the configuration name =types-config= the following options exist:
 
 * Types
 
-- id
+- ~id~
   - As configured
-- uuidv4
-- /
+- ~uuidv4~
+- ~/~
   - Catch all
-- float
-- hex
-- base64
-- bool
-- string
-- email
-- array
-- array_int
-- array_id
-- password
-  - Alias for string
-- time
-- array_time
-  - Alias for array_id
+- ~float~
+- ~hex~
+- ~base64~
+- ~bool~
+- ~string~
+- ~email~
+- ~array~
+- ~array_int~
+- ~array_id~
+- ~password~
+  - Alias for ~string~
+- ~time~
+- ~array_time~
+  - Alias for ~array_id~
 
 * Usage
 
@@ -64,7 +64,15 @@ Under the configuration name =types-config= the following options exist:
         return {
           arr: [{ a: 1 }, { a: 2}],
           boo: true,
-          foo: "really!"
+          foo: "really!",
+          objectWithUnknownKeys: {
+            baz: 77,
+            boo: 99
+          },
+          objectWithUnknownKeysAndUnknownTypes: {
+            baz: 77,
+            boo: false
+          }
         };
       }
       // This produces "ok" (literally, with the quotes)
@@ -86,7 +94,15 @@ Under the configuration name =types-config= the following options exist:
                    a: { type: "int" }
                  }
                }
-             }
+             },
+        objectWithUnknownKeys: {
+          type: "object",
+          values: "int"
+        },
+        objectWithUnknownKeysAndUnknownTypes: {
+          type: "object",
+          values: "/"
+        }
       }
     }
   ];

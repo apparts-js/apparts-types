@@ -82,6 +82,24 @@ describe("myEndpoint, incomplete test", () => {
     expect(checkType(response, "myEndpoint")).toBeTruthy();
     expect(response.statusCode).toBe(400);
   });
+  test("Test with filter asstring", async () => {
+    const response = await request(app).post("/v/1/endpoint/3?filter=asstring");
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toMatchObject({
+      arr: [{ a: 1 }, { a: 2 }],
+      foo: "really!",
+      boo: true,
+      objectWithUnknownKeys: {
+        baz: "77",
+        boo: 99,
+      },
+      objectWithUnknownKeysAndUnknownTypes: {
+        baz: 77,
+        boo: false,
+      },
+    });
+    expect(checkType(response, "myEndpoint")).toBeFalsy();
+  });
 });
 
 describe("Notice, that not everything was tested", () => {
@@ -98,6 +116,14 @@ describe("myEndpoint, the missing test", () => {
     expect(response.body).toMatchObject({
       arr: [{ a: 1 }, { a: 2 }],
       boo: true,
+      objectWithUnknownKeys: {
+        baz: 77,
+        boo: 99,
+      },
+      objectWithUnknownKeysAndUnknownTypes: {
+        baz: 77,
+        boo: false,
+      },
     });
   });
 });
