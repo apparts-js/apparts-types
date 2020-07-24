@@ -2,6 +2,7 @@
 
 const xss = require("xss");
 const { HttpError } = require("@apparts/error");
+const { HttpCode } = require("./code");
 const uuidv1 = require("uuid/v1");
 
 const authorizationHeader = require("./authorizationHeader.js");
@@ -62,6 +63,10 @@ var prepare = (assertions, next, options) => {
         if (typeof data === "object" && data.type === "HttpError") {
           res.status(data.code);
           res.send(JSON.stringify({ error: data.message }));
+        }
+        if (typeof data === "object" && data.type === "HttpCode") {
+          res.status(data.code);
+          res.send(JSON.stringify(data.message));
         } else {
           res.send(JSON.stringify(data));
         }
