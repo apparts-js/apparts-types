@@ -63,8 +63,7 @@ var prepare = (assertions, next, options) => {
         if (typeof data === "object" && data.type === "HttpError") {
           res.status(data.code);
           res.send(JSON.stringify({ error: data.message }));
-        }
-        if (typeof data === "object" && data.type === "HttpCode") {
+        } else if (typeof data === "object" && data.type === "HttpCode") {
           res.status(data.code);
           res.send(JSON.stringify(data.message));
         } else {
