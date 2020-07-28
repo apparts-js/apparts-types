@@ -58,7 +58,7 @@ var prepare = (assertions, next, options) => {
         }
       }
     }
-    next(req)
+    next(req, res)
       .then((data) => {
         if (typeof data === "object" && data.type === "HttpError") {
           res.status(data.code);
