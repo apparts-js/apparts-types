@@ -1,13 +1,18 @@
 "use strict";
 
-const { HttpError, exceptionTo } = require('@apparts/error');
-const { NotFound } = require('@apparts/model');
+const { HttpError, exceptionTo } = require("@apparts/error");
 
-const prepare = require('./preparator');
-const authorizationHeader = require('./authorizationHeader.js');
+let NotFound;
+try {
+  NotFound = require("@apparts/model").NotFound;
+} catch (e) {
+  console.log("Missing peer dependency @apparts/model!");
+}
 
+const prepare = require("./preparator");
+const authorizationHeader = require("./authorizationHeader.js");
 
-let User = function(){
+let User = function () {
   throw "Prepauth: Usermodel not set";
 };
 
@@ -16,14 +21,14 @@ module.exports = (dbs, assertions, fun, options, usePw) => {
     assertions,
     async (req) => {
       let [email, token] = authorizationHeader(req);
-      if(email){
+      if (email) {
         const user = new (User(dbs))();
         try {
           await user.loadOne({ email });
-        } catch(e) {
+        } catch (e) {
           return exceptionTo(NotFound, e, new HttpError(401));
         }
-        if(usePw){
+        if (usePw) {
           await user.checkAuthPw(token);
         } else {
           await user.checkAuth(token);
@@ -32,10 +37,10 @@ module.exports = (dbs, assertions, fun, options, usePw) => {
       }
       return new HttpError(400, "Authorization wrong");
     },
-    options);
+    options
+  );
 };
 
 module.exports.setUserModel = (pUser) => {
   User = pUser;
 };
-
