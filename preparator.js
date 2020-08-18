@@ -5,11 +5,9 @@ const { HttpError } = require("@apparts/error");
 const { HttpCode } = require("./code");
 const uuidv1 = require("uuid/v1");
 
-const authorizationHeader = require("./authorizationHeader.js");
 const types = require("./types");
 
 const config = require("@apparts/config").get("types-config");
-const logger = require("@apparts/logger");
 
 /**
  * Stuffs type-assertions before the call of the 'next'-function
@@ -78,7 +76,7 @@ var prepare = (assertions, next, options) => {
         }
 
         const errorObj = constructErrorObj(req, e);
-        logger.error(errorObj);
+        console.log(errorObj);
         res.status(500);
         res.send(
           `SERVER ERROR! ${errorObj.ID} Please consider sending` +
@@ -129,7 +127,7 @@ const check = (wanted, given) => {
         } else {
           console.log(
             "ERROR AT PREPERATOR: Unknown type",
-            types[wanted[param]["type"]]
+            wanted[param]["type"]
           );
           throw "Unknown type";
         }
@@ -181,7 +179,7 @@ const check = (wanted, given) => {
 const constructErrorObj = (req, error) => {
   const errorObj = {
     ID: uuidv1(),
-    USER: authorizationHeader(req)[0],
+    USER: req.get("Authorization") || "",
     REQUEST: {
       url: req.originalUrl,
       method: req.method,
