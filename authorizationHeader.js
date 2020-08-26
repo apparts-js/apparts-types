@@ -26,7 +26,7 @@ const basicAuth = (req) => {
 const bearerAuth = (req) => {
   let m = /^Bearer\ (.*)$/.exec(req.get("Authorization") || "");
   if (m) {
-    return m;
+    return m[1];
   }
   return null;
 };
