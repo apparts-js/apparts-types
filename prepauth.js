@@ -78,7 +78,7 @@ const prepauthTokenJWT = (webtokenkey) => (assertions, fun, options) => {
         jwt = verifyJWT(token, webtokenkey);
       } catch (err) {
         console.log(err);
-        return new HttpError(401);
+        return new HttpError(401, "Token invalid");
       }
       const { action } = jwt;
       if (action !== "login") {
@@ -90,7 +90,10 @@ const prepauthTokenJWT = (webtokenkey) => (assertions, fun, options) => {
     options
   );
 };
-prepauthTokenJWT.returns = [{ status: 401, error: "Unauthorized" }];
+prepauthTokenJWT.returns = [
+  { status: 401, error: "Unauthorized" },
+  { status: 401, error: "Token invalid" },
+];
 
 module.exports = {
   prepauthToken,
