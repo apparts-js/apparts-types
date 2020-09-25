@@ -74,7 +74,10 @@ const recursiveCheck = (response, type) => {
           a && type.values[b] && recursiveCheck(response[b], type.values[b]),
         true
       ) &&
-      Object.keys(response).length === Object.keys(type.values).length
+      Object.keys(type.values).reduce(
+        (a, b) => (response[b] !== undefined || type.values[b].optional) && a,
+        true
+      )
     ) {
       return true;
     } else if (

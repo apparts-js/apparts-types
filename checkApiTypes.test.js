@@ -109,13 +109,34 @@ describe("Notice, that not everything was tested", () => {
 });
 
 describe("myEndpoint, the missing test", () => {
-  test("Test with filter", async () => {
+  test("Test with non-kabaz filter", async () => {
     const response = await request(app).post("/v/1/endpoint/3?filter=4");
     expect(checkType(response, "myEndpoint")).toBeTruthy();
     expect(response.statusCode).toBe(200);
     expect(response.body).toMatchObject({
       arr: [{ a: 1 }, { a: 2 }],
       boo: true,
+      objectWithUnknownKeys: {
+        baz: 77,
+        boo: 99,
+      },
+      objectWithUnknownKeysAndUnknownTypes: {
+        baz: 77,
+        boo: false,
+      },
+    });
+  });
+});
+
+describe("myEndpoint, the optional value", () => {
+  test("Test with filter", async () => {
+    const response = await request(app).post("/v/1/endpoint/3?filter=kabazplz");
+    expect(checkType(response, "myEndpoint")).toBeTruthy();
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toMatchObject({
+      arr: [{ a: 1 }, { a: 2 }],
+      boo: true,
+      kabaz: false,
       objectWithUnknownKeys: {
         baz: 77,
         boo: 99,

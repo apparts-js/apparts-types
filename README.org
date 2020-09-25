@@ -61,19 +61,23 @@ Under the configuration name =types-config= the following options exist:
       // filter might not be defined, as it is optional
       if (filter) {
         // Return values are JSONified automatically!
-        return {
-          arr: [{ a: 1 }, { a: 2}],
-          boo: true,
+        const resp = {
+          arr: [{ a: 1 }, { a: 2 }],
           foo: "really!",
+          boo: true,
           objectWithUnknownKeys: {
-            baz: 77,
-            boo: 99
+            baz: filter === "asstring" ? "77" : 77,
+            boo: 99,
           },
           objectWithUnknownKeysAndUnknownTypes: {
             baz: 77,
-            boo: false
-          }
+            boo: false,
+          },
         };
+        if (filter === "kabazplz") {
+          resp.kabaz = false;
+        }
+        return resp;
       }
       // This produces "ok" (literally, with the quotes)
       return "ok";
@@ -87,6 +91,7 @@ Under the configuration name =types-config= the following options exist:
       values: {
         foo: { value: "really!" },
         boo: { type: "bool" },
+        kabaz: { type: "bool", optional: true },
         arr: { type: "array", 
                value: { 
                  type: "object",
@@ -139,8 +144,11 @@ Object with:
   - error :: Expected error text, as returned by =HttpError= from the
     "@apparts/error" package
   - type :: A type from =types.js= or =object= or =array=.
-    - object :: A key =values= specifies the possible keys in the
-      object and their types or values
+    - When type === object :: A key =values= specifies the possible keys in the
+      object and their types or values. Keynames are the keys, the
+      types each are an object, that can contain, =value=, =type=, =values=
+      (in case of ~type === "object"~), =optional= (for keys in the
+      object, that might sometimes not be present)
 
 Functions:
 - =checkType(funktionContainer, response, functionName)=

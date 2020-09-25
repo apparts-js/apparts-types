@@ -21,7 +21,7 @@ const myEndpoint = preparator(
     // filter might not be defined, as it is optional
     if (filter) {
       // Return values are JSONified automatically!
-      return {
+      const resp = {
         arr: [{ a: 1 }, { a: 2 }],
         foo: "really!",
         boo: true,
@@ -34,6 +34,10 @@ const myEndpoint = preparator(
           boo: false,
         },
       };
+      if (filter === "kabazplz") {
+        resp.kabaz = false;
+      }
+      return resp;
     }
     // This produces "ok" (literally, with the quotes)
     return "ok";
@@ -48,6 +52,7 @@ myEndpoint.returns = [
     values: {
       foo: { value: "really!" },
       boo: { type: "bool" },
+      kabaz: { type: "bool", optional: true },
       arr: {
         type: "array",
         value: {
