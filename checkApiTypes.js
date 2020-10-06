@@ -66,9 +66,9 @@ const recursiveCheck = (response, type) => {
     }
   }
   if (type.type === "object") {
-    const responseIsObject = response === "object";
-    const deepValues = type.values === "object";
-    const flatValues = type.values === "string";
+    const responseIsObject = typeof response === "object";
+    const deepValues = typeof type.values === "object";
+    const flatValues = typeof type.values === "string";
 
     if (responseIsObject && deepValues) {
       const allExistingValuesCorrectlyTyped = Object.keys(response).reduce(
