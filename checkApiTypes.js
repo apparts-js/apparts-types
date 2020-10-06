@@ -66,23 +66,28 @@ const recursiveCheck = (response, type) => {
     }
   }
   if (type.type === "object") {
-    if (
-      typeof response === "object" &&
-      typeof type.values === "object" &&
-      Object.keys(response).reduce(
+    const responseIsObject = response === "object";
+    const deepValues = type.values === "object";
+    const flatValues = type.values === "string";
+
+    if (responseIsObject && deepValues) {
+      const allExistingValuesCorrectlyTyped = Object.keys(response).reduce(
         (a, b) =>
           a && type.values[b] && recursiveCheck(response[b], type.values[b]),
         true
-      ) &&
-      Object.keys(type.values).reduce(
+      );
+      const allRequiredValuesExist = Object.keys(type.values).reduce(
         (a, b) => (response[b] !== undefined || type.values[b].optional) && a,
         true
-      )
-    ) {
-      return true;
+      );
+      if (allExistingValuesCorrectlyTyped && allRequiredValuesExist) {
+        return true;
+      } else {
+        return false;
+      }
     } else if (
-      typeof response === "object" &&
-      typeof type.values === "string" &&
+      responseIsObject &&
+      flatValues &&
       Object.keys(response).reduce(
         (a, b) => a && checkTypes[type.values].check(response[b]),
         true
