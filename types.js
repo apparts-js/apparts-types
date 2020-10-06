@@ -70,11 +70,7 @@ module.exports = {
   },
   string: {
     check: (x) => {
-      try {
-        return x + "" == x;
-      } catch (e) {
-        return false;
-      }
+      return typeof x === "string";
     },
   },
   email: {
