@@ -33,7 +33,7 @@ var prepare = (assertions, next, options) => {
       // THIS IS A HACK! REMOVE AS SOON AS THE GUYS AT EXPRESS GET THEIR SHIT TOGETHER
       //      req[field].hasOwnProperty = Object.prototype.hasOwnProperty;
 
-      var c = check(assertions[field], req[field]);
+      var c = check(assertions[field], req[field], field);
       if (c !== true) {
         var r = {};
         r[field] = c;
@@ -93,9 +93,10 @@ var prepare = (assertions, next, options) => {
  *
  * @param {Object} wanted
  * @param {Object} given
+ * @param {string} field
  * @return {bool} 'true' if everything matched, Error Description if not
  */
-const check = (wanted, given) => {
+const check = (wanted, given, field) => {
   // iterate over wanted parameters
   var keys = Object.keys(wanted);
   for (var i = 0; i < keys.length; i++) {
@@ -116,7 +117,7 @@ const check = (wanted, given) => {
       if (wanted[param].hasOwnProperty("type")) {
         if (types[wanted[param]["type"]]) {
           // does the argument match the prescribed type?
-          if (types[wanted[param]["type"]].conv) {
+          if (types[wanted[param]["type"]].conv && field !== "body") {
             try {
               given[param] = types[wanted[param]["type"]].conv(given[param]);
               foundMatch = true;
@@ -184,6 +185,7 @@ const constructErrorObj = (req, error) => {
       url: req.originalUrl,
       method: req.method,
       ip: req.ip,
+      ua: req.get("User-Agent") || "",
     },
     ERROR: error,
     TRACE: (error || {}).stack,
