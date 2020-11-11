@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<!-- Commit hash: undefined -->
+<html>
+  <head>
+    <style>
+     * {
+       font-family: sans-serif;
+     }
+     section {
+       background: #dee;
+       padding: 20px;
+       border-radius: 10px;
+       margin: 20px;
+     }
+     .api, p {
+       margin-left: 20px;
+     }
+     .path {
+       font-weight: bold;
+       color: blue;
+     }
+     .version {
+       color: green;
+     }
+     .method {
+       color: darkblue;
+     }
+     .type {
+       color: purple;
+     }
+     .funcName {
+       font-size: 8px;
+       color: gray;
+     }
+     .error {
+       font-weight: bold;
+       color: red;
+     }
+     .returns {
+       font-weight: bold;
+     }
+    .toc div {
+       position: absolute;
+       top: 0px;
+       left: 110px;
+       width: max-content;
+     }
+     .toc a {
+       text-decoration: none;
+       margin: 20px;
+       position: relative;
+     }
+     code {
+       font-family: mono;
+     }
+    </style>
+  </head>
+  <body>
+    <div class="toc" style="max-width: 800px; margin: auto;padding: 20px;">
+      <a href="#post_/v/1/endpoint/:id">POST<div>/v/1/endpoint/:id</div></a><br/><a href="#post_/v/1/faultyendpoint/:id">POST<div>/v/1/faultyendpoint/:id</div></a><br/><a href="#post_/v/1/typelessendpoint">POST<div>/v/1/typelessendpoint</div></a>
+    </div>
+    <div style="max-width: 800px; margin: auto;">
+    <section id="post_/v/1/endpoint/:id">
+   <h2></h2>
+   <p ></p>
+   <div class="api">
+     <span class="version">v1</span>
+     <strong class="method">POST</strong>
+     <span class="path">/v/1/endpoint/:id</span><br/>
+     <ul>
+     
+     <li>body: <br><ul>
+       <li><code>name:
+         <span class="type">&lt;string&gt; </span>(= "no name")</code></li>
+       </li></ul></li>
+     <li>query: <br><ul>
+       <li><code>? filter:
+         <span class="type">&lt;string&gt; </span></code></li>
+       </li></ul></li>
+     <li>params: <br><ul>
+       <li><code>id:
+         <span class="type">&lt;id&gt; </span></code></li>
+       </li></ul></li>
+     </ul>
+     <span class="returns">Returns:</span> <br>
+     <ul>
+     
+          <li>200<br/>
+        <code>"ok"</code><br/><br/></li>
+      
+          <li>400<br/>
+        <code>{ "error": "Name too long" }</code><br/><br/></li>
+      
+          <li>200<br/>
+        <code>{<br/>&nbsp;&nbsp;"foo": "really!",<br/>&nbsp;&nbsp;"boo": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"kabaz": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"arr": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;],<br/>&nbsp;&nbsp;"objectWithUnknownKeys": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;"/": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;},<br/>&nbsp;&nbsp;"objectWithUnknownKeysAndUnknownTypes": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;"/": <span class="type">&lt;/&gt;</span><br/>&nbsp;&nbsp;}<br/>}</code><br/><br/></li>
+      
+     </ul>
+  </div>
+</section><section id="post_/v/1/faultyendpoint/:id">
+   <h2></h2>
+   <p ></p>
+   <div class="api">
+     <span class="version">v1</span>
+     <strong class="method">POST</strong>
+     <span class="path">/v/1/faultyendpoint/:id</span><br/>
+     <ul>
+     
+     <li>body: <br><ul>
+       <li><code>name:
+         <span class="type">&lt;string&gt; </span>(= "no name")</code></li>
+       </li></ul></li>
+     <li>query: <br><ul>
+       <li><code>? filter:
+         <span class="type">&lt;string&gt; </span></code></li>
+       </li></ul></li>
+     <li>params: <br><ul>
+       <li><code>id:
+         <span class="type">&lt;id&gt; </span></code></li>
+       </li></ul></li>
+     </ul>
+     <span class="returns">Returns:</span> <br>
+     <ul>
+     
+          <li>200<br/>
+        <code>"ok"</code><br/><br/></li>
+      
+          <li>400<br/>
+        <code>{ "error": "Name too long" }</code><br/><br/></li>
+      
+          <li>200<br/>
+        <code>{<br/>&nbsp;&nbsp;"boo": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"arr": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;]<br/>}</code><br/><br/></li>
+      
+     </ul>
+  </div>
+</section><section id="post_/v/1/typelessendpoint">
+   <h2></h2>
+   <p ></p>
+   <div class="api">
+     <span class="version">v1</span>
+     <strong class="method">POST</strong>
+     <span class="path">/v/1/typelessendpoint</span><br/>
+     <ul>
+     
+     </ul>
+     <span class="returns">Returns:</span> <br>
+     <ul>
+     
+     </ul>
+  </div>
+</section>
+    </div>
+  </body>
+</html>
+
+

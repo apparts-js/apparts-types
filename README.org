@@ -125,12 +125,12 @@ Create a file =genApiDocs.js=:
 #+BEGIN_SRC js
 const addRoutes = require("./routes");
 const express = require("express");
-const { genApiDoku } = require("@apparts/types");
+const { genApiDocs } = require("@apparts/types");
 
 const app = express();
 addRoutes(app);
 
-const docs = genApiDoku(app);
+const docs = genApiDocs(app);
 console.log(docs);
 #+END_SRC
 
