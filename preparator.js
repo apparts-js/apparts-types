@@ -19,7 +19,7 @@ const config = require("@apparts/config").get("types-config");
  * assertions
  */
 var prepare = (assertions, next, options) => {
-  return function (req, res) {
+  const f = function (req, res) {
     res.setHeader("Content-Type", "application/json");
     res.status(200);
     // iterate over the fields specified in the API's assertions
@@ -86,6 +86,9 @@ var prepare = (assertions, next, options) => {
         );
       });
   };
+  f.assertions = assertions;
+  f.options = options;
+  return f;
 };
 
 /**

@@ -83,6 +83,9 @@ Under the configuration name =types-config= the following options exist:
       return "ok";
     }
   );
+  myEndpoint.title = "A demo endpoint";
+  myEndpoint.description = `This endpoint demonstrates the most important 
+    concepts of the @apparts/types package and it's capabilities`;
   myEndpoint.returns = [
     { status: 200, value: "ok" },
     { status: 400, error: "Name too long" },
@@ -118,14 +121,26 @@ Under the configuration name =types-config= the following options exist:
 
 * Generate API documentation
 
-Run:
+Create a file =genApiDocs.js=:
+#+BEGIN_SRC js
+const addRoutes = require("./routes");
+const express = require("express");
+const { genApiDoku } = require("@apparts/types");
 
-#+BEGIN_SRC sh
-export DIR="./path/to/your/routes/index.js";
-node genApiDoku.js
+const app = express();
+addRoutes(app);
+
+const docs = genApiDoku(app);
+console.log(docs);
 #+END_SRC
 
-Prints into =api.html=
+Then, run:
+
+#+BEGIN_SRC sh
+node genApiDocs.js > api.html
+#+END_SRC
+
+See your Api-documentation in =api.html=.
 
 * Test API Types
 
