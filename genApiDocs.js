@@ -1,3 +1,5 @@
+const STYLE = require("./style");
+
 const getApi = (app) => {
   const api = app._router.stack
     .map((route) => {
@@ -41,7 +43,7 @@ ${Object.keys(type.values)
 ${spaces}}`;
     } else {
       res += `{
-${spaces}  "/": <span class="type">&lt;${type.values}&gt;</span>
+${spaces}  <span class="type">&lt;/&gt;</span>: <span class="type">&lt;${type.values}&gt;</span>
 ${spaces}}`;
     }
   } else if (type.type === "array") {
@@ -56,7 +58,7 @@ ${spaces}]`;
   return res.replace(/\n/g, "<br/>").replace(/  /g, "&nbsp;&nbsp;");
 };
 
-const apiToHtml = (api, commitHash) => {
+const apiToHtml = (api, commitHash, style = STYLE) => {
   const toc = [];
   const data = api
     .map(
@@ -67,22 +69,37 @@ const apiToHtml = (api, commitHash) => {
         returns = [],
         description,
         title,
+        options = {},
       }) => {
         const [, version] = path.match(/v\/?(\d+)/) || [,];
-        toc.push([`${method}_${path}`, method.toUpperCase(), path]);
+        toc.push([`${method}_${path}`, method.toUpperCase(), path, title]);
         return `<section id="${method}_${path}">
-   <h2>${title || ""}</h2>
+   <h3>${title || ""}</h3>
    <p >${description || ""}</p>
    <div class="api">
      <span class="version">${version ? "v" + version : ""}</span>
      <strong class="method">${method.toUpperCase()}</strong>
      <span class="path">${path}</span><br/>
      <ul>
+     ${
+       options.auth
+         ? `
+          <li>Header:
+          <ul>
+          <li>
+          <code>Authorization: ${options.auth}</code>
+        </li>
+        </ul>
+          </li>
+        `
+         : ""
+     }
+
      ${Object.keys(assertions)
        .map(
          (type) =>
            `
-     <li>${type}: <br><ul>` +
+          <li>${type.slice(0, 1).toUpperCase() + type.slice(1)}: <br><ul>` +
            Object.keys(assertions[type])
              .map(
                (key) => `
@@ -104,12 +121,12 @@ const apiToHtml = (api, commitHash) => {
      ${returns
        .map(
          ({ status, error, ...rest }) => `
-          <li>${status}<br/>
+          <li>Status: ${status}
         <code>${
           error
             ? `{ "error": ${JSON.stringify(error)} }`
             : recursivelyPrintType(rest)
-        }</code><br/><br/></li>
+        }</code></li>
       `
        )
        .join("")}
@@ -126,65 +143,26 @@ const apiToHtml = (api, commitHash) => {
 <html>
   <head>
     <style>
-     * {
-       font-family: sans-serif;
-     }
-     section {
-       background: #dee;
-       padding: 20px;
-       border-radius: 10px;
-       margin: 20px;
-     }
-     .api, p {
-       margin-left: 20px;
-     }
-     .path {
-       font-weight: bold;
-       color: blue;
-     }
-     .version {
-       color: green;
-     }
-     .method {
-       color: darkblue;
-     }
-     .type {
-       color: purple;
-     }
-     .funcName {
-       font-size: 8px;
-       color: gray;
-     }
-     .error {
-       font-weight: bold;
-       color: red;
-     }
-     .returns {
-       font-weight: bold;
-     }
-    .toc div {
-       position: absolute;
-       top: 0px;
-       left: 110px;
-       width: max-content;
-     }
-     .toc a {
-       text-decoration: none;
-       margin: 20px;
-       position: relative;
-     }
-     code {
-       font-family: mono;
-     }
+      ${style}
     </style>
   </head>
   <body>
-    <div class="toc" style="max-width: 800px; margin: auto;padding: 20px;">
-      ${toc
-        .map((a) => `<a href="#${a[0]}">${a[1]}<div>${a[2]}</div></a>`)
-        .join("<br/>")}
+    <div class="docs" >
+      <h2>Contents:</h2>
+      <div class="toc">
+        ${toc
+          .map(
+            (a) =>
+              `<a href="#${a[0]}">
+                ${a[3]}<br/>
+                &nbsp;&nbsp;${a[1]}<code>${a[2]}</code>
+               </a>`
+          )
+          .join("")}
+      </div>
     </div>
-    <div style="max-width: 800px; margin: auto;">
+    <div class="docs" >
+     <h2>Endpoints:</h2>
     ${data}
     </div>
   </body>
@@ -193,7 +171,7 @@ const apiToHtml = (api, commitHash) => {
 `;
 };
 
-module.exports = (app) => {
-  const api = getApi(app);
-  return apiToHtml(api);
+module.exports = {
+  getApi,
+  apiToHtml,
 };

@@ -50,7 +50,13 @@ const prepauthToken = (useUser, assertions, fun, options) => {
     throw '@apparts/types: Missing peer dependency: "@apparts/model"\nPlease install manually with \n\tnpm i --save @apparts/model\n\n';
   }
 
-  return _prepauth(assertions, fun, options, false, useUser);
+  return _prepauth(
+    assertions,
+    fun,
+    { ...options, auth: "Basic btoa(uname:token)" },
+    false,
+    useUser
+  );
 };
 prepauthToken.returns = _prepauth.returns;
 
@@ -61,7 +67,13 @@ const prepauthPW = (useUser, assertions, fun, options) => {
     throw '@apparts/types: Missing peer dependency: "@apparts/model"\nPlease install manually with \n\tnpm i --save @apparts/model\n\n';
   }
 
-  return _prepauth(assertions, fun, options, true, useUser);
+  return _prepauth(
+    assertions,
+    fun,
+    { ...options, auth: "Basic btoa(uname:password)" },
+    true,
+    useUser
+  );
 };
 prepauthPW.returns = _prepauth.returns;
 
@@ -87,7 +99,7 @@ const prepauthTokenJWT = (webtokenkey) => (assertions, fun, options) => {
         return await fun(req, jwt, res);
       }
     },
-    options
+    { ...options, auth: "Bearer jwt" }
   );
 };
 prepauthTokenJWT.returns = [

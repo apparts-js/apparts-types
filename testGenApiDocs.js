@@ -1,6 +1,8 @@
 const { app } = require("./myTestEndpoint");
 const express = require("express");
-const { genApiDocs } = require("./");
+const {
+  genApiDocs: { getApi, apiToHtml },
+} = require("./");
 
-const docs = genApiDocs(app);
+const docs = apiToHtml(getApi(app));
 console.log(docs);

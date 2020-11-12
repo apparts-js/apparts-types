@@ -4,81 +4,184 @@
 <html>
   <head>
     <style>
-     * {
-       font-family: sans-serif;
-     }
-     section {
-       background: #dee;
-       padding: 20px;
-       border-radius: 10px;
-       margin: 20px;
-     }
-     .api, p {
-       margin-left: 20px;
-     }
-     .path {
-       font-weight: bold;
-       color: blue;
-     }
-     .version {
-       color: green;
-     }
-     .method {
-       color: darkblue;
-     }
-     .type {
-       color: purple;
-     }
-     .funcName {
-       font-size: 8px;
-       color: gray;
-     }
-     .error {
-       font-weight: bold;
-       color: red;
-     }
-     .returns {
-       font-weight: bold;
-     }
-    .toc div {
-       position: absolute;
-       top: 0px;
-       left: 110px;
-       width: max-content;
-     }
-     .toc a {
-       text-decoration: none;
-       margin: 20px;
-       position: relative;
-     }
-     code {
-       font-family: mono;
-     }
+      
+:root {
+  --dark-0: #0e0e0c;
+  --dark-1: #292923;
+  --dark-2: #45453a;
+  --dark-3: #616152;
+  --dark-4: #7c7c69;
+
+  --bright-0: #adad9e;
+  --bright-1: #c0c0b5;
+  --bright-2: #d4d4cc;
+  --bright-3: #e7e7e3;
+  --bright-4: #fafaf9;
+
+  --primary-0: #5e5108;
+  --primary-1: #7d6c0b;
+  --primary-2: #9c870e;
+  --primary-3: #bba111;
+  --primary-4: #dabc14;
+  --primary-5: #ebcd25;
+  --primary-6: #eed444;
+  --primary-7: #f1dc63;
+  --primary-8: #f4e382;
+  --primary-9: #f7eaa2;
+
+  --secondary-0: #425511;
+  --secondary-1: #587216;
+  --secondary-2: #6e8e1c;
+  --secondary-3: #84aa22;
+  --secondary-4: #9ac727;
+  --secondary-5: #abd838;
+  --secondary-6: #b7dd55;
+  --secondary-7: #c3e371;
+  --secondary-8: #cfe98d;
+  --secondary-9: #dbeeaa;
+
+  --green-0: #145214;
+  --green-1: #248f24;
+  --green-2: #33cc33;
+  --green-3: #70db70;
+  --green-4: #adebad;
+
+  --yellow-0: #565610;
+  --yellow-1: #96971c;
+  --yellow-2: #d7d728;
+  --yellow-3: #e3e369;
+  --yellow-4: #efefa9;
+
+  --red-0: #521414;
+  --red-1: #8f2424;
+  --red-2: #cc3333;
+  --red-3: #db7070;
+  --red-4: #ebadad;
+}
+
+body {
+  background: var(--bright-5);
+}
+* {
+  font-family: sans-serif;
+}
+section {
+  background: var(--bright-3);
+  padding: 40px;
+  border-radius: 10px;
+  margin: 20px;
+}
+p {
+  margin-bottom: 40px;
+}
+.path {
+  font-weight: bold;
+  color: var(--primary-1);
+}
+.version {
+  color: var(--green-1);
+}
+.method {
+  color: var(--secondary-2);
+}
+.type {
+  color: var(--primary-3);
+}
+.funcName {
+  font-size: 8px;
+  color: gray;
+}
+.error {
+  font-weight: bold;
+  color: red;
+}
+.returns {
+  font-weight: bold;
+}
+.docs {
+  max-width: 800px;
+  margin: auto;
+}
+.toc {
+  margin: 20px 20px 100px 20px;
+  padding: 20px;
+  background: var(--bright-3);
+  border-radius: 10px;
+}
+li {
+  margin-bottom: 10px;
+}
+h2{
+  margin-left: 50px;
+}
+.toc code {
+  display: inline-block;
+  margin: 5px;
+}
+.toc a {
+  margin: 20px;
+  color: var(--primary-1);
+  display: block;
+  text-decoration: none;
+}
+code {
+  font-family: mono;
+  background: var(--bright-2);
+  display: block;
+  padding: 4px;
+  border-radius: 4px;
+}
+
     </style>
   </head>
   <body>
-    <div class="toc" style="max-width: 800px; margin: auto;padding: 20px;">
-      <a href="#post_/v/1/endpoint/:id">POST<div>/v/1/endpoint/:id</div></a><br/><a href="#post_/v/1/faultyendpoint/:id">POST<div>/v/1/faultyendpoint/:id</div></a><br/><a href="#post_/v/1/typelessendpoint">POST<div>/v/1/typelessendpoint</div></a>
+    <div class="docs" >
+      <h2>Contents:</h2>
+      <div class="toc">
+        <a href="#post_/v/1/endpoint/:id">
+                Testendpoint for multiple purposes<br/>
+                &nbsp;&nbsp;POST<code>/v/1/endpoint/:id</code>
+               </a><a href="#post_/v/1/faultyendpoint/:id">
+                Faulty Testendpoint<br/>
+                &nbsp;&nbsp;POST<code>/v/1/faultyendpoint/:id</code>
+               </a><a href="#post_/v/1/typelessendpoint">
+                Typeless endpoint<br/>
+                &nbsp;&nbsp;POST<code>/v/1/typelessendpoint</code>
+               </a><a href="#post_/v/1/withpw">
+                Endpoint with Pw Authentication<br/>
+                &nbsp;&nbsp;POST<code>/v/1/withpw</code>
+               </a><a href="#post_/v/1/withtoken">
+                Endpoint with Token Authentication<br/>
+                &nbsp;&nbsp;POST<code>/v/1/withtoken</code>
+               </a><a href="#post_/v/1/withjwt">
+                Endpoint with JWT Authentication<br/>
+                &nbsp;&nbsp;POST<code>/v/1/withjwt</code>
+               </a>
+      </div>
     </div>
-    <div style="max-width: 800px; margin: auto;">
+    <div class="docs" >
+     <h2>Endpoints:</h2>
     <section id="post_/v/1/endpoint/:id">
-   <h2></h2>
-   <p ></p>
+   <h3>Testendpoint for multiple purposes</h3>
+   <p >Behaves radically different, based on what
+ the filter is.</p>
    <div class="api">
      <span class="version">v1</span>
      <strong class="method">POST</strong>
      <span class="path">/v/1/endpoint/:id</span><br/>
      <ul>
      
-     <li>body: <br><ul>
+
+     
+          <li>Body: <br><ul>
        <li><code>name:
          <span class="type">&lt;string&gt; </span>(= "no name")</code></li>
        </li></ul></li>
-     <li>query: <br><ul>
+          <li>Query: <br><ul>
        <li><code>? filter:
          <span class="type">&lt;string&gt; </span></code></li>
        </li></ul></li>
-     <li>params: <br><ul>
+          <li>Params: <br><ul>
        <li><code>id:
          <span class="type">&lt;id&gt; </span></code></li>
        </li></ul></li>
@@ -86,35 +189,38 @@
      <span class="returns">Returns:</span> <br>
      <ul>
      
-          <li>200<br/>
-        <code>"ok"</code><br/><br/></li>
+          <li>Status: 200
+        <code>"ok"</code></li>
       
-          <li>400<br/>
-        <code>{ "error": "Name too long" }</code><br/><br/></li>
+          <li>Status: 400
+        <code>{ "error": "Name too long" }</code></li>
       
-          <li>200<br/>
-        <code>{<br/>&nbsp;&nbsp;"foo": "really!",<br/>&nbsp;&nbsp;"boo": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"kabaz": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"arr": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;],<br/>&nbsp;&nbsp;"objectWithUnknownKeys": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;"/": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;},<br/>&nbsp;&nbsp;"objectWithUnknownKeysAndUnknownTypes": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;"/": <span class="type">&lt;/&gt;</span><br/>&nbsp;&nbsp;}<br/>}</code><br/><br/></li>
+          <li>Status: 200
+        <code>{<br/>&nbsp;&nbsp;"foo": "really!",<br/>&nbsp;&nbsp;"boo": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"kabaz": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"arr": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;],<br/>&nbsp;&nbsp;"objectWithUnknownKeys": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;},<br/>&nbsp;&nbsp;"objectWithUnknownKeysAndUnknownTypes": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type">&lt;/&gt;</span><br/>&nbsp;&nbsp;}<br/>}</code></li>
       
      </ul>
   </div>
 </section><section id="post_/v/1/faultyendpoint/:id">
-   <h2></h2>
-   <p ></p>
+   <h3>Faulty Testendpoint</h3>
+   <p >Ment to be found to be faulty. It's documentation
+does not match it's behavior.</p>
    <div class="api">
      <span class="version">v1</span>
      <strong class="method">POST</strong>
      <span class="path">/v/1/faultyendpoint/:id</span><br/>
      <ul>
      
-     <li>body: <br><ul>
+
+     
+          <li>Body: <br><ul>
        <li><code>name:
          <span class="type">&lt;string&gt; </span>(= "no name")</code></li>
        </li></ul></li>
-     <li>query: <br><ul>
+          <li>Query: <br><ul>
        <li><code>? filter:
          <span class="type">&lt;string&gt; </span></code></li>
        </li></ul></li>
-     <li>params: <br><ul>
+          <li>Params: <br><ul>
        <li><code>id:
          <span class="type">&lt;id&gt; </span></code></li>
        </li></ul></li>
@@ -122,25 +228,103 @@
      <span class="returns">Returns:</span> <br>
      <ul>
      
-          <li>200<br/>
-        <code>"ok"</code><br/><br/></li>
+          <li>Status: 200
+        <code>"ok"</code></li>
       
-          <li>400<br/>
-        <code>{ "error": "Name too long" }</code><br/><br/></li>
+          <li>Status: 400
+        <code>{ "error": "Name too long" }</code></li>
       
-          <li>200<br/>
-        <code>{<br/>&nbsp;&nbsp;"boo": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"arr": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;]<br/>}</code><br/><br/></li>
+          <li>Status: 200
+        <code>{<br/>&nbsp;&nbsp;"boo": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"arr": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;]<br/>}</code></li>
       
      </ul>
   </div>
 </section><section id="post_/v/1/typelessendpoint">
-   <h2></h2>
-   <p ></p>
+   <h3>Typeless endpoint</h3>
+   <p >This endpoint is typeless but not
+pointless.</p>
    <div class="api">
      <span class="version">v1</span>
      <strong class="method">POST</strong>
      <span class="path">/v/1/typelessendpoint</span><br/>
      <ul>
+     
+
+     
+     </ul>
+     <span class="returns">Returns:</span> <br>
+     <ul>
+     
+     </ul>
+  </div>
+</section><section id="post_/v/1/withpw">
+   <h3>Endpoint with Pw Authentication</h3>
+   <p >You shall not pass, unless you have a password.</p>
+   <div class="api">
+     <span class="version">v1</span>
+     <strong class="method">POST</strong>
+     <span class="path">/v/1/withpw</span><br/>
+     <ul>
+     
+          <li>Header:
+          <ul>
+          <li>
+          <code>Authorization: Basic btoa(uname:password)</code>
+        </li>
+        </ul>
+          </li>
+        
+
+     
+     </ul>
+     <span class="returns">Returns:</span> <br>
+     <ul>
+     
+     </ul>
+  </div>
+</section><section id="post_/v/1/withtoken">
+   <h3>Endpoint with Token Authentication</h3>
+   <p >You shall not pass, unless you have a token.</p>
+   <div class="api">
+     <span class="version">v1</span>
+     <strong class="method">POST</strong>
+     <span class="path">/v/1/withtoken</span><br/>
+     <ul>
+     
+          <li>Header:
+          <ul>
+          <li>
+          <code>Authorization: Basic btoa(uname:token)</code>
+        </li>
+        </ul>
+          </li>
+        
+
+     
+     </ul>
+     <span class="returns">Returns:</span> <br>
+     <ul>
+     
+     </ul>
+  </div>
+</section><section id="post_/v/1/withjwt">
+   <h3>Endpoint with JWT Authentication</h3>
+   <p >You shall not pass, unless you have a JWT.</p>
+   <div class="api">
+     <span class="version">v1</span>
+     <strong class="method">POST</strong>
+     <span class="path">/v/1/withjwt</span><br/>
+     <ul>
+     
+          <li>Header:
+          <ul>
+          <li>
+          <code>Authorization: Bearer jwt</code>
+        </li>
+        </ul>
+          </li>
+        
+
      
      </ul>
      <span class="returns">Returns:</span> <br>

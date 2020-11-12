@@ -1,4 +1,5 @@
 const preparator = require("./preparator");
+const { prepauthToken, prepauthPW, prepauthTokenJWT } = require("./prepauth");
 const { HttpError } = require("@apparts/error");
 const express = require("express");
 
@@ -43,6 +44,9 @@ const myEndpoint = preparator(
     return "ok";
   }
 );
+myEndpoint.title = "Testendpoint for multiple purposes";
+myEndpoint.description = `Behaves radically different, based on what
+ the filter is.`;
 myEndpoint.returns = [
   { status: 200, value: "ok" },
   { status: 400, error: "Name too long" },
@@ -114,6 +118,9 @@ const myFaultyEndpoint = preparator(
     return "whut?";
   }
 );
+myFaultyEndpoint.title = "Faulty Testendpoint";
+myFaultyEndpoint.description = `Ment to be found to be faulty. It's documentation
+does not match it's behavior.`;
 myFaultyEndpoint.returns = [
   { status: 200, value: "ok" },
   { status: 400, error: "Name too long" },
@@ -138,6 +145,29 @@ myFaultyEndpoint.returns = [
 const myTypelessEndpoint = preparator({}, async ({}) => {
   return "ok";
 });
+myTypelessEndpoint.title = "Typeless endpoint";
+myTypelessEndpoint.description = `This endpoint is typeless but not
+pointless.`;
+
+const myPwAuthenticatedEndpoint = prepauthPW({}, async ({}) => {
+  return "ok";
+});
+const myTokenAuthenticatedEndpoint = prepauthToken({}, async ({}) => {
+  return "ok";
+});
+const myJWTAuthenticatedEndpoint = prepauthTokenJWT("")({}, async ({}) => {
+  return "ok";
+});
+
+myPwAuthenticatedEndpoint.title = "Endpoint with Pw Authentication";
+myTokenAuthenticatedEndpoint.title = "Endpoint with Token Authentication";
+myJWTAuthenticatedEndpoint.title = "Endpoint with JWT Authentication";
+myPwAuthenticatedEndpoint.description =
+  "You shall not pass, unless you have a password.";
+myTokenAuthenticatedEndpoint.description =
+  "You shall not pass, unless you have a token.";
+myJWTAuthenticatedEndpoint.description =
+  "You shall not pass, unless you have a JWT.";
 
 const app = express();
 const bodyParser = require("body-parser");
@@ -145,5 +175,9 @@ app.use(bodyParser.json());
 app.post("/v/1/endpoint/:id", myEndpoint);
 app.post("/v/1/faultyendpoint/:id", myFaultyEndpoint);
 app.post("/v/1/typelessendpoint", myTypelessEndpoint);
+
+app.post("/v/1/withpw", myPwAuthenticatedEndpoint);
+app.post("/v/1/withtoken", myTokenAuthenticatedEndpoint);
+app.post("/v/1/withjwt", myJWTAuthenticatedEndpoint);
 
 module.exports = { myEndpoint, myFaultyEndpoint, myTypelessEndpoint, app };
