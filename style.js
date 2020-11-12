@@ -102,6 +102,14 @@ p {
   background: var(--bright-3);
   border-radius: 10px;
 }
+.toc .method {
+  min-width: 60px;
+  text-align: right;
+  display: inline-block;
+}
+.toc .link {
+  text-decoration: underline;
+}
 li {
   margin-bottom: 10px;
 }
@@ -124,5 +132,19 @@ code {
   display: block;
   padding: 4px;
   border-radius: 4px;
+}
+
+@media (min-width: 1000px) {
+  .docs:first-of-type {
+    position: fixed;
+    width: min(48vw, 600px);
+    max-height: 100vh;
+    overflow-y: scroll;
+  }
+  .docs:last-of-type {
+    max-width: 50vw;
+    margin-left: min(48vw,600px);
+    margin-right: unset;
+  }
 }
 `;

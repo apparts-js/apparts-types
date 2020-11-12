@@ -195,8 +195,8 @@ app.post("/v/1/endpoint/:id", myEndpoint);
 app.post("/v/1/faultyendpoint/:id", myFaultyEndpoint);
 app.post("/v/1/typelessendpoint", myTypelessEndpoint);
 
-app.post("/v/1/withpw", myPwAuthenticatedEndpoint);
-app.post("/v/1/withtoken", myTokenAuthenticatedEndpoint);
-app.post("/v/1/withjwt", myJWTAuthenticatedEndpoint);
+app.delete("/v/1/withpw", myPwAuthenticatedEndpoint);
+app.patch("/v/1/withtoken", myTokenAuthenticatedEndpoint);
+app.put("/v/1/withjwt", myJWTAuthenticatedEndpoint);
 
 module.exports = { myEndpoint, myFaultyEndpoint, myTypelessEndpoint, app };

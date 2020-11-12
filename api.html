@@ -108,6 +108,14 @@ p {
   background: var(--bright-3);
   border-radius: 10px;
 }
+.toc .method {
+  min-width: 60px;
+  text-align: right;
+  display: inline-block;
+}
+.toc .link {
+  text-decoration: underline;
+}
 li {
   margin-bottom: 10px;
 }
@@ -132,6 +140,20 @@ code {
   border-radius: 4px;
 }
 
+@media (min-width: 1000px) {
+  .docs:first-of-type {
+    position: fixed;
+    width: min(48vw, 600px);
+    max-height: 100vh;
+    overflow-y: scroll;
+  }
+  .docs:last-of-type {
+    max-width: 50vw;
+    margin-left: auto;
+    margin-right: unset;
+  }
+}
+
     </style>
   </head>
   <body>
@@ -139,34 +161,40 @@ code {
       <h2>Contents:</h2>
       <div class="toc">
         <a href="#post_/v/1/endpoint/:id">
-                Testendpoint for multiple purposes<br/>
-                &nbsp;&nbsp;POST<code>/v/1/endpoint/:id</code>
+                 <span class="version">v1</span>
+                <span class="link">Testendpoint for multiple purposes</span><br/>
+                &nbsp;&nbsp;<span class="method">POST</span><code>/v/1/endpoint/:id</code>
                </a><a href="#post_/v/1/faultyendpoint/:id">
-                Faulty Testendpoint<br/>
-                &nbsp;&nbsp;POST<code>/v/1/faultyendpoint/:id</code>
+                 <span class="version">v1</span>
+                <span class="link">Faulty Testendpoint</span><br/>
+                &nbsp;&nbsp;<span class="method">POST</span><code>/v/1/faultyendpoint/:id</code>
                </a><a href="#post_/v/1/typelessendpoint">
-                Typeless endpoint<br/>
-                &nbsp;&nbsp;POST<code>/v/1/typelessendpoint</code>
-               </a><a href="#post_/v/1/withpw">
-                Endpoint with Pw Authentication<br/>
-                &nbsp;&nbsp;POST<code>/v/1/withpw</code>
-               </a><a href="#post_/v/1/withtoken">
-                Endpoint with Token Authentication<br/>
-                &nbsp;&nbsp;POST<code>/v/1/withtoken</code>
-               </a><a href="#post_/v/1/withjwt">
-                Endpoint with JWT Authentication<br/>
-                &nbsp;&nbsp;POST<code>/v/1/withjwt</code>
+                 <span class="version">v1</span>
+                <span class="link">Typeless endpoint</span><br/>
+                &nbsp;&nbsp;<span class="method">POST</span><code>/v/1/typelessendpoint</code>
+               </a><a href="#delete_/v/1/withpw">
+                 <span class="version">v1</span>
+                <span class="link"></span><br/>
+                &nbsp;&nbsp;<span class="method">DELETE</span><code>/v/1/withpw</code>
+               </a><a href="#patch_/v/1/withtoken">
+                 <span class="version">v1</span>
+                <span class="link"></span><br/>
+                &nbsp;&nbsp;<span class="method">PATCH</span><code>/v/1/withtoken</code>
+               </a><a href="#put_/v/1/withjwt">
+                 <span class="version">v1</span>
+                <span class="link">Endpoint with JWT Authentication</span><br/>
+                &nbsp;&nbsp;<span class="method">PUT</span><code>/v/1/withjwt</code>
                </a>
       </div>
     </div>
     <div class="docs" >
      <h2>Endpoints:</h2>
     <section id="post_/v/1/endpoint/:id">
-   <h3>Testendpoint for multiple purposes</h3>
+   <h3><span class="version">v1</span>
+Testendpoint for multiple purposes</h3>
    <p >Behaves radically different, based on what
  the filter is.</p>
    <div class="api">
-     <span class="version">v1</span>
      <strong class="method">POST</strong>
      <span class="path">/v/1/endpoint/:id</span><br/>
      <ul>
@@ -201,11 +229,11 @@ code {
      </ul>
   </div>
 </section><section id="post_/v/1/faultyendpoint/:id">
-   <h3>Faulty Testendpoint</h3>
+   <h3><span class="version">v1</span>
+Faulty Testendpoint</h3>
    <p >Ment to be found to be faulty. It's documentation
 does not match it's behavior.</p>
    <div class="api">
-     <span class="version">v1</span>
      <strong class="method">POST</strong>
      <span class="path">/v/1/faultyendpoint/:id</span><br/>
      <ul>
@@ -240,11 +268,10 @@ does not match it's behavior.</p>
      </ul>
   </div>
 </section><section id="post_/v/1/typelessendpoint">
-   <h3>Typeless endpoint</h3>
-   <p >This endpoint is typeless but not
-pointless.</p>
+   <h3><span class="version">v1</span>
+Typeless endpoint</h3>
+   <p >This endpoint is typeless but not pointless.</p>
    <div class="api">
-     <span class="version">v1</span>
      <strong class="method">POST</strong>
      <span class="path">/v/1/typelessendpoint</span><br/>
      <ul>
@@ -257,12 +284,12 @@ pointless.</p>
      
      </ul>
   </div>
-</section><section id="post_/v/1/withpw">
-   <h3>Endpoint with Pw Authentication</h3>
-   <p >You shall not pass, unless you have a password.</p>
+</section><section id="delete_/v/1/withpw">
+   <h3><span class="version">v1</span>
+</h3>
+   <p ></p>
    <div class="api">
-     <span class="version">v1</span>
-     <strong class="method">POST</strong>
+     <strong class="method">DELETE</strong>
      <span class="path">/v/1/withpw</span><br/>
      <ul>
      
@@ -282,12 +309,12 @@ pointless.</p>
      
      </ul>
   </div>
-</section><section id="post_/v/1/withtoken">
-   <h3>Endpoint with Token Authentication</h3>
-   <p >You shall not pass, unless you have a token.</p>
+</section><section id="patch_/v/1/withtoken">
+   <h3><span class="version">v1</span>
+</h3>
+   <p ></p>
    <div class="api">
-     <span class="version">v1</span>
-     <strong class="method">POST</strong>
+     <strong class="method">PATCH</strong>
      <span class="path">/v/1/withtoken</span><br/>
      <ul>
      
@@ -307,12 +334,12 @@ pointless.</p>
      
      </ul>
   </div>
-</section><section id="post_/v/1/withjwt">
-   <h3>Endpoint with JWT Authentication</h3>
+</section><section id="put_/v/1/withjwt">
+   <h3><span class="version">v1</span>
+Endpoint with JWT Authentication</h3>
    <p >You shall not pass, unless you have a JWT.</p>
    <div class="api">
-     <span class="version">v1</span>
-     <strong class="method">POST</strong>
+     <strong class="method">PUT</strong>
      <span class="path">/v/1/withjwt</span><br/>
      <ul>
      

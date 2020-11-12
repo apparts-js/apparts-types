@@ -74,12 +74,18 @@ const apiToHtml = (api, commitHash, style = STYLE) => {
         options = {},
       }) => {
         const [, version] = path.match(/v\/?(\d+)/) || [,];
-        toc.push([`${method}_${path}`, method.toUpperCase(), path, title]);
+        toc.push([
+          `${method}_${path}`,
+          method.toUpperCase(),
+          path,
+          title,
+          version,
+        ]);
         return `<section id="${method}_${path}">
-   <h3>${title || ""}</h3>
+   <h3><span class="version">${version ? "v" + version : ""}</span>
+${title || ""}</h3>
    <p >${description || ""}</p>
    <div class="api">
-     <span class="version">${version ? "v" + version : ""}</span>
      <strong class="method">${method.toUpperCase()}</strong>
      <span class="path">${path}</span><br/>
      <ul>
@@ -156,8 +162,11 @@ const apiToHtml = (api, commitHash, style = STYLE) => {
           .map(
             (a) =>
               `<a href="#${a[0]}">
-                ${a[3]}<br/>
-                &nbsp;&nbsp;${a[1]}<code>${a[2]}</code>
+                 <span class="version">${a[4] ? "v" + a[4] : ""}</span>
+                <span class="link">${a[3] || ""}</span><br/>
+                &nbsp;&nbsp;<span class="method">${a[1]}</span><code>${
+                a[2]
+              }</code>
                </a>`
           )
           .join("")}
