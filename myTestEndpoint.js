@@ -42,41 +42,43 @@ const myEndpoint = preparator(
     }
     // This produces "ok" (literally, with the quotes)
     return "ok";
-  }
-);
-myEndpoint.title = "Testendpoint for multiple purposes";
-myEndpoint.description = `Behaves radically different, based on what
- the filter is.`;
-myEndpoint.returns = [
-  { status: 200, value: "ok" },
-  { status: 400, error: "Name too long" },
+  },
   {
-    status: 200,
-    type: "object",
-    values: {
-      foo: { value: "really!" },
-      boo: { type: "bool" },
-      kabaz: { type: "bool", optional: true },
-      arr: {
-        type: "array",
-        value: {
-          type: "object",
-          values: {
-            a: { type: "int" },
+    title: "Testendpoint for multiple purposes",
+    description: `Behaves radically different, based on what
+ the filter is.`,
+    returns: [
+      { status: 200, value: "ok" },
+      { status: 400, error: "Name too long" },
+      {
+        status: 200,
+        type: "object",
+        values: {
+          foo: { value: "really!" },
+          boo: { type: "bool" },
+          kabaz: { type: "bool", optional: true },
+          arr: {
+            type: "array",
+            value: {
+              type: "object",
+              values: {
+                a: { type: "int" },
+              },
+            },
+          },
+          objectWithUnknownKeys: {
+            type: "object",
+            values: "int",
+          },
+          objectWithUnknownKeysAndUnknownTypes: {
+            type: "object",
+            values: "/",
           },
         },
       },
-      objectWithUnknownKeys: {
-        type: "object",
-        values: "int",
-      },
-      objectWithUnknownKeysAndUnknownTypes: {
-        type: "object",
-        values: "/",
-      },
-    },
-  },
-];
+    ],
+  }
+);
 
 const myFaultyEndpoint = preparator(
   {
@@ -116,58 +118,75 @@ const myFaultyEndpoint = preparator(
     }
     // This produces "ok" (literally, with the quotes)
     return "whut?";
-  }
-);
-myFaultyEndpoint.title = "Faulty Testendpoint";
-myFaultyEndpoint.description = `Ment to be found to be faulty. It's documentation
-does not match it's behavior.`;
-myFaultyEndpoint.returns = [
-  { status: 200, value: "ok" },
-  { status: 400, error: "Name too long" },
+  },
   {
-    status: 200,
-    type: "object",
-    values: {
-      boo: { type: "bool" },
-      arr: {
-        type: "array",
-        value: {
-          type: "object",
-          values: {
-            a: { type: "int" },
+    title: "Faulty Testendpoint",
+    description: `Ment to be found to be faulty. It's documentation
+does not match it's behavior.`,
+    returns: [
+      { status: 200, value: "ok" },
+      { status: 400, error: "Name too long" },
+      {
+        status: 200,
+        type: "object",
+        values: {
+          boo: { type: "bool" },
+          arr: {
+            type: "array",
+            value: {
+              type: "object",
+              values: {
+                a: { type: "int" },
+              },
+            },
           },
         },
       },
-    },
+    ],
+  }
+);
+
+const myTypelessEndpoint = preparator(
+  {},
+  async ({}) => {
+    return "ok";
   },
-];
+  {
+    title: "Typeless endpoint",
+    description: `This endpoint is typeless but not pointless.`,
+  }
+);
 
-const myTypelessEndpoint = preparator({}, async ({}) => {
-  return "ok";
-});
-myTypelessEndpoint.title = "Typeless endpoint";
-myTypelessEndpoint.description = `This endpoint is typeless but not
-pointless.`;
-
-const myPwAuthenticatedEndpoint = prepauthPW({}, async ({}) => {
-  return "ok";
-});
-const myTokenAuthenticatedEndpoint = prepauthToken({}, async ({}) => {
-  return "ok";
-});
-const myJWTAuthenticatedEndpoint = prepauthTokenJWT("")({}, async ({}) => {
-  return "ok";
-});
-
-myPwAuthenticatedEndpoint.title = "Endpoint with Pw Authentication";
-myTokenAuthenticatedEndpoint.title = "Endpoint with Token Authentication";
-myJWTAuthenticatedEndpoint.title = "Endpoint with JWT Authentication";
-myPwAuthenticatedEndpoint.description =
-  "You shall not pass, unless you have a password.";
-myTokenAuthenticatedEndpoint.description =
-  "You shall not pass, unless you have a token.";
-myJWTAuthenticatedEndpoint.description =
-  "You shall not pass, unless you have a JWT.";
+const myPwAuthenticatedEndpoint = prepauthPW(
+  {},
+  async ({}) => {
+    return "ok";
+  },
+  {
+    title: "Endpoint with Pw Authentication",
+    description: "You shall not pass, unless you have a password.",
+  }
+);
+const myTokenAuthenticatedEndpoint = prepauthToken(
+  {},
+  async ({}) => {
+    return "ok";
+  },
+  {
+    title: "Endpoint with Token Authentication",
+    description: "You shall not pass, unless you have a token.",
+  }
+);
+const myJWTAuthenticatedEndpoint = prepauthTokenJWT("")(
+  {},
+  async ({}) => {
+    return "ok";
+  },
+  {
+    title: "Endpoint with JWT Authentication",
+    description: "You shall not pass, unless you have a JWT.",
+  }
+);
 
 const app = express();
 const bodyParser = require("body-parser");

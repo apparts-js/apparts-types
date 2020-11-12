@@ -11,14 +11,15 @@ const getApi = (app) => {
             stack: [{ method, handle }],
           },
         } = route;
+        const { returns, title, description, ...options } = handle.options;
         return {
           method,
           path,
           assertions: handle.assertions,
-          returns: handle.returns,
-          title: handle.title,
-          description: handle.description,
-          options: handle.options,
+          returns,
+          title,
+          description,
+          options,
         };
       }
       return false;

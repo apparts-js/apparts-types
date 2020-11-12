@@ -81,39 +81,41 @@ Under the configuration name =types-config= the following options exist:
       }
       // This produces "ok" (literally, with the quotes)
       return "ok";
-    }
-  );
-  myEndpoint.title = "A demo endpoint";
-  myEndpoint.description = `This endpoint demonstrates the most important 
-    concepts of the @apparts/types package and it's capabilities`;
-  myEndpoint.returns = [
-    { status: 200, value: "ok" },
-    { status: 400, error: "Name too long" },
-    { status: 200, {
-      type: "object",
-      values: {
-        foo: { value: "really!" },
-        boo: { type: "bool" },
-        kabaz: { type: "bool", optional: true },
-        arr: { type: "array", 
-               value: { 
-                 type: "object",
-                 values: {
-                   a: { type: "int" }
-                 }
-               }
-             },
-        objectWithUnknownKeys: {
+    }, {
+      title: "Testendpoint for multiple purposes",
+      description: `Behaves radically different, based on what
+  the filter is.`,
+      returns: [
+        { status: 200, value: "ok" },
+        { status: 400, error: "Name too long" },
+        {
+          status: 200,
           type: "object",
-          values: "int"
+          values: {
+            foo: { value: "really!" },
+            boo: { type: "bool" },
+            kabaz: { type: "bool", optional: true },
+            arr: {
+              type: "array",
+              value: {
+                type: "object",
+                values: {
+                  a: { type: "int" },
+                },
+              },
+            },
+            objectWithUnknownKeys: {
+              type: "object",
+              values: "int",
+            },
+            objectWithUnknownKeysAndUnknownTypes: {
+              type: "object",
+              values: "/",
+            },
+          },
         },
-        objectWithUnknownKeysAndUnknownTypes: {
-          type: "object",
-          values: "/"
-        }
-      }
-    }
-  ];
+      ],
+    });
 
   module.exports = { myEndpoint };
   // app.post("/v/1/endpoint/:id", myEndpoint);

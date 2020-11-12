@@ -3,7 +3,7 @@ const checkTypes = require("./types.js");
 const checked = {};
 
 const allChecked = (funktionContainer, functionName) => {
-  const types = funktionContainer[functionName].returns;
+  const types = funktionContainer[functionName].options.returns;
   if (
     checked[functionName] &&
     checked[functionName].reduce((a, b) => a && b, true)
@@ -25,7 +25,7 @@ const allChecked = (funktionContainer, functionName) => {
 };
 
 const checkType = (funktionContainer, response, functionName) => {
-  const types = funktionContainer[functionName].returns;
+  const types = funktionContainer[functionName].options.returns;
   if (!types) {
     console.log("No types found for ###", functionName, "###");
     return false;
