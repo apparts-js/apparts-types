@@ -12,7 +12,7 @@ try {
 } catch (e) {}
 
 let NotFound;
-const _prepauth = (assertions, fun, options, usePw, useUser) => {
+const _prepauth = (assertions, fun, options, usePw, User) => {
   return prepare(
     assertions,
     async (req) => {
@@ -20,8 +20,7 @@ const _prepauth = (assertions, fun, options, usePw, useUser) => {
       if (!email || !token) {
         return new HttpError(400, "Authorization wrong");
       }
-      const [, User] = useUser(req.dbs);
-      const user = new User();
+      const user = new User(req.dbs);
       try {
         await user.load({ email: email.toLowerCase(), deleted: false });
         if (usePw) {
@@ -43,7 +42,7 @@ _prepauth.returns = [
   { status: 401, error: "Unauthorized" },
 ];
 
-const prepauthToken = (useUser, assertions, fun, options) => {
+const prepauthToken = (User, assertions, fun, options) => {
   try {
     NotFound = require("@apparts/model").NotFound;
   } catch (e) {
@@ -55,12 +54,12 @@ const prepauthToken = (useUser, assertions, fun, options) => {
     fun,
     { ...options, auth: "Basic btoa(uname:token)" },
     false,
-    useUser
+    User
   );
 };
 prepauthToken.returns = _prepauth.returns;
 
-const prepauthPW = (useUser, assertions, fun, options) => {
+const prepauthPW = (User, assertions, fun, options) => {
   try {
     NotFound = require("@apparts/model").NotFound;
   } catch (e) {
@@ -72,7 +71,7 @@ const prepauthPW = (useUser, assertions, fun, options) => {
     fun,
     { ...options, auth: "Basic btoa(uname:password)" },
     true,
-    useUser
+    User
   );
 };
 prepauthPW.returns = _prepauth.returns;
