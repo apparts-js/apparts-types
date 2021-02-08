@@ -5,6 +5,13 @@ const preparator = require("./preparator");
 const prepauth = require("./prepauth");
 const checkApiTypes = require("./checkApiTypes");
 const { HttpCode } = require("./code");
-const genApiDocs = require("./genApiDocs.js");
+const genApiDocs = require("./apiDocs");
 
-module.exports = { types, preparator, ...prepauth, checkApiTypes, HttpCode, genApiDocs };
+module.exports = {
+  types,
+  preparator,
+  ...prepauth,
+  checkApiTypes,
+  HttpCode,
+  genApiDocs,
+};

@@ -1,0 +1,300 @@
+const {
+  genApiDocs: { getApi },
+} = require("../");
+const { app } = require("../myTestEndpoint");
+const { pathToOpenApiPath, apiToOpenApi } = require("./apiToOpenApi");
+
+describe("Unittests - apiToOpenApi", () => {
+  test("pathToOpenApiPath conversion", () => {
+    expect(pathToOpenApiPath("/v/1/test/:id/blub/:dog")).toBe(
+      "/v/1/test/{id}/blub/{dog}"
+    );
+  });
+});
+
+const OAPI = {
+  openapi: "3.0.3",
+  info: {
+    title: "Apparts test API",
+    version: "1",
+  },
+  components: {
+    securitySchemes: {
+      ApiToken: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
+      Password: {
+        type: "http",
+        scheme: "basic",
+      },
+      AuthToken: {
+        type: "http",
+        scheme: "bearer",
+      },
+    },
+  },
+  paths: {
+    "/v/1/endpoint/{id}": {
+      post: {
+        summary: "Testendpoint for multiple purposes",
+        description:
+          "Behaves radically different, based on what\n the filter is.",
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: {
+              type: "string",
+            },
+          },
+          {
+            name: "filter",
+            in: "query",
+            required: false,
+            allowEmptyValue: true,
+            schema: {
+              type: "string",
+            },
+          },
+        ],
+        requestBody: {
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                },
+                required: [],
+              },
+            },
+          },
+          required: true,
+        },
+        responses: {
+          200: {
+            description: "",
+            content: {
+              "application/json": {
+                schema: {
+                  oneOf: [
+                    {
+                      type: "string",
+                    },
+                    {
+                      type: "object",
+                      properties: {
+                        foo: { type: "string" },
+                        boo: {
+                          type: "boolean",
+                        },
+                        kabaz: { type: "boolean" },
+                        arr: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              a: { type: "integer" },
+                            },
+                            required: ["a"],
+                          },
+                        },
+                        objectWithUnknownKeys: {
+                          type: "object",
+                          properties: {},
+                        },
+                        objectWithUnknownKeysAndUnknownTypes: {
+                          type: "object",
+                          properties: {},
+                        },
+                      },
+                      required: [
+                        "foo",
+                        "boo",
+                        "arr",
+                        "objectWithUnknownKeys",
+                        "objectWithUnknownKeysAndUnknownTypes",
+                      ],
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          400: {
+            description: "",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/v/1/faultyendpoint/{id}": {
+      post: {
+        summary: "Faulty Testendpoint",
+        description:
+          "Ment to be found to be faulty. It's documentation\ndoes not match it's behavior.",
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: {
+              type: "string",
+            },
+          },
+          {
+            name: "filter",
+            in: "query",
+            required: false,
+            allowEmptyValue: true,
+            schema: {
+              type: "string",
+            },
+          },
+        ],
+        requestBody: {
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                },
+                required: [],
+              },
+            },
+          },
+          required: true,
+        },
+        responses: {
+          200: {
+            description: "",
+            content: {
+              "application/json": {
+                schema: {
+                  oneOf: [
+                    {
+                      type: "string",
+                    },
+                    {
+                      type: "object",
+                      properties: {
+                        boo: {
+                          type: "boolean",
+                        },
+                        arr: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              a: { type: "integer" },
+                            },
+                            required: ["a"],
+                          },
+                        },
+                      },
+                      required: ["boo", "arr"],
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          400: {
+            description: "",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/v/1/typelessendpoint": {
+      post: {
+        summary: "Typeless endpoint",
+        description: "This endpoint is typeless but not pointless.",
+        parameters: [],
+        responses: {
+          200: {
+            description: "",
+          },
+        },
+      },
+    },
+    "/v/1/withpw": {
+      delete: {
+        summary: "",
+        description: "",
+        parameters: [],
+        security: [{ Password: [] }],
+        responses: {
+          200: {
+            description: "",
+          },
+        },
+      },
+    },
+    "/v/1/withtoken": {
+      patch: {
+        summary: "",
+        description: "",
+        parameters: [],
+        security: [{ AuthToken: [] }],
+        responses: {
+          200: {
+            description: "",
+          },
+        },
+      },
+    },
+    "/v/1/withjwt": {
+      put: {
+        summary: "Endpoint with JWT Authentication",
+        description: "You shall not pass, unless you have a JWT.",
+        parameters: [],
+        security: [{ ApiToken: [] }],
+        responses: {
+          200: {
+            description: "",
+          },
+        },
+      },
+    },
+  },
+};
+
+describe("Full e2e test", () => {
+  test("testApi as object", () => {
+    const openApi = apiToOpenApi(getApi(app), "Apparts test API");
+    expect(openApi).toMatchObject(OAPI);
+  });
+  test("testApi as JSON", () => {
+    const openApi = apiToOpenApi(getApi(app), "Apparts test API");
+    expect(JSON.stringify(openApi, undefined, 2)).toBe(
+      JSON.stringify(OAPI, undefined, 2)
+    );
+  });
+});

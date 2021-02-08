@@ -1,34 +1,5 @@
 const STYLE = require("./style");
 
-const getApi = (app) => {
-  const api = app._router.stack
-    .map((route) => {
-      if (route.route && route.route.path) {
-        const {
-          route: {
-            path,
-            methods,
-            stack: [{ method, handle }],
-          },
-        } = route;
-        const { returns, title, description, ...options } =
-          handle.options || {};
-        return {
-          method,
-          path,
-          assertions: handle.assertions,
-          returns,
-          title,
-          description,
-          options,
-        };
-      }
-      return false;
-    })
-    .filter((a) => !!a);
-  return api;
-};
-
 const recursivelyPrintType = (type, indent = 0) => {
   let res = "";
   const spaces = " ".repeat(indent);
@@ -92,13 +63,13 @@ ${title || ""}</h3>
      ${
        options.auth
          ? `
-          <li>Header:
-          <ul>
-          <li>
-          <code>Authorization: ${options.auth}</code>
+        <li>Header:
+            <ul>
+        <li>
+        <code>Authorization: ${options.auth}</code>
         </li>
         </ul>
-          </li>
+        </li>
         `
          : ""
      }
@@ -107,17 +78,30 @@ ${title || ""}</h3>
        .map(
          (type) =>
            `
-          <li>${type.slice(0, 1).toUpperCase() + type.slice(1)}: <br><ul>` +
+        <li>${type.slice(0, 1).toUpperCase() + type.slice(1)}: <br><ul>` +
            Object.keys(assertions[type])
              .map(
                (key) => `
-       <li><code>${assertions[type][key].optional ? "? " : ""}${key}:
-         <span class="type">&lt;${assertions[type][key].type}&gt; </span>${
+                                                               <li><code>${
+                                                                 assertions[
+                                                                   type
+                                                                 ][key].optional
+                                                                   ? "? "
+                                                                   : ""
+                                                               }${key}:
+                                                                         <span class="type">&lt;${
+                                                                           assertions[
+                                                                             type
+                                                                           ][
+                                                                             key
+                                                                           ]
+                                                                             .type
+                                                                         }&gt; </span>${
                  assertions[type][key].default
                    ? `(= ${JSON.stringify(assertions[type][key].default)})`
                    : ""
                }</code></li>
-       </li>`
+        </li>`
              )
              .join("") +
            "</ul></li>"
@@ -129,13 +113,13 @@ ${title || ""}</h3>
      ${returns
        .map(
          ({ status, error, ...rest }) => `
-          <li>Status: ${status}
+        <li>Status: ${status}
         <code>${
           error
             ? `{ "error": ${JSON.stringify(error)} }`
             : recursivelyPrintType(rest)
         }</code></li>
-      `
+        `
        )
        .join("")}
      </ul>
@@ -162,12 +146,10 @@ ${title || ""}</h3>
           .map(
             (a) =>
               `<a href="#${a[0]}">
-                 <span class="version">${a[4] ? "v" + a[4] : ""}</span>
-                <span class="link">${a[3] || ""}</span><br/>
-                &nbsp;&nbsp;<span class="method">${a[1]}</span><code>${
-                a[2]
-              }</code>
-               </a>`
+  <span class="version">${a[4] ? "v" + a[4] : ""}</span>
+  <span class="link">${a[3] || ""}</span><br/>
+             &nbsp;&nbsp;<span class="method">${a[1]}</span><code>${a[2]}</code>
+  </a>`
           )
           .join("")}
       </div>
@@ -179,10 +161,9 @@ ${title || ""}</h3>
   </body>
 </html>
 
-`;
+  `;
 };
 
 module.exports = {
-  getApi,
   apiToHtml,
 };
