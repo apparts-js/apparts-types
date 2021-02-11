@@ -1,4 +1,4 @@
-#+TITLE: Apparts-Types
+#+TITLE: @apparts/types
 #+DATE: [2019-08-26 Mon]
 #+AUTHOR: Philipp Uhl
 
@@ -12,6 +12,8 @@ Under the configuration name =types-config= the following options exist:
   - ~UUIDv4~
   - ~int~
   - A regular expression
+
+More information on how to set this: [[https://github.com/phuhl/apparts-config][@apparts/config]].
 
 * Types
 
