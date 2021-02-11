@@ -1,4 +1,5 @@
 const preparator = require("./preparator");
+const { HttpCode } = require("./index");
 const { prepauthToken, prepauthPW, prepauthTokenJWT } = require("./prepauth");
 const { HttpError } = require("@apparts/error");
 const express = require("express");
@@ -188,6 +189,22 @@ const myJWTAuthenticatedEndpoint = prepauthTokenJWT("")(
   }
 );
 
+const myErrorCheckpoint = preparator(
+  { query: { error: { type: "bool" } } },
+  async ({ query: { error } }) => {
+    if (error) {
+      return new HttpCode(400, { error: "Text 1", description: "Text 2" });
+    } else {
+      return new HttpCode(400, { error: "Text 1", unknownField: "Text 2" });
+    }
+  },
+  {
+    title: "Error checkpoint endpoint",
+    description: `This endpoint is full of errors.`,
+    returns: [{ status: 400, error: "Text 1" }],
+  }
+);
+
 const app = express();
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
@@ -199,4 +216,12 @@ app.delete("/v/1/withpw", myPwAuthenticatedEndpoint);
 app.patch("/v/1/withtoken", myTokenAuthenticatedEndpoint);
 app.put("/v/1/withjwt", myJWTAuthenticatedEndpoint);
 
-module.exports = { myEndpoint, myFaultyEndpoint, myTypelessEndpoint, app };
+app.get("/v/1/error", myErrorCheckpoint);
+
+module.exports = {
+  myEndpoint,
+  myFaultyEndpoint,
+  myTypelessEndpoint,
+  myErrorCheckpoint,
+  app,
+};

@@ -12,7 +12,7 @@ try {
 } catch (e) {}
 
 let NotFound;
-const _prepauth = (assertions, fun, options, usePw, User) => {
+const _prepauth = (assertions, fun, options = {}, usePw, User) => {
   return prepare(
     assertions,
     async (req) => {
@@ -39,10 +39,9 @@ const _prepauth = (assertions, fun, options, usePw, User) => {
 _prepauth.returns = [
   { status: 401, error: "User not found" },
   { status: 400, error: "Authorization wrong" },
-  { status: 401, error: "Unauthorized" },
 ];
 
-const prepauthToken = (User, assertions, fun, options) => {
+const prepauthToken = (User, assertions, fun, options = {}) => {
   try {
     NotFound = require("@apparts/model").NotFound;
   } catch (e) {
@@ -52,14 +51,18 @@ const prepauthToken = (User, assertions, fun, options) => {
   return _prepauth(
     assertions,
     fun,
-    { ...options, auth: "Basic btoa(uname:token)" },
+    {
+      ...options,
+      auth: "Basic btoa(uname:token)",
+      returns: [...(options.returns || []), ...prepauthToken.returns],
+    },
     false,
     User
   );
 };
 prepauthToken.returns = _prepauth.returns;
 
-const prepauthPW = (User, assertions, fun, options) => {
+const prepauthPW = (User, assertions, fun, options = {}) => {
   try {
     NotFound = require("@apparts/model").NotFound;
   } catch (e) {
@@ -69,14 +72,18 @@ const prepauthPW = (User, assertions, fun, options) => {
   return _prepauth(
     assertions,
     fun,
-    { ...options, auth: "Basic btoa(uname:password)" },
+    {
+      ...options,
+      auth: "Basic btoa(uname:password)",
+      returns: [...(options.returns || []), ...prepauthPW.returns],
+    },
     true,
     User
   );
 };
 prepauthPW.returns = _prepauth.returns;
 
-const prepauthTokenJWT = (webtokenkey) => (assertions, fun, options) => {
+const prepauthTokenJWT = (webtokenkey) => (assertions, fun, options = {}) => {
   return prepare(
     assertions,
     async (req, res) => {
@@ -98,7 +105,11 @@ const prepauthTokenJWT = (webtokenkey) => (assertions, fun, options) => {
         return await fun(req, jwt, res);
       }
     },
-    { ...options, auth: "Bearer jwt" }
+    {
+      ...options,
+      auth: "Bearer jwt",
+      returns: [...(options.returns || []), ...prepauthTokenJWT.returns],
+    }
   );
 };
 prepauthTokenJWT.returns = [

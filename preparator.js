@@ -18,7 +18,7 @@ const config = require("@apparts/config").get("types-config");
  * strapped out of the request, if they where not specified in
  * assertions
  */
-var prepare = (assertions, next, options) => {
+var prepare = (assertions, next, options = {}) => {
   const f = function (req, res) {
     res.setHeader("Content-Type", "application/json");
     res.status(200);
@@ -37,9 +37,15 @@ var prepare = (assertions, next, options) => {
       if (c !== true) {
         var r = {};
         r[field] = c;
-        res
-          .status(400)
-          .send({ error: "Fieldmissmatch", field: field, message: c });
+        res.status(400).send({
+          error: "Fieldmissmatch",
+          description:
+            Object.keys(c)
+              .map((key) => c[key] + ` for field "${key}"`)
+              .join(", ") +
+            " in " +
+            field,
+        });
         return;
       }
       if (options) {
@@ -60,7 +66,12 @@ var prepare = (assertions, next, options) => {
       .then((data) => {
         if (typeof data === "object" && data.type === "HttpError") {
           res.status(data.code);
-          res.send(JSON.stringify({ error: data.message }));
+          res.send(
+            JSON.stringify({
+              error: data.message,
+              description: data.description,
+            })
+          );
         } else if (typeof data === "object" && data.type === "HttpCode") {
           res.status(data.code);
           res.send(JSON.stringify(data.message));
@@ -71,7 +82,12 @@ var prepare = (assertions, next, options) => {
       .catch((e) => {
         if (typeof e === "object" && e.type === "HttpError") {
           res.status(e.code);
-          res.send(JSON.stringify({ error: e.message }));
+          res.send(
+            JSON.stringify({
+              error: e.message,
+              description: e.description,
+            })
+          );
           return;
         }
 
@@ -87,7 +103,13 @@ var prepare = (assertions, next, options) => {
       });
   };
   f.assertions = assertions;
-  f.options = options;
+  f.options = {
+    ...options,
+    returns: [
+      ...(options.returns || []),
+      { status: 400, error: "Fieldmissmatch" },
+    ],
+  };
   return f;
 };
 

@@ -2,7 +2,6 @@
 #+DATE: [2019-08-26 Mon]
 #+AUTHOR: Philipp Uhl
 
-
 * Configuration
 
 Under the configuration name =types-config= the following options exist:
@@ -121,6 +120,191 @@ Under the configuration name =types-config= the following options exist:
   // app.post("/v/1/endpoint/:id", myEndpoint);
 #+END_SRC
 
+** Sending HttpErrors
+
+Use the [[https://github.com/phuhl/apparts-error][@apparts/error]] package to produce errors.
+
+** Sending other status codes then 200
+
+#+BEGIN_SRC js
+const { HttpCode } = require("@apparts/types");
+
+// ...
+const myData = { "whatever": "i want" };
+return new HttpCode(304, myData);
+// ...
+#+END_SRC
+
+** Errors produced by =preperator=
+
+Should a request not match any of the type assertions as defined, the
+=preparator= will respond with a status code of 400 and this body:
+
+={ "error": "Fieldmissmatch", "description": "<explanation>" }=
+
+** Authentication
+
+The =@apparts/types= package supports HTTP Basic auth, Bearer auth with
+certain tokens and Bearer auth with JWTs of a certain form.
+
+Ideally, you use this functionality with the [[https://github.com/phuhl/apparts-login-server][@apparts/login-server]]
+package, that provides all the necessary REST endpoints an extendable
+user model and more.
+
+For this, instead of =perperator= use the functions
+- =prepauthPW=
+- =prepauthToken=
+- =prepauthTokenJWT=
+
+These functions do all what the =preperator= function does /and/ the
+authentication check.
+
+*** Basic Auth with =prepauthPW=
+
+For this function, you need to install the package [[https://github.com/phuhl/apparts-model][@apparts/model]] and
+define a model that serves as a user.
+
+The model has to have the data fields of
+- =email: <string>=
+- =deleted: <boolean>=
+
+and the function (on the OneModel) =checkAuthPw(password): <async>= that
+throws an error if the password does not match. The return type is not
+of further importance.
+
+Ideally, you use this functionality with the [[https://github.com/phuhl/apparts-login-server][@apparts/login-server]]
+package, that provides all the necessary REST endpoints an extendable
+user model and more.
+
+#+BEGIN_SRC js
+  const { prepauthPW } = require("@apparts/types");
+
+  // Create the user as described by the README of @apparts/model
+  // and import it here:
+  const { Users, User, NoUser } = require("../models/user");
+
+  const myEndpoint = prepauthPW(
+    {
+      // assertions as with preparator
+    },
+    async ({ /*body, params, query*/ }, user) => {
+      // notice the second parameter: a OneModel of the logged in user
+      // as you defined earlier.
+      return "ok";
+    },
+    {
+      // options as with preparator
+    }
+  );
+#+END_SRC
+
+Requests that shall successfully be granted access must have the
+=Authorization= HTTP header with the content =Basic btoa(email:password)=
+(where =btoa(email:password)= means, a Base64 encoded string with email,
+then ":", then password).
+
+Endpoints that use =prepauthPW= can produce the following additional
+responses:
+
+- HTTP Status: 401, Body: ={ "error": "User not found" }= :: The user was
+  not found in the database, or the password was wrong
+- HTTP Status: 400, Body: ={ "error": "Authorization wrong" }= :: The
+  =Authorization= header is not properly formated
+
+*** Bearer Auth with =prepauthToken=
+
+For this function, you need to install the package [[https://github.com/phuhl/apparts-model][@apparts/model]] and
+define a model that serves as a user.
+
+The model has to have the data fields of
+- =email: <string>=
+- =deleted: <boolean>=
+
+and the function (on the OneModel) =checkAuth(token): <async>= that
+throws an error if the token does not match. The return type is not
+of further importance.
+
+Ideally, you use this functionality with the [[https://github.com/phuhl/apparts-login-server][@apparts/login-server]]
+package, that provides all the necessary REST endpoints an extendable
+user model and more.
+
+#+BEGIN_SRC js
+  const { prepauthToken } = require("@apparts/types");
+
+  // Create the user as described by the README of @apparts/model
+  // and import it here:
+  const { Users, User, NoUser } = require("../models/user");
+
+  const myEndpoint = prepauthToken(
+    {
+      // assertions as with preparator
+    },
+    async ({ /*body, params, query*/ }, user) => {
+      // notice the second parameter: a OneModel of the logged in user
+      // as you defined earlier.
+      return "ok";
+    },
+    {
+      // options as with preparator
+    }
+  );
+#+END_SRC
+
+Requests that shall successfully be granted access must have the
+=Authorization= HTTP header with the content =Bearer <token>=.
+
+Endpoints that use =prepauthToken= can produce the following additional
+responses:
+
+- HTTP Status: 401, Body: ={ "error": "User not found" }= :: The user was
+  not found in the database, or the password was wrong
+- HTTP Status: 400, Body: ={ "error": "Authorization wrong" }= :: The
+  =Authorization= header is not properly formated
+
+*** Bearer Auth with =prepauthTokenJWT=
+
+For this function, you need to install the package [[https://www.npmjs.com/package/jsonwebtoken][jsonwebtoken]].
+
+#+BEGIN_SRC js
+  const { prepauthTokenJWT } = require("@apparts/types");
+
+  // Create the user as described by the README of @apparts/model
+  // and import it here:
+  const { Users, User, NoUser } = require("../models/user");
+
+  const WEBTOKENKEY = "...";
+
+  const myEndpoint = prepauthTokenJWT(WEBTOKENKEY)(
+    {
+      // assertions as with preparator
+    },
+    async ({ /*body, params, query*/ }, user) => {
+      // notice the second parameter: a OneModel of the logged in user
+      // as you defined earlier.
+      return "ok";
+    },
+    {
+      // options as with preparator
+    }
+  );
+#+END_SRC
+
+Requests that shall successfully be granted access must have the
+=Authorization= HTTP header with the content =Bearer <JWT>=.
+
+The JWT must have a field =action= with the value ="login"=. The webtoken
+key used on token generation must obviously match the one, that the
+server is given in the code example above.
+
+Endpoints that use =prepauthTokenJWT= can produce the following additional
+responses:
+
+- HTTP Status: 401, Body: ={ "error": "Unauthorized" }= :: The token is
+  not present or the token does not have the necessary =action= field.
+- HTTP Status: 401, Body: ={ "error": "Token invalid" }= :: The
+  JWT is not properly formated or can not be validated against the
+  webtoken key.
+
 * Generate API documentation
 
 Create a file =genApiDocs.js=:
@@ -128,13 +312,17 @@ Create a file =genApiDocs.js=:
 const addRoutes = require("./routes");
 const express = require("express");
 const {
-  genApiDocs: { getApi, apiToHtml },
+  genApiDocs: { getApi, apiToHtml, apiToOpenApi },
 } = require("@apparts/types");
 
 const app = express();
 addRoutes(app);
 
 const docs = apiToHtml(getApi(app));
+
+// Also available: docs in the open api format
+//const openApiDocs = apiToOpenApi(getApi(app));
+
 console.log(docs);
 #+END_SRC
 
@@ -144,7 +332,7 @@ Then, run:
 node genApiDocs.js > api.html
 #+END_SRC
 
-See your Api-documentation in =api.html=.
+See your Api-documentation in the generated =api.html= file.
 
 * Test API Types
 
@@ -162,6 +350,10 @@ Object with:
   - value :: Expected exact value
   - error :: Expected error text, as returned by =HttpError= from the
     "@apparts/error" package
+    - When an error key is used, the response will exclude the field
+      =description= of the response body from the check. This allows
+      to optionally put dynamic content into the =description= field, to
+      elaborate further on the error
   - type :: A type from =types.js= or =object= or =array=.
     - When type === object :: A key =values= specifies the possible keys in the
       object and their types or values. Keynames are the keys, the

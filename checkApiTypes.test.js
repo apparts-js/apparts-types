@@ -10,7 +10,11 @@ describe("myTypelessEndpoint", () => {
     const response = await request(app).post("/v/1/typelessendpoint");
     expect(response.statusCode).toBe(200);
     expect(response.body).toBe("ok");
-    expect(checkType(response, "myTypelessEndpoint")).toBeFalsy();
+    expect(() => checkType(response, "myTypelessEndpoint")).toThrow({
+      message: `Returntype for ### myTypelessEndpoint ### does not match any given pattern!
+MISSMATCH: Code: 200 Body: "ok"
+EXPECTED TYPES: []`,
+    });
   });
 });
 
@@ -19,7 +23,40 @@ describe("myFaultyEndpoint", () => {
     const response = await request(app).post("/v/1/faultyendpoint/3");
     expect(response.statusCode).toBe(200);
     expect(response.body).toBe("whut?");
-    expect(checkType(response, "myFaultyEndpoint")).toBeFalsy();
+    expect(() => checkType(response, "myFaultyEndpoint")).toThrow({
+      message: `Returntype for ### myFaultyEndpoint ### does not match any given pattern!
+MISSMATCH: Code: 200 Body: "whut?"
+EXPECTED TYPES: [
+  {
+    "status": 200,
+    "value": "ok"
+  },
+  {
+    "status": 400,
+    "error": "Name too long"
+  },
+  {
+    "status": 200,
+    "type": "object",
+    "values": {
+      "boo": {
+        "type": "bool"
+      },
+      "arr": {
+        "type": "array",
+        "value": {
+          "type": "object",
+          "values": {
+            "a": {
+              "type": "int"
+            }
+          }
+        }
+      }
+    }
+  }
+]`,
+    });
   });
   test("Test with too long name", async () => {
     const response = await request(app)
@@ -29,7 +66,7 @@ describe("myFaultyEndpoint", () => {
       });
     expect(response.statusCode).toBe(400);
     expect(response.body).toMatchObject({ error: "Name is too long" });
-    expect(checkType(response, "myFaultyEndpoint")).toBeFalsy();
+    expect(() => checkType(response, "myFaultyEndpoint")).toThrow();
   });
   test("Test with filter", async () => {
     const response = await request(app).post(
@@ -40,7 +77,7 @@ describe("myFaultyEndpoint", () => {
       arr: [{ a: true }, { a: 2 }],
       boo: true,
     });
-    expect(checkType(response, "myFaultyEndpoint")).toBeFalsy();
+    expect(() => checkType(response, "myFaultyEndpoint")).toThrow();
   });
   test("Check, there is not too much", async () => {
     const response = await request(app).post(
@@ -52,7 +89,7 @@ describe("myFaultyEndpoint", () => {
       boo: true,
       tooMuch: true,
     });
-    expect(checkType(response, "myFaultyEndpoint")).toBeFalsy();
+    expect(() => checkType(response, "myFaultyEndpoint")).toThrow();
   });
   test("Check, there is not too little", async () => {
     const response = await request(app).post(
@@ -62,7 +99,7 @@ describe("myFaultyEndpoint", () => {
     expect(response.body).toMatchObject({
       arr: [{ a: 2 }, { a: 2 }],
     });
-    expect(checkType(response, "myFaultyEndpoint")).toBeFalsy();
+    expect(() => checkType(response, "myFaultyEndpoint")).toThrow();
   });
 });
 
@@ -98,13 +135,52 @@ describe("myEndpoint, incomplete test", () => {
         boo: false,
       },
     });
-    expect(checkType(response, "myEndpoint")).toBeFalsy();
+    expect(() => checkType(response, "myEndpoint")).toThrow();
   });
 });
 
 describe("Notice, that not everything was tested", () => {
   test("", () => {
-    expect(allChecked(myEndpoint, "myEndpoint")).toBeFalsy();
+    expect(() => allChecked(myEndpoint, "myEndpoint")).toThrow({
+      message: `Not all possible return combinations for ### myEndpoint ### have been tested!
+MISSING: [
+  {
+    "status": 200,
+    "type": "object",
+    "values": {
+      "foo": {
+        "value": "really!"
+      },
+      "boo": {
+        "type": "bool"
+      },
+      "kabaz": {
+        "type": "bool",
+        "optional": true
+      },
+      "arr": {
+        "type": "array",
+        "value": {
+          "type": "object",
+          "values": {
+            "a": {
+              "type": "int"
+            }
+          }
+        }
+      },
+      "objectWithUnknownKeys": {
+        "type": "object",
+        "values": "int"
+      },
+      "objectWithUnknownKeysAndUnknownTypes": {
+        "type": "object",
+        "values": "/"
+      }
+    }
+  }
+]`,
+    });
   });
 });
 
@@ -145,6 +221,35 @@ describe("myEndpoint, the optional value", () => {
         baz: 77,
         boo: false,
       },
+    });
+  });
+});
+
+describe("myErrorCheckpoint, endpoint with error and description", () => {
+  test("", async () => {
+    const response = await request(app).get("/v/1/error?error=true");
+    expect(checkType(response, "myErrorCheckpoint")).toBeTruthy();
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toMatchObject({
+      error: "Text 1",
+      description: "Text 2",
+    });
+
+    const response2 = await request(app).get("/v/1/error?error=false");
+    expect(() => checkType(response2, "myErrorCheckpoint")).toThrow({
+      message: `Returntype for ### myErrorCheckpoint ### does not match any given pattern!
+MISSMATCH: Code: 400 Body: {"error":"Text 1","unknownField":"Text 2"}
+EXPECTED TYPES: [
+  {
+    "status": 400,
+    "error": "Text 1"
+  }
+]`,
+    });
+    expect(response2.statusCode).toBe(400);
+    expect(response2.body).toMatchObject({
+      error: "Text 1",
+      unknownField: "Text 2",
     });
   });
 });

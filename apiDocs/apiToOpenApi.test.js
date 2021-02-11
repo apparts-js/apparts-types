@@ -80,7 +80,7 @@ const OAPI = {
             content: {
               "application/json": {
                 schema: {
-                  oneOf: [
+                  anyOf: [
                     {
                       type: "string",
                     },
@@ -129,12 +129,24 @@ const OAPI = {
             content: {
               "application/json": {
                 schema: {
-                  type: "object",
-                  properties: {
-                    error: {
-                      type: "string",
+                  anyOf: [
+                    {
+                      type: "object",
+                      properties: {
+                        error: {
+                          type: "string",
+                        },
+                      },
                     },
-                  },
+                    {
+                      type: "object",
+                      properties: {
+                        error: {
+                          type: "string",
+                        },
+                      },
+                    },
+                  ],
                 },
               },
             },
@@ -186,7 +198,7 @@ const OAPI = {
             content: {
               "application/json": {
                 schema: {
-                  oneOf: [
+                  anyOf: [
                     {
                       type: "string",
                     },
@@ -219,12 +231,24 @@ const OAPI = {
             content: {
               "application/json": {
                 schema: {
-                  type: "object",
-                  properties: {
-                    error: {
-                      type: "string",
+                  anyOf: [
+                    {
+                      type: "object",
+                      properties: {
+                        error: {
+                          type: "string",
+                        },
+                      },
                     },
-                  },
+                    {
+                      type: "object",
+                      properties: {
+                        error: {
+                          type: "string",
+                        },
+                      },
+                    },
+                  ],
                 },
               },
             },
@@ -238,8 +262,20 @@ const OAPI = {
         description: "This endpoint is typeless but not pointless.",
         parameters: [],
         responses: {
-          200: {
+          400: {
             description: "",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -251,8 +287,47 @@ const OAPI = {
         parameters: [],
         security: [{ Password: [] }],
         responses: {
-          200: {
+          401: {
             description: "",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "",
+            content: {
+              "application/json": {
+                schema: {
+                  anyOf: [
+                    {
+                      type: "object",
+                      properties: {
+                        error: {
+                          type: "string",
+                        },
+                      },
+                    },
+                    {
+                      type: "object",
+                      properties: {
+                        error: {
+                          type: "string",
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            },
           },
         },
       },
@@ -264,8 +339,48 @@ const OAPI = {
         parameters: [],
         security: [{ AuthToken: [] }],
         responses: {
-          200: {
+          401: {
             description: "",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+
+          400: {
+            description: "",
+            content: {
+              "application/json": {
+                schema: {
+                  anyOf: [
+                    {
+                      type: "object",
+                      properties: {
+                        error: {
+                          type: "string",
+                        },
+                      },
+                    },
+                    {
+                      type: "object",
+                      properties: {
+                        error: {
+                          type: "string",
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            },
           },
         },
       },
@@ -277,8 +392,94 @@ const OAPI = {
         parameters: [],
         security: [{ ApiToken: [] }],
         responses: {
-          200: {
+          401: {
             description: "",
+            content: {
+              "application/json": {
+                schema: {
+                  anyOf: [
+                    {
+                      type: "object",
+                      properties: {
+                        error: {
+                          type: "string",
+                        },
+                      },
+                    },
+                    {
+                      type: "object",
+                      properties: {
+                        error: {
+                          type: "string",
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          400: {
+            description: "",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+
+    "/v/1/error": {
+      get: {
+        summary: "Error checkpoint endpoint",
+        description: "This endpoint is full of errors.",
+        parameters: [
+          {
+            name: "error",
+            in: "query",
+            required: true,
+            allowEmptyValue: false,
+            schema: {
+              type: "boolean",
+            },
+          },
+        ],
+        responses: {
+          400: {
+            description: "",
+            content: {
+              "application/json": {
+                schema: {
+                  anyOf: [
+                    {
+                      type: "object",
+                      properties: {
+                        error: {
+                          type: "string",
+                        },
+                      },
+                    },
+                    {
+                      type: "object",
+                      properties: {
+                        error: {
+                          type: "string",
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            },
           },
         },
       },

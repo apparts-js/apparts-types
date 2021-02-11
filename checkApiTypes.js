@@ -6,22 +6,22 @@ const allChecked = (funktionContainer, functionName) => {
   const types = funktionContainer[functionName].options.returns;
   if (
     checked[functionName] &&
-    checked[functionName].reduce((a, b) => a && b, true)
+    checked[functionName]
+      .filter((_, i) => types[i].error !== "Fieldmissmatch")
+      .reduce((a, b) => a && b, true)
   ) {
     return true;
   }
-  console.log(
-    "Not all possible return combinations for ###",
-    functionName,
-    "### have been tested! \nMISSING:",
-
-    JSON.stringify(
-      types.filter((_, i) => !checked[functionName][i]),
-      undefined,
-      2
-    )
+  throw new Error(
+    `Not all possible return combinations for ### ${functionName} ### have been tested!\nMISSING: ` +
+      JSON.stringify(
+        types
+          .filter((_, i) => !checked[functionName][i])
+          .filter((tipe) => tipe.error !== "Fieldmissmatch"),
+        undefined,
+        2
+      )
   );
-  return false;
 };
 
 const checkType = (funktionContainer, response, functionName) => {
@@ -35,7 +35,10 @@ const checkType = (funktionContainer, response, functionName) => {
     if (
       type.status === response.statusCode &&
       (JSON.stringify({ error: type.error }) ===
-        JSON.stringify(response.body) ||
+        JSON.stringify({
+          ...response.body,
+          description: undefined,
+        }) ||
         recursiveCheck(response.body, type))
     ) {
       checked[functionName] = checked[functionName] || types.map((_) => false);
@@ -43,18 +46,21 @@ const checkType = (funktionContainer, response, functionName) => {
       return true;
     }
   }
-  console.log(
-    "Returntype for ###",
-    functionName,
-    "### does not match any given pattern! \nMISSMATCH:",
-    "Code:",
-    response.statusCode,
-    "Body:",
-    JSON.stringify(response.body),
-    "\nEXPECTED TYPES:",
-    JSON.stringify(types, undefined, 2)
+  throw new Error(
+    "Returntype for ### " +
+      functionName +
+      " ### does not match any given pattern!\nMISSMATCH: " +
+      "Code: " +
+      response.statusCode +
+      " Body: " +
+      JSON.stringify(response.body) +
+      "\nEXPECTED TYPES: " +
+      JSON.stringify(
+        types.filter((tipe) => tipe.error !== "Fieldmissmatch"),
+        undefined,
+        2
+      )
   );
-  return false;
 };
 
 const recursiveCheck = (response, type) => {

@@ -160,7 +160,7 @@ const getOpenApiResponses = ({ returns }) => {
   for (const response of returns) {
     const {
       content: {
-        "application/json": { schema: { oneOf = [] } = {} } = {},
+        "application/json": { schema: { anyOf = [] } = {} } = {},
       } = {},
     } = responses[response.status] || {};
     responses[response.status] = {
@@ -168,7 +168,7 @@ const getOpenApiResponses = ({ returns }) => {
       content: {
         "application/json": {
           schema: {
-            oneOf: [...oneOf, returnTypeToSchemaType(response)],
+            anyOf: [...anyOf, returnTypeToSchemaType(response)],
           },
         },
       },
@@ -176,8 +176,8 @@ const getOpenApiResponses = ({ returns }) => {
   }
   for (const code in responses) {
     const content = responses[code].content["application/json"];
-    if (content.schema.oneOf.length === 1) {
-      content.schema = content.schema.oneOf[0];
+    if (content.schema.anyOf.length === 1) {
+      content.schema = content.schema.anyOf[0];
     }
   }
   return responses;
