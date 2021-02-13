@@ -30,8 +30,6 @@ var prepare = (assertions, next, options = {}) => {
       if (!req.hasOwnProperty(field)) {
         req[field] = {};
       }
-      // THIS IS A HACK! REMOVE AS SOON AS THE GUYS AT EXPRESS GET THEIR SHIT TOGETHER
-      //      req[field].hasOwnProperty = Object.prototype.hasOwnProperty;
 
       var c = check(assertions[field], req[field], field);
       if (c !== true) {
@@ -92,8 +90,13 @@ var prepare = (assertions, next, options = {}) => {
         }
 
         const errorObj = constructErrorObj(req, e);
-        console.log(errorObj);
+        try {
+          console.log(JSON.stringify(errorObj));
+        } catch (e) {
+          console.log(errorObj);
+        }
         res.status(500);
+        res.setHeader("Content-Type", "text/plain");
         res.send(
           `SERVER ERROR! ${errorObj.ID} Please consider sending` +
             ` this error-message along with a description of what` +
@@ -189,7 +192,7 @@ const check = (wanted, given, field) => {
       // parameter is not given but was mandatory
       if (mandatory) {
         var res = {};
-        res[param] = "missing";
+        res[param] = "missing " + wanted[param]["type"];
         return res;
       }
       // param not given but optional and default value is provided -> apply it!
@@ -212,7 +215,7 @@ const constructErrorObj = (req, error) => {
       ip: req.ip,
       ua: req.get("User-Agent") || "",
     },
-    ERROR: error,
+    //    ERROR: error,
     TRACE: (error || {}).stack,
   };
   if (Object.keys(req.body || {}).length > 0) {
