@@ -22,6 +22,7 @@ More information on how to set this: [[https://github.com/phuhl/apparts-config][
 - ~uuidv4~
 - ~/~
   - Catch all
+- =int=
 - ~float~
 - ~hex~
 - ~base64~
@@ -36,6 +37,16 @@ More information on how to set this: [[https://github.com/phuhl/apparts-config][
 - ~time~
 - ~array_time~
   - Alias for ~array_id~
+
+When requesting an API checked by @apparts/types, make sure, the
+following holds:
+
+- The *body* is always expected to be in JSON format.
+- The *path parameters* must never be empty (otherwise express can't
+  route you correctly) and if the type used is an array, it must be
+  JSON encoded.
+- The *query* parameters must be URI encoded. If the type used is an
+  array, it must be JSON encoded.
 
 * Usage
 

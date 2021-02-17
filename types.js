@@ -30,7 +30,7 @@ switch (config.idType) {
 }
 
 module.exports = {
-  "/": { check: (x) => true },
+  "/": { check: () => true },
   int: {
     check: (x) => typeof x === "number" && Math.round(x) === x,
     conv: (x) => {
@@ -51,9 +51,10 @@ module.exports = {
       return parsed;
     },
   },
-  hex: { check: (x) => /^[0-9a-f]+$/i.test(x) },
+  hex: { check: (x) => typeof x === "string" && /^[0-9a-f]+$/i.test(x) },
   base64: {
     check: (x) =>
+      typeof x === "string" &&
       /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/i.test(
         x
       ),
@@ -75,7 +76,7 @@ module.exports = {
   },
   email: {
     check: (x) =>
-      /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(
+      /^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(
         x
       ),
   },

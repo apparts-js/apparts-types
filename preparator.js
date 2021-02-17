@@ -1,13 +1,12 @@
 "use strict";
 
-const xss = require("xss");
-const { HttpError } = require("@apparts/error");
-const { HttpCode } = require("./code");
 const uuidv1 = require("uuid/v1");
 
 const types = require("./types");
 
 const config = require("@apparts/config").get("types-config");
+
+const has = (...ps) => Object.hasOwnProperty.call(...ps);
 
 /**
  * Stuffs type-assertions before the call of the 'next'-function
@@ -18,92 +17,74 @@ const config = require("@apparts/config").get("types-config");
  * strapped out of the request, if they where not specified in
  * assertions
  */
-var prepare = (assertions, next, options = {}) => {
-  const f = function (req, res) {
+const prepare = (assertions, next, options = {}) => {
+  const { body = {}, params = {}, query = {}, ...rest } = assertions;
+  if (Object.keys(rest).length > 0) {
+    throw new Error(
+      "Preparator: Assertions contain invalid fields: " + Object.keys(rest)
+    );
+  }
+  const fields = { body, params, query };
+
+  precheckTypes(body);
+  precheckTypes(params);
+  precheckTypes(query);
+
+  const f = async function (req, res) {
     res.setHeader("Content-Type", "application/json");
     res.status(200);
     // iterate over the fields specified in the API's assertions
-    for (var field in assertions) {
-      if (field == "security" || !assertions.hasOwnProperty(field)) {
-        continue;
-      }
-      if (!req.hasOwnProperty(field)) {
-        req[field] = {};
-      }
 
-      var c = check(assertions[field], req[field], field);
-      if (c !== true) {
-        var r = {};
-        r[field] = c;
-        res.status(400).send({
-          error: "Fieldmissmatch",
-          description:
-            Object.keys(c)
-              .map((key) => c[key] + ` for field "${key}"`)
-              .join(", ") +
-            " in " +
-            field,
-        });
-        return;
-      }
-      if (options) {
-        if (options.strap) {
-          for (var key in req[field]) {
-            if (
-              Object.hasOwnProperty.call(req[field], key) &&
-              assertions[field].hasOwnProperty(key)
-            ) {
-              continue;
-            }
-            delete req[field][key];
+    if (options.strap) {
+      for (const fieldName in fields) {
+        for (const key in req[fieldName]) {
+          if (!has(fields[fieldName], key)) {
+            delete req[fieldName][key];
           }
         }
       }
     }
-    next(req, res)
-      .then((data) => {
-        if (typeof data === "object" && data.type === "HttpError") {
-          res.status(data.code);
-          res.send(
-            JSON.stringify({
-              error: data.message,
-              description: data.description,
-            })
-          );
-        } else if (typeof data === "object" && data.type === "HttpCode") {
-          res.status(data.code);
-          res.send(JSON.stringify(data.message));
-        } else {
-          res.send(JSON.stringify(data));
-        }
-      })
-      .catch((e) => {
-        if (typeof e === "object" && e.type === "HttpError") {
-          res.status(e.code);
-          res.send(
-            JSON.stringify({
-              error: e.message,
-              description: e.description,
-            })
-          );
-          return;
-        }
 
-        const errorObj = constructErrorObj(req, e);
-        try {
-          console.log(JSON.stringify(errorObj));
-        } catch (e) {
-          console.log(errorObj);
-        }
-        res.status(500);
-        res.setHeader("Content-Type", "text/plain");
-        res.send(
-          `SERVER ERROR! ${errorObj.ID} Please consider sending` +
-            ` this error-message along with a description of what` +
-            ` happend and what you where doing to this email-address:` +
-            ` ${config.bugreportEmail}.`
-        );
-      });
+    for (const fieldName in fields) {
+      /* istanbul ignore next */
+      if (!has(req, fieldName)) {
+        req[fieldName] = {};
+      }
+      let valid;
+      try {
+        valid = check(fields[fieldName], req[fieldName], fieldName);
+      } catch (e) /* istanbul ignore next */ {
+        catchError(res, req, e);
+        return;
+      }
+      if (valid !== true) {
+        const r = {};
+        r[fieldName] = valid;
+        res.status(400).send({
+          error: "Fieldmissmatch",
+          description:
+            Object.keys(valid)
+              .map((key) => valid[key] + ` for field "${key}"`)
+              .join(", ") +
+            " in " +
+            fieldName,
+        });
+        return;
+      }
+    }
+    try {
+      const data = await next(req, res);
+      if (typeof data === "object" && data.type === "HttpError") {
+        catchError(res, req, data);
+      } else if (typeof data === "object" && data.type === "HttpCode") {
+        res.status(data.code);
+        res.send(JSON.stringify(data.message));
+      } else {
+        res.send(JSON.stringify(data));
+      }
+    } catch (e) {
+      catchError(res, req, e);
+    }
   };
   f.assertions = assertions;
   f.options = {
@@ -116,6 +97,47 @@ var prepare = (assertions, next, options = {}) => {
   return f;
 };
 
+const precheckTypes = (wanted) => {
+  for (const param in wanted) {
+    if (!has(wanted[param], "type")) {
+      throw new Error("ERROR AT PREPARATOR: No type for: " + param);
+    }
+    if (!types[wanted[param]["type"]]) {
+      throw new Error(
+        "ERROR AT PREPARATOR: Unknown type: " + wanted[param]["type"]
+      );
+    }
+  }
+};
+
+const catchError = (res, req, e) => {
+  if (typeof e === "object" && e.type === "HttpError") {
+    res.status(e.code);
+    res.send(
+      JSON.stringify({
+        error: e.message,
+        description: e.description,
+      })
+    );
+    return;
+  }
+
+  const errorObj = constructErrorObj(req, e);
+  try {
+    console.log(JSON.stringify(errorObj));
+  } catch (e) /* istanbul ignore next */ {
+    console.log(errorObj);
+  }
+  res.status(500);
+  res.setHeader("Content-Type", "text/plain");
+  res.send(
+    `SERVER ERROR! ${errorObj.ID} Please consider sending` +
+      ` this error-message along with a description of what` +
+      ` happend and what you where doing to this email-address:` +
+      ` ${config.bugreportEmail}.`
+  );
+};
+
 /**
  * Performs the type-assertion-check and applies default values
  *
@@ -125,84 +147,54 @@ var prepare = (assertions, next, options = {}) => {
  * @return {bool} 'true' if everything matched, Error Description if not
  */
 const check = (wanted, given, field) => {
-  // iterate over wanted parameters
-  var keys = Object.keys(wanted);
-  for (var i = 0; i < keys.length; i++) {
-    var param = keys[i];
+  const keys = Object.keys(wanted);
+  for (let i = 0; i < keys.length; i++) {
+    const param = keys[i];
 
-    var exists =
-      Object.hasOwnProperty.call(given, param) && given[param] !== undefined; // is the parameter given?
-    var foundMatch = false;
-    // parameter is mandatory, if it is not optional
-    // parameter is optional, if it has a default value, or it is explicitly marked so
-    var mandatory = !(
-      wanted[param].hasOwnProperty("default") ||
-      (wanted[param].hasOwnProperty("optional") &&
-        wanted[param]["optional"] === true)
-    );
-    if (exists) {
-      // does the argument only have one possible type...
-      if (wanted[param].hasOwnProperty("type")) {
-        if (types[wanted[param]["type"]]) {
-          // does the argument match the prescribed type?
-          if (types[wanted[param]["type"]].conv && field !== "body") {
-            try {
-              given[param] = types[wanted[param]["type"]].conv(given[param]);
-              foundMatch = true;
-            } catch (e) {}
-          } else if (types[wanted[param]["type"]].check(given[param])) {
-            foundMatch = true;
-          }
-        } else {
-          console.log(
-            "ERROR AT PREPERATOR: Unknown type",
-            wanted[param]["type"]
-          );
-          throw "Unknown type";
-        }
-      } else {
-        console.log("ERROR AT PREPERATOR: Multi-type not supported");
-        throw "Multi-type not supported";
-        // ... or can it have multiple types?
-        /*      if (wanted[param].hasOwnProperty('types')) {
-          for (var i = 0; i < wanted[param]['types'].length; i++) {
-          var type = wanted[param]['types'][i];
-          if (types[type].check(given[param])) {
-          foundMatch = true;
-          if(types[type].conv){
-          given[param] = types[type].conv(given[param]);
-          }
-          break;
-          }
-          }
-          } */
+    const exists = has(given, param) && given[param] !== undefined;
+    if (!exists) {
+      if (has(wanted[param], "default")) {
+        given[param] = wanted[param]["default"];
+        return true;
       }
-      // note, if this doesn't apply, programm will jump right to return true
-      if (!foundMatch) {
-        var res = {};
-        res[param] = "expected " + wanted[param]["type"];
-        return res;
-      } else {
-        // xss sanitizer
-        if (wanted[param].hasOwnProperty("xss")) {
-          given[param] = xss(given[param]);
-        }
-      }
-    } else {
-      // parameter is not given but was mandatory
-      if (mandatory) {
-        var res = {};
+      if (wanted[param]["optional"] !== true) {
+        const res = {};
         res[param] = "missing " + wanted[param]["type"];
         return res;
       }
-      // param not given but optional and default value is provided -> apply it!
-      else if (wanted[param].hasOwnProperty("default")) {
-        given[param] = wanted[param]["default"];
-      }
+      return true;
+    }
+
+    if (!validateAndConvert(wanted, param, given, field)) {
+      const res = {};
+      res[param] = "expected " + wanted[param]["type"];
+      return res;
     }
   }
 
   return true;
+};
+
+const validateAndConvert = (wanted, param, given, field) => {
+  if (types[wanted[param]["type"]].conv && field !== "body") {
+    try {
+      given[param] = types[wanted[param]["type"]].conv(given[param]);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+  if (field === "query") {
+    try {
+      given[param] = decodeURIComponent(given[param]);
+    } catch (e) /* istanbul ignore next */ {
+      return false;
+    }
+  }
+  if (types[wanted[param]["type"]].check(given[param])) {
+    return true;
+  }
+  return false;
 };
 
 const constructErrorObj = (req, error) => {
@@ -213,19 +205,16 @@ const constructErrorObj = (req, error) => {
       url: req.originalUrl,
       method: req.method,
       ip: req.ip,
-      ua: req.get("User-Agent") || "",
+      ua: req.get("User-Agent") || /* istanbul ignore next */ "",
     },
     //    ERROR: error,
-    TRACE: (error || {}).stack,
+    TRACE: (error || /* istanbul ignore next */ {}).stack,
   };
-  if (Object.keys(req.body || {}).length > 0) {
+  if (Object.keys(req.body || /* istanbul ignore next */ {}).length > 0) {
     errorObj.REQUEST.body = req.body;
   }
-  if (Object.keys(req.params || {}).length > 0) {
+  if (Object.keys(req.params || /* istanbul ignore next */ {}).length > 0) {
     errorObj.REQUEST.params = req.params;
-  }
-  if (Object.keys(req.cookies || {}).length > 0) {
-    errorObj.REQUEST.cookies = req.cookies;
   }
   return errorObj;
 };

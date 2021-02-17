@@ -1,8 +1,12 @@
 const { defPrep, expectWrong, expectMiss, expectSuccess } = require("./common");
 const testTypes = require("./types");
 
+const defPrep2 = (tipe) =>
+  defPrep("", { query: { myField: { type: tipe } } }, tipe);
+
 describe("Query", () => {
-  const transformVal = (val) => encodeURIComponent(JSON.stringify(val));
+  const transformVal = (val) =>
+    encodeURIComponent(typeof val === "object" ? JSON.stringify(val) : val);
   const wrong = (path, val, tipe) =>
     expectWrong(
       path + "?myField=" + transformVal(val),
@@ -14,6 +18,17 @@ describe("Query", () => {
   const right = (path, val) => {
     return expectSuccess(path + "?myField=" + transformVal(val), {});
   };
+
+  test("Should reject malformated JSON", async () => {
+    const path = defPrep("", { query: { a: { type: "array" } } });
+    await expectWrong(
+      path + "?a=" + encodeURIComponent("[blubb"),
+      {},
+      "query",
+      "a",
+      "array"
+    );
+  });
 
   test("Should accept empty query assumptions", async () => {
     const path = defPrep("", { query: {} });
@@ -121,96 +136,96 @@ describe("Query", () => {
   test("Should accept anything", async () => {
     const tipe = "/";
     const path = defPrep("", { query: { myField: { type: tipe } } });
-    await testTypes[tipe](tipe, path, right, wrong);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
   test("Should reject malformated id", async () => {
     const tipe = "id";
-    const path = defPrep("", { query: { myField: { type: tipe } } }, tipe);
-    await testTypes[tipe](tipe, path, right, wrong);
+    const path = defPrep2(tipe);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
   test("Should reject malformated uuidv4", async () => {
     const tipe = "uuidv4";
-    const path = defPrep("", { query: { myField: { type: tipe } } }, tipe);
-    await testTypes[tipe](tipe, path, right, wrong);
+    const path = defPrep2(tipe);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
   test("Should reject malformated int", async () => {
     const tipe = "int";
-    const path = defPrep("", { query: { myField: { type: tipe } } }, tipe);
-    await testTypes[tipe](tipe, path, right, wrong);
+    const path = defPrep2(tipe);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
   test("Should reject malformated float", async () => {
     const tipe = "float";
-    const path = defPrep("", { query: { myField: { type: tipe } } }, tipe);
-    await testTypes[tipe](tipe, path, right, wrong);
+    const path = defPrep2(tipe);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
   test("Should reject malformated hex", async () => {
     const tipe = "hex";
-    const path = defPrep("", { query: { myField: { type: tipe } } }, tipe);
-    await testTypes[tipe](tipe, path, right, wrong);
+    const path = defPrep2(tipe);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
   test("Should reject malformated base64", async () => {
     const tipe = "base64";
-    const path = defPrep("", { query: { myField: { type: tipe } } }, tipe);
-    await testTypes[tipe](tipe, path, right, wrong);
+    const path = defPrep2(tipe);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
   test("Should reject malformated bool", async () => {
     const tipe = "bool";
-    const path = defPrep("", { query: { myField: { type: tipe } } }, tipe);
-    await testTypes[tipe](tipe, path, right, wrong);
+    const path = defPrep2(tipe);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
   test("Should reject malformated string", async () => {
     const tipe = "string";
-    const path = defPrep("", { query: { myField: { type: tipe } } }, tipe);
-    await testTypes[tipe](tipe, path, right, wrong);
+    const path = defPrep2(tipe);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
   test("Should reject malformated email", async () => {
     const tipe = "email";
-    const path = defPrep("", { query: { myField: { type: tipe } } }, tipe);
-    await testTypes[tipe](tipe, path, right, wrong);
+    const path = defPrep2(tipe);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
   test("Should reject malformated array", async () => {
     const tipe = "array";
-    const path = defPrep("", { query: { myField: { type: tipe } } }, tipe);
-    await testTypes[tipe](tipe, path, right, wrong);
+    const path = defPrep2(tipe);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
   test("Should reject malformated array_int", async () => {
     const tipe = "array_int";
-    const path = defPrep("", { query: { myField: { type: tipe } } }, tipe);
-    await testTypes[tipe](tipe, path, right, wrong);
+    const path = defPrep2(tipe);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
   test("Should reject malformated array_id", async () => {
     const tipe = "array_id";
-    const path = defPrep("", { query: { myField: { type: tipe } } }, tipe);
-    await testTypes[tipe](tipe, path, right, wrong);
+    const path = defPrep2(tipe);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
   test("Should reject malformated password", async () => {
     const tipe = "password";
-    const path = defPrep("", { query: { myField: { type: tipe } } }, tipe);
-    await testTypes[tipe](tipe, path, right, wrong);
+    const path = defPrep2(tipe);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
   test("Should reject malformated time", async () => {
     const tipe = "time";
-    const path = defPrep("", { query: { myField: { type: tipe } } }, tipe);
-    await testTypes[tipe](tipe, path, right, wrong);
+    const path = defPrep2(tipe);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
   test("Should reject malformated array_time", async () => {
     const tipe = "array_time";
-    const path = defPrep("", { query: { myField: { type: tipe } } }, tipe);
-    await testTypes[tipe](tipe, path, right, wrong);
+    const path = defPrep2(tipe);
+    await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 });

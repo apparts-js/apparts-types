@@ -21,5 +21,6 @@ module.exports = {
     "prefer-const": "error",
     "no-unneeded-ternary": "error",
     "prefer-arrow-callback": "error",
+    "consistent-return": ["error", { treatUndefinedAsUnspecified: false }],
   },
 };

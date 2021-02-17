@@ -9,7 +9,7 @@ const any = async (tipe, path, right) => {
   await right(path, null);
 };
 
-const id = async (tipe, path, right, wrong, isParams) => {
+const id = async (tipe, path, right, wrong, isParams, isQuery) => {
   await wrong(path, 4.4, tipe);
   await wrong(path, [], tipe);
   await wrong(path, ["a", 3], tipe);
@@ -17,11 +17,13 @@ const id = async (tipe, path, right, wrong, isParams) => {
   await wrong(path, "its a string", tipe);
   if (!isParams) {
     await wrong(path, "", tipe);
-    await wrong(path, "3", tipe);
-    await wrong(path, "-4", tipe);
-  } else {
+  }
+  if (isParams || isQuery) {
     await right(path, "3", tipe);
     await right(path, "-4", tipe);
+  } else {
+    await wrong(path, "3", tipe);
+    await wrong(path, "-4", tipe);
   }
   await right(path, 3, tipe);
   await right(path, 0, tipe);
@@ -59,7 +61,7 @@ const uuidv4 = async (tipe, path, right, wrong, isParams) => {
 
 const int = id;
 
-const float = async (tipe, path, right, wrong, isParams) => {
+const float = async (tipe, path, right, wrong, isParams, isQuery) => {
   await right(path, 4, tipe);
   await right(path, 4.4, tipe);
   await right(path, -4, tipe);
@@ -71,11 +73,13 @@ const float = async (tipe, path, right, wrong, isParams) => {
   await wrong(path, "7ce767a4-ec6e-4ff5-b163-f501165eaf83", tipe);
   if (!isParams) {
     await wrong(path, "", tipe);
-    await wrong(path, "3", tipe);
-    await wrong(path, "-3.9", tipe);
-  } else {
+  }
+  if (isParams || isQuery) {
     await right(path, "3", tipe);
     await right(path, "-3.9", tipe);
+  } else {
+    await wrong(path, "3", tipe);
+    await wrong(path, "-3.9", tipe);
   }
   await wrong(path, true, tipe);
   await wrong(path, false, tipe);
@@ -84,20 +88,21 @@ const float = async (tipe, path, right, wrong, isParams) => {
   await wrong(path, "dGVzdA==", tipe);
 };
 
-const hex = async (tipe, path, right, wrong, isParams) => {
-  if (!isParams) {
-    await wrong(path, 4, tipe);
-    await wrong(path, 4.4, tipe);
-  } else {
+const hex = async (tipe, path, right, wrong, isParams, isQuery) => {
+  if (isParams || isQuery) {
     await right(path, 4, tipe);
-    await right(path, 4.4, tipe);
+  } else {
+    await wrong(path, 4, tipe);
   }
+  if (!isParams) {
+    await wrong(path, "", tipe);
+  }
+  await wrong(path, 4.4, tipe);
   await wrong(path, [], tipe);
   await wrong(path, ["a", 3], tipe);
   await wrong(path, { an: "object" }, tipe);
   await wrong(path, "its a string", tipe);
   await wrong(path, "7ce767a4-ec6e-4ff5-b163-f501165eaf83", tipe);
-  await right(path, "", tipe);
   await right(path, "3", tipe);
   await wrong(path, true, tipe);
   await wrong(path, false, tipe);
@@ -106,11 +111,11 @@ const hex = async (tipe, path, right, wrong, isParams) => {
   await wrong(path, "dGVzdA==", tipe);
 };
 
-const base64 = async (tipe, path, right, wrong, isParams) => {
-  if (!isParams) {
-    await wrong(path, 4, tipe);
+const base64 = async (tipe, path, right, wrong, isParams, isQuery) => {
+  if (isParams || isQuery) {
+    await right(path, 6455, tipe);
   } else {
-    await right(path, 4, tipe);
+    await wrong(path, 6455, tipe);
   }
   await wrong(path, 4.4, tipe);
   await wrong(path, [], tipe);
@@ -119,17 +124,16 @@ const base64 = async (tipe, path, right, wrong, isParams) => {
   await wrong(path, "its a string", tipe);
   await wrong(path, "7ce767a4-ec6e-4ff5-b163-f501165eaf83", tipe);
   if (!isParams) {
-    await wrong(path, "", tipe);
+    await right(path, "", tipe);
   }
-  if (!isParams) {
-    await wrong(path, "3", tipe);
-  } else {
-    await right(path, "3", tipe);
+  if (!isParams && !isQuery) {
+    await wrong(path, true, tipe);
+    await wrong(path, false, tipe);
+    await wrong(path, null, tipe);
   }
-  await wrong(path, true, tipe);
-  await wrong(path, false, tipe);
-  await wrong(path, null, tipe);
-  await wrong(path, "ABCDEF1234567890", tipe);
+  await wrong(path, "3", tipe);
+  await wrong(path, "ABCDEF1234567890=", tipe);
+  await right(path, "ABCDEF1234567890", tipe);
   await right(path, "dGVzdA==", tipe);
 };
 
@@ -152,8 +156,8 @@ const bool = async (tipe, path, right, wrong, isParams) => {
   await wrong(path, "dGVzdA==", tipe);
 };
 
-const string = async (tipe, path, right, wrong, isParams) => {
-  if (isParams) {
+const string = async (tipe, path, right, wrong, isParams, isQuery) => {
+  if (isParams || isQuery) {
     await right(path, 4, tipe);
     await right(path, 4.4, tipe);
     await right(path, true, tipe);
@@ -171,6 +175,9 @@ const string = async (tipe, path, right, wrong, isParams) => {
     await wrong(path, [], tipe);
     await wrong(path, ["a", 3], tipe);
     await wrong(path, { an: "object" }, tipe);
+    await right(path, "", tipe);
+  }
+  if (!isParams) {
     await right(path, "", tipe);
   }
   await right(path, "its a string", tipe);
@@ -271,7 +278,7 @@ const arrayId = async (tipe, path, right, wrong, isParams) => {
 
 const password = string;
 
-const time = async (tipe, path, right, wrong, isParams) => {
+const time = async (tipe, path, right, wrong, isParams, isQuery) => {
   await right(path, 4, tipe);
   await wrong(path, 4.4, tipe);
   await wrong(path, [], tipe);
@@ -281,9 +288,11 @@ const time = async (tipe, path, right, wrong, isParams) => {
   await wrong(path, "7ce767a4-ec6e-4ff5-b163-f501165eaf83", tipe);
   if (!isParams) {
     await wrong(path, "", tipe);
-    await wrong(path, "3", tipe);
-  } else {
+  }
+  if (isParams || isQuery) {
     await right(path, "3", tipe);
+  } else {
+    await wrong(path, "3", tipe);
   }
   await wrong(path, true, tipe);
   await wrong(path, false, tipe);

@@ -1,9 +1,9 @@
-const { checkType: _checkType, allChecked } = require("./checkApiTypes.js");
+const { useChecks } = require("./checkApiTypes.js");
 const myEndpoint = require("./myTestEndpoint");
 const request = require("supertest");
 
 const app = myEndpoint.app;
-const checkType = (res, name) => _checkType(myEndpoint, res, name);
+const { checkType, allChecked } = useChecks(myEndpoint);
 
 describe("myTypelessEndpoint", () => {
   test("Detect missing type-definition", async () => {
@@ -141,7 +141,7 @@ describe("myEndpoint, incomplete test", () => {
 
 describe("Notice, that not everything was tested", () => {
   test("", () => {
-    expect(() => allChecked(myEndpoint, "myEndpoint")).toThrow({
+    expect(() => allChecked("myEndpoint")).toThrow({
       message: `Not all possible return combinations for ### myEndpoint ### have been tested!
 MISSING: [
   {
@@ -256,6 +256,6 @@ EXPECTED TYPES: [
 
 describe("All possible responses tested", () => {
   test("", () => {
-    expect(allChecked(myEndpoint, "myEndpoint")).toBeTruthy();
+    expect(allChecked("myEndpoint")).toBeTruthy();
   });
 });

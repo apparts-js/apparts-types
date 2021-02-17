@@ -47,7 +47,7 @@ const OAPI = {
             in: "path",
             required: true,
             schema: {
-              type: "string",
+              type: "integer",
             },
           },
           {
@@ -165,7 +165,7 @@ const OAPI = {
             in: "path",
             required: true,
             schema: {
-              type: "string",
+              type: "integer",
             },
           },
           {

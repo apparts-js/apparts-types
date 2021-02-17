@@ -32,8 +32,7 @@
   "author": "Philipp Uhl",
   "license": "MIT",
   "dependencies": {
-    "uuid": "^3.3.2",
-    "xss": "^1.0.3"
+    "uuid": "^3.3.2"
   },
   "peerDependencies": {
     "@apparts/config": "^1.0.5",
