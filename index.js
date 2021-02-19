@@ -12,8 +12,8 @@ module.exports = {
   types,
   preparator,
   ...prepauth,
+  ...checkApiTypes,
   checkType,
-  checkApiTypes,
   HttpCode,
   genApiDocs,
 };
