@@ -127,7 +127,7 @@ h2{
   text-decoration: none;
 }
 code {
-  font-family: mono;
+  font-family: mono, monospace;
   background: var(--bright-2);
   display: block;
   padding: 4px;

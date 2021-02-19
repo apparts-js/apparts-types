@@ -4,31 +4,33 @@ const recursivelyPrintType = (type, indent = 0) => {
   let res = "";
   const spaces = " ".repeat(indent);
   if (type.type === "object") {
-    if (typeof type.values === "object") {
+    if (typeof type.keys === "object") {
       res += `{
-${Object.keys(type.values)
+${Object.keys(type.keys)
   .map(
     (key) =>
-      spaces +
-      `  "${key}": ${recursivelyPrintType(type.values[key], indent + 2)}`
+      spaces + `  "${key}": ${recursivelyPrintType(type.keys[key], indent + 2)}`
   )
   .join(",\n")}
 ${spaces}}`;
     } else {
       res += `{
-${spaces}  <span class="type">&lt;/&gt;</span>: <span class="type">&lt;${type.values}&gt;</span>
+${spaces}  <span class="type">&lt;/&gt;</span>: <span class="type">${recursivelyPrintType(
+        type.values,
+        indent + 2
+      )}</span>
 ${spaces}}`;
     }
   } else if (type.type === "array") {
     res += `[
-${spaces}  ${recursivelyPrintType(type.value, indent + 2)}
+${spaces}  ${recursivelyPrintType(type.items, indent + 2)}
 ${spaces}]`;
   } else if (type.type) {
     res += `<span class="type">&lt;${type.type}&gt;</span>`;
   } else {
     res += JSON.stringify(type.value);
   }
-  return res.replace(/\n/g, "<br/>").replace(/  /g, "&nbsp;&nbsp;");
+  return res.replace(/\n/g, "<br/>").replace(/ {2}/g, "&nbsp;&nbsp;");
 };
 
 const apiToHtml = (api, commitHash, style = STYLE) => {
@@ -44,7 +46,7 @@ const apiToHtml = (api, commitHash, style = STYLE) => {
         title,
         options = {},
       }) => {
-        const [, version] = path.match(/v\/?(\d+)/) || [,];
+        const [, version] = path.match(/v\/?(\d+)/) || [undefined, undefined];
         toc.push([
           `${method}_${path}`,
           method.toUpperCase(),

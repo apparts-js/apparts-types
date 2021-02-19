@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --watch",
     "testCoverage": "jest --coverage",
-    "genApiDoku": "genApiDoku.js"
+    "genApiDocs": "node apiDocs/generateHtmlApi.js"
   },
   "jest": {
     "testTimeout": 5000,

@@ -1,6 +1,10 @@
-const preparator = require("./preparator");
-const { HttpCode } = require("./index");
-const { prepauthToken, prepauthPW, prepauthTokenJWT } = require("./prepauth");
+const {
+  HttpCode,
+  preparator,
+  prepauthToken,
+  prepauthPW,
+  prepauthTokenJWT,
+} = require("./index");
 const { HttpError } = require("@apparts/error");
 const express = require("express");
 
@@ -54,26 +58,26 @@ const myEndpoint = preparator(
       {
         status: 200,
         type: "object",
-        values: {
+        keys: {
           foo: { value: "really!" },
           boo: { type: "bool" },
           kabaz: { type: "bool", optional: true },
           arr: {
             type: "array",
-            value: {
+            items: {
               type: "object",
-              values: {
+              keys: {
                 a: { type: "int" },
               },
             },
           },
           objectWithUnknownKeys: {
             type: "object",
-            values: "int",
+            values: { type: "int" },
           },
           objectWithUnknownKeysAndUnknownTypes: {
             type: "object",
-            values: "/",
+            values: { type: "/" },
           },
         },
       },
@@ -97,9 +101,7 @@ const myFaultyEndpoint = preparator(
     if (name.length > 100) {
       return new HttpError(400, "Name is too long");
     }
-    // filter might not be defined, as it is optional
     if (filter === "wrongType") {
-      // Return values are JSONified automatically!
       return {
         arr: [{ a: true }, { a: 2 }],
         boo: true,
@@ -117,7 +119,6 @@ const myFaultyEndpoint = preparator(
         arr: [{ a: 2 }, { a: 2 }],
       };
     }
-    // This produces "ok" (literally, with the quotes)
     return "whut?";
   },
   {
@@ -130,13 +131,13 @@ does not match it's behavior.`,
       {
         status: 200,
         type: "object",
-        values: {
+        keys: {
           boo: { type: "bool" },
           arr: {
             type: "array",
-            value: {
+            items: {
               type: "object",
-              values: {
+              keys: {
                 a: { type: "int" },
               },
             },
@@ -158,7 +159,7 @@ const myTypelessEndpoint = preparator(
   }
 );
 
-const myPwAuthenticatedEndpoint = prepauthPW(
+const myPwAuthenticatedEndpoint = prepauthPW({})(
   {},
   async ({}) => {
     return "ok";
@@ -168,7 +169,7 @@ const myPwAuthenticatedEndpoint = prepauthPW(
     description: "You shall not pass, unless you have a password.",
   }
 );
-const myTokenAuthenticatedEndpoint = prepauthToken(
+const myTokenAuthenticatedEndpoint = prepauthToken({})(
   {},
   async ({}) => {
     return "ok";

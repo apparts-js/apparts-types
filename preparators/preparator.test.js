@@ -1,6 +1,6 @@
 const { defPrep, expectSuccess, app, expectError } = require("./tests/common");
 const { HttpError } = require("@apparts/error");
-const { HttpCode } = require("./code");
+const { HttpCode } = require("../code");
 const prepare = require("./preparator");
 const request = require("supertest");
 
@@ -204,11 +204,19 @@ describe("Wrong type", () => {
     expect(() =>
       app.post(
         getNextUrl(),
-        prepare({ body: { myField: { type: "käsebrot" } } }, () => {
-          return "ok";
-        })
+        prepare(
+          {
+            body: {
+              myCorrectField: { type: "int" },
+              myField: { type: "käsebrot" },
+            },
+          },
+          () => {
+            return "ok";
+          }
+        )
       )
-    ).toThrowError("ERROR AT PREPARATOR: Unknown type: käsebrot");
+    ).toThrowError("PREPARATOR: Nope, your assertions are not well defined!");
   });
   test("Should throw an error on missing type", async () => {
     expect(() =>
@@ -218,7 +226,7 @@ describe("Wrong type", () => {
           return "ok";
         })
       )
-    ).toThrowError("ERROR AT PREPARATOR: No type for: myField");
+    ).toThrowError("PREPARATOR: Nope, your assertions are not well defined!");
   });
 });
 
@@ -231,7 +239,7 @@ describe("Unknown field", () => {
           return "ok";
         })
       )
-    ).toThrowError("Preparator: Assertions contain invalid fields: sixpack");
+    ).toThrowError("PREPARATOR: Nope, your assertions are not well defined!");
   });
 });
 

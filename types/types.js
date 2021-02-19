@@ -69,6 +69,16 @@ module.exports = {
       throw "Not a boolean";
     },
   },
+  boolean: {
+    check: (x) => typeof x === "boolean",
+    conv: (x) => {
+      const t = btrue(x);
+      if (t || bfalse(x)) {
+        return t;
+      }
+      throw "Not a boolean";
+    },
+  },
   string: {
     check: (x) => {
       return typeof x === "string";
@@ -89,6 +99,16 @@ module.exports = {
       return conved;
     },
     check: (x) => Array.isArray(x),
+  },
+  object: {
+    conv: (x) => {
+      const conved = JSON.parse(x);
+      if (!module.exports.object.check(conved)) {
+        throw "Not an object";
+      }
+      return conved;
+    },
+    check: (x) => typeof x === "object" && x !== null && !Array.isArray(x),
   },
   array_int: {
     conv: (x) => {

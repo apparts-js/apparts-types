@@ -41,7 +41,7 @@ _prepauth.returns = [
   { status: 400, error: "Authorization wrong" },
 ];
 
-const prepauthToken = (User, assertions, fun, options = {}) => {
+const prepauthToken = (User) => (assertions, fun, options = {}) => {
   try {
     NotFound = require("@apparts/model").NotFound;
   } catch (e) {
@@ -62,7 +62,7 @@ const prepauthToken = (User, assertions, fun, options = {}) => {
 };
 prepauthToken.returns = _prepauth.returns;
 
-const prepauthPW = (User, assertions, fun, options = {}) => {
+const prepauthPW = (User) => (assertions, fun, options = {}) => {
   try {
     NotFound = require("@apparts/model").NotFound;
   } catch (e) {

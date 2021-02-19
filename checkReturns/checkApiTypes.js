@@ -1,4 +1,4 @@
-const checkTypes = require("./types.js");
+const recursiveCheck = require("../types/checkType");
 
 const useChecks = (funktionContainer) => {
   const checked = {};
@@ -45,8 +45,10 @@ const useChecks = (funktionContainer) => {
       console.log("No types found for ###", functionName, "###");
       return false;
     }
+    const errors = [];
     for (let i = 0; i < types.length; i++) {
       const type = types[i];
+      errors.push({});
       if (
         type.status === response.statusCode &&
         (JSON.stringify({ error: type.error }) ===
@@ -56,8 +58,7 @@ const useChecks = (funktionContainer) => {
           }) ||
           recursiveCheck(response.body, type))
       ) {
-        checked[functionName] =
-          checked[functionName] || types.map((_) => false);
+        checked[functionName] = checked[functionName] || types.map(() => false);
         checked[functionName][i] = true;
         return true;
       }
@@ -79,64 +80,6 @@ const useChecks = (funktionContainer) => {
     );
   };
   return { checkType, allChecked };
-};
-
-const recursiveCheck = (response, type) => {
-  if (type.type === "array" && checkTypes.array.check(response)) {
-    if (response.reduce((a, b) => a && recursiveCheck(b, type.value), true)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  if (type.type === "object") {
-    const responseIsObject = typeof response === "object";
-    const deepValues = typeof type.values === "object";
-    const flatValues = typeof type.values === "string";
-
-    if (responseIsObject && deepValues) {
-      const allExistingValuesCorrectlyTyped = Object.keys(response).reduce(
-        (a, b) =>
-          a && type.values[b] && recursiveCheck(response[b], type.values[b]),
-        true
-      );
-      const allRequiredValuesExist = Object.keys(type.values).reduce(
-        (a, b) => (response[b] !== undefined || type.values[b].optional) && a,
-        true
-      );
-      if (allExistingValuesCorrectlyTyped && allRequiredValuesExist) {
-        return true;
-      } else {
-        return false;
-      }
-    } else if (
-      responseIsObject &&
-      flatValues &&
-      Object.keys(response).reduce(
-        (a, b) => a && checkTypes[type.values].check(response[b]),
-        true
-      )
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  if (type.value) {
-    if (JSON.stringify(type.value) === JSON.stringify(response)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  if (
-    type.type &&
-    checkTypes[type.type] &&
-    checkTypes[type.type].check(response)
-  ) {
-    return true;
-  }
-  return false;
 };
 
 module.exports = { useChecks };

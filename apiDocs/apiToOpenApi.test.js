@@ -282,8 +282,8 @@ const OAPI = {
     },
     "/v/1/withpw": {
       delete: {
-        summary: "",
-        description: "",
+        summary: "Endpoint with Pw Authentication",
+        description: "You shall not pass, unless you have a password.",
         parameters: [],
         security: [{ Password: [] }],
         responses: {
@@ -334,8 +334,8 @@ const OAPI = {
     },
     "/v/1/withtoken": {
       patch: {
-        summary: "",
-        description: "",
+        summary: "Endpoint with Token Authentication",
+        description: "You shall not pass, unless you have a token.",
         parameters: [],
         security: [{ AuthToken: [] }],
         responses: {

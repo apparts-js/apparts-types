@@ -2,7 +2,9 @@ const { defPrep, expectWrong, expectMiss, expectSuccess } = require("./common");
 const testTypes = require("./types");
 
 const defPrep2 = (tipe) =>
-  defPrep("", { query: { myField: { type: tipe } } }, tipe);
+  typeof tipe === "object"
+    ? defPrep("", tipe, tipe.query.myField.type)
+    : defPrep("", { query: { myField: { type: tipe } } }, tipe);
 
 describe("Query", () => {
   const transformVal = (val) =>
@@ -15,18 +17,22 @@ describe("Query", () => {
       "myField",
       tipe
     );
-  const right = (path, val) => {
-    return expectSuccess(path + "?myField=" + transformVal(val), {});
+  const right = (path, val, tipe, retVal) => {
+    return expectSuccess(
+      path + "?myField=" + transformVal(val),
+      {},
+      retVal !== undefined ? retVal : val
+    );
   };
 
   test("Should reject malformated JSON", async () => {
-    const path = defPrep("", { query: { a: { type: "array" } } });
+    const path = defPrep("", { query: { a: { type: "array_int" } } });
     await expectWrong(
       path + "?a=" + encodeURIComponent("[blubb"),
       {},
       "query",
       "a",
-      "array"
+      "array_int"
     );
   });
 
@@ -47,7 +53,7 @@ describe("Query", () => {
         bool: { type: "bool" },
         string: { type: "string" },
         email: { type: "email" },
-        array: { type: "array" },
+        array: { type: "array", items: { type: "/" } },
         arrayInt: { type: "array_int" },
         arrayId: { type: "array_id" },
         password: { type: "password" },
@@ -135,7 +141,7 @@ describe("Query", () => {
 
   test("Should accept anything", async () => {
     const tipe = "/";
-    const path = defPrep("", { query: { myField: { type: tipe } } });
+    const path = defPrep("", { query: { myField: { type: tipe } } }, "/");
     await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
@@ -193,11 +199,11 @@ describe("Query", () => {
     await testTypes[tipe](tipe, path, right, wrong, undefined, true);
   });
 
-  test("Should reject malformated array", async () => {
+  /*  test("Should reject malformated array", async () => {
     const tipe = "array";
     const path = defPrep2(tipe);
     await testTypes[tipe](tipe, path, right, wrong, undefined, true);
-  });
+  });*/
 
   test("Should reject malformated array_int", async () => {
     const tipe = "array_int";
@@ -227,5 +233,30 @@ describe("Query", () => {
     const tipe = "array_time";
     const path = defPrep2(tipe);
     await testTypes[tipe](tipe, path, right, wrong, undefined, true);
+  });
+
+  test("Should reject malformated array with emails", async () => {
+    const tipe = "array";
+    const path = defPrep2(
+      { query: { myField: { type: "array", items: { type: "email" } } } },
+      "array"
+    );
+    await testTypes[tipe](tipe, path, right, wrong, true);
+  });
+
+  test("Should reject malformated object with keys", async () => {
+    const tipe = "object";
+    const path = defPrep2(
+      {
+        query: {
+          myField: {
+            type: "object",
+            keys: { firstKey: { type: "email" }, secondKey: { type: "int" } },
+          },
+        },
+      },
+      "object"
+    );
+    await testTypes[tipe](tipe, path, right, wrong, true);
   });
 });

@@ -37,7 +37,6 @@ const typeToSchemaType = (type) =>
     bool: { type: "boolean" },
     string: { type: "string" },
     email: { type: "string", format: "email" },
-    array: { type: "array", items: any },
     array_int: { type: "array", items: { type: "integer" } },
     array_id: { type: "array", items: id },
     password: { type: "string", format: "" },
@@ -104,18 +103,18 @@ const getOpenApiParams = ({
   return result;
 };
 
-const recursiveReturnType = ({ value, values, type, optional }) => {
+const recursiveReturnType = ({ value, items, keys, type, optional }) => {
   if (type === "array") {
     return {
       type: "array",
-      items: recursiveReturnType(value),
+      items: recursiveReturnType(items),
     };
   }
   if (type === "object") {
     let properties = {};
     let required = undefined;
-    if (typeof values === "object") {
-      properties = { ...values };
+    if (typeof keys === "object") {
+      properties = { ...keys };
       required = [];
       Object.keys(properties).forEach((key) => {
         if (!properties[key].optional) {

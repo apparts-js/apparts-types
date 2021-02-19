@@ -1,5 +1,5 @@
 const { useChecks } = require("./checkApiTypes.js");
-const myEndpoint = require("./myTestEndpoint");
+const myEndpoint = require("../myTestEndpoint");
 const request = require("supertest");
 
 const app = myEndpoint.app;
@@ -38,15 +38,15 @@ EXPECTED TYPES: [
   {
     "status": 200,
     "type": "object",
-    "values": {
+    "keys": {
       "boo": {
         "type": "bool"
       },
       "arr": {
         "type": "array",
-        "value": {
+        "items": {
           "type": "object",
-          "values": {
+          "keys": {
             "a": {
               "type": "int"
             }
@@ -147,7 +147,7 @@ MISSING: [
   {
     "status": 200,
     "type": "object",
-    "values": {
+    "keys": {
       "foo": {
         "value": "really!"
       },
@@ -160,9 +160,9 @@ MISSING: [
       },
       "arr": {
         "type": "array",
-        "value": {
+        "items": {
           "type": "object",
-          "values": {
+          "keys": {
             "a": {
               "type": "int"
             }
@@ -171,11 +171,15 @@ MISSING: [
       },
       "objectWithUnknownKeys": {
         "type": "object",
-        "values": "int"
+        "values": {
+          "type": "int"
+        }
       },
       "objectWithUnknownKeysAndUnknownTypes": {
         "type": "object",
-        "values": "/"
+        "values": {
+          "type": "/"
+        }
       }
     }
   }

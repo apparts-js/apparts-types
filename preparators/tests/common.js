@@ -6,12 +6,12 @@ const bodyParser = require("body-parser");
 const app = express();
 app.use(bodyParser.json());
 
-const expectSuccess = async (path, body) => {
+const expectSuccess = async (path, body, retBody = "ok") => {
   const res = await request(app)
     .post(path)
     .send(body)
     .expect("Content-Type", "application/json; charset=utf-8");
-  expect(res.body).toBe("ok");
+  expect(res.body).toStrictEqual(retBody);
   expect(res.status).toBe(200);
   return res;
 };
@@ -68,22 +68,27 @@ const defPrep = (path, assumptions, tipe) => {
           case "string":
           case "email":
           case "password":
-            return typeof val === "string" ? "ok" : "nope";
+            return typeof val === "string" ? val : "nope";
 
           case "id":
           case "int":
           case "float":
           case "time":
-            return typeof val === "number" ? "ok" : "nope";
+            return typeof val === "number" ? val : "nope";
 
           case "bool":
-            return typeof val === "boolean" ? "ok" : "nope";
+            return typeof val === "boolean" ? val : "nope";
 
           case "array":
-          case "arrayInt":
-          case "arrayId":
-          case "arrayTime":
-            return Array.isArray(val) ? "ok" : "nope";
+          case "array_int":
+          case "array_id":
+          case "array_time":
+            return Array.isArray(val) ? val : "nope";
+
+          case "object":
+            return typeof val === "object" ? val : "nope";
+          case "/":
+            return val;
         }
       }
       return "ok";

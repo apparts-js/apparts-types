@@ -1,10 +1,11 @@
 "use strict";
 
 const uuidv1 = require("uuid/v1");
-
-const types = require("./types");
-
+const types = require("../types/types");
 const config = require("@apparts/config").get("types-config");
+const recursiveCheck = require("../types/checkType");
+const assertionType = require("../apiTypes/preparatorAssertionType");
+const returnType = require("../apiTypes/preparatorReturnType");
 
 const has = (...ps) => Object.hasOwnProperty.call(...ps);
 
@@ -18,17 +19,21 @@ const has = (...ps) => Object.hasOwnProperty.call(...ps);
  * assertions
  */
 const prepare = (assertions, next, options = {}) => {
-  const { body = {}, params = {}, query = {}, ...rest } = assertions;
-  if (Object.keys(rest).length > 0) {
+  const fields = assertions;
+
+  if (!recursiveCheck(fields, assertionType)) {
     throw new Error(
-      "Preparator: Assertions contain invalid fields: " + Object.keys(rest)
+      "PREPARATOR: Nope, your assertions are not well defined!\nYour assertions: " +
+        JSON.stringify(assertions, undefined, 2)
     );
   }
-  const fields = { body, params, query };
 
-  precheckTypes(body);
-  precheckTypes(params);
-  precheckTypes(query);
+  if (!recursiveCheck(options.returns || [], returnType)) {
+    throw new Error(
+      "PREPARATOR: Nope, your return types are not well defined!\nYour returns: " +
+        JSON.stringify(options.returns, undefined, 2)
+    );
+  }
 
   const f = async function (req, res) {
     res.setHeader("Content-Type", "application/json");
@@ -74,9 +79,17 @@ const prepare = (assertions, next, options = {}) => {
     }
     try {
       const data = await next(req, res);
-      if (typeof data === "object" && data.type === "HttpError") {
+      if (
+        typeof data === "object" &&
+        data !== null &&
+        data.type === "HttpError"
+      ) {
         catchError(res, req, data);
-      } else if (typeof data === "object" && data.type === "HttpCode") {
+      } else if (
+        typeof data === "object" &&
+        data !== null &&
+        data.type === "HttpCode"
+      ) {
         res.status(data.code);
         res.send(JSON.stringify(data.message));
       } else {
@@ -97,21 +110,8 @@ const prepare = (assertions, next, options = {}) => {
   return f;
 };
 
-const precheckTypes = (wanted) => {
-  for (const param in wanted) {
-    if (!has(wanted[param], "type")) {
-      throw new Error("ERROR AT PREPARATOR: No type for: " + param);
-    }
-    if (!types[wanted[param]["type"]]) {
-      throw new Error(
-        "ERROR AT PREPARATOR: Unknown type: " + wanted[param]["type"]
-      );
-    }
-  }
-};
-
 const catchError = (res, req, e) => {
-  if (typeof e === "object" && e.type === "HttpError") {
+  if (typeof e === "object" && e !== null && e.type === "HttpError") {
     res.status(e.code);
     res.send(
       JSON.stringify({
@@ -125,6 +125,7 @@ const catchError = (res, req, e) => {
   const errorObj = constructErrorObj(req, e);
   try {
     console.log(JSON.stringify(errorObj));
+    console.log(errorObj.TRACE);
   } catch (e) /* istanbul ignore next */ {
     console.log(errorObj);
   }
@@ -176,25 +177,23 @@ const check = (wanted, given, field) => {
 };
 
 const validateAndConvert = (wanted, param, given, field) => {
-  if (types[wanted[param]["type"]].conv && field !== "body") {
-    try {
-      given[param] = types[wanted[param]["type"]].conv(given[param]);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-  if (field === "query") {
+  if (field === "query" || field === "params") {
     try {
       given[param] = decodeURIComponent(given[param]);
     } catch (e) /* istanbul ignore next */ {
       return false;
     }
   }
-  if (types[wanted[param]["type"]].check(given[param])) {
-    return true;
+
+  if (types[wanted[param]["type"]].conv && field !== "body") {
+    try {
+      given[param] = types[wanted[param]["type"]].conv(given[param]);
+    } catch (e) {
+      return false;
+    }
   }
-  return false;
+
+  return recursiveCheck(given[param], wanted[param]);
 };
 
 const constructErrorObj = (req, error) => {

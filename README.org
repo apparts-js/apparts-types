@@ -2,6 +2,10 @@
 #+DATE: [2019-08-26 Mon]
 #+AUTHOR: Philipp Uhl
 
+This package provides functions for checking correctness of values
+against certain types. It also provides a set of functions for helping
+to *build type-correct REST-APIs*, to be used with [[https://www.npmjs.com/package/express][express]].
+
 * Configuration
 
 Under the configuration name =types-config= the following options exist:
@@ -17,11 +21,15 @@ More information on how to set this: [[https://github.com/phuhl/apparts-config][
 
 * Types
 
-- ~id~
-  - As configured
+A type is defined by an object. The object must either contain a key
+=type= that is an atomic type or be of the form of =object=, =array=, =oneOf=,
+=value= as described under "Compound types".
+
+** Atomic types:
+
+- ~id~ (as configured)
 - ~uuidv4~
-- ~/~
-  - Catch all
+- ~/~ (catch all)
 - =int=
 - ~float~
 - ~hex~
@@ -29,26 +37,95 @@ More information on how to set this: [[https://github.com/phuhl/apparts-config][
 - ~bool~
 - ~string~
 - ~email~
-- ~array~
 - ~array_int~
 - ~array_id~
-- ~password~
-  - Alias for ~string~
+- ~password~ (alias for ~string~)
 - ~time~
-- ~array_time~
-  - Alias for ~array_id~
+- ~array_time~ (alias for ~array_id~)
+
+To be used as ={ type: <atomic type> }=.
+
+** Compound types
+
+Compound objects make it possible to check complex JSON values for
+validity. Any sub-type can be either an atomic type or a compound type.
+
+- =object= :: Matches if the vale is an object and all the values of the
+  object have the types as specified by =values=, or if the specific
+  keys of the object are known, as specified by the key in =keys=.
+  - With known keys:
+  #+BEGIN_SRC js
+    {
+      type: "object",
+      keys: {
+        <key1>: { type: <type> [, optional: true]},
+        ...
+      }
+    }
+  #+END_SRC
+  - With unknown keys:
+  #+BEGIN_SRC js
+    {
+      type: "object",
+      values: <type>
+    }
+  #+END_SRC
+- =array= :: Matches if the value is an array and all items of the array
+  match the type, as specified by =items=.
+  #+BEGIN_SRC js
+    {
+      type: "array",
+      items: <type>
+    }
+  #+END_SRC
+- =oneOf= :: Matches if at least one of the alternatives matches
+  #+BEGIN_SRC js
+    {
+      type: "oneOf",
+      alternatives: [
+          <type>, ...
+      ]
+    }
+  #+END_SRC
+- =value= :: Matches the exact content
+  #+BEGIN_SRC js
+  {
+    value: <a value>
+  }
+  #+END_SRC
+
+** Encoding for the preparator
 
 When requesting an API checked by @apparts/types, make sure, the
 following holds:
 
 - The *body* is always expected to be in JSON format.
-- The *path parameters* must never be empty (otherwise express can't
+- The *path* parameters must never be empty (otherwise express can't
   route you correctly) and if the type used is an array, it must be
   JSON encoded.
-- The *query* parameters must be URI encoded. If the type used is an
-  array, it must be JSON encoded.
+- The *param* and *query* parameters must be URI encoded. If the =typeof=
+  gives ="object"= on the value, the value must be JSON encoded.
 
 * Usage
+
+The =preparator= function provides a wrapper around express routes. It
+checks the types of the requests and handles errors.
+
+The =preparator= function takes these arguments:
+- =assertions <object>= :: The Format the request has to be in, to be
+  accepted. The =body=, =query=, and =param= fields are optional and take
+  key-value pairs where the values are types as described in the
+  section "Types".
+- =route <func>= :: A (async) function that receives as first parameter
+  the request object that contains the parsed =body=, =query=, =params= and whatever
+  was injected by your middlewares. What the function returns will be
+  returned to the client.
+- =options <object>= ::
+  - =?title <string>= :: The title of the route (for documentation).
+  - =?description <string>= :: A description of the route (for documentation).
+  - =?returns <array>= :: All potential types that can be returned by
+    the function (for documentation and for validation). More
+    information in the section "Test API Types".
 
 #+BEGIN_SRC js
   const { preparator } = require("@apparts/types");
@@ -148,12 +225,32 @@ return new HttpCode(304, myData);
 // ...
 #+END_SRC
 
-** Errors produced by =preperator=
+** Error handling by =preperator=
 
-Should a request not match any of the type assertions as defined, the
-=preparator= will respond with a status code of 400 and this body:
-
-={ "error": "Fieldmissmatch", "description": "<explanation>" }=
+- Should a request not match any of the type assertions as defined, the
+  =preparator= will respond with a status code of 400 and this body:
+  #+BEGIN_SRC json
+  { "error": "Fieldmissmatch", "description": "<explanation>" }
+  #+END_SRC
+- Should the route throw an error that is not an [[https://github.com/phuhl/apparts-error][HttpError]], it catches
+  the error and returns with a status code of 500 and this body
+  (encoding: =text/plain=):
+  #+BEGIN_EXAMPLE
+  SERVER ERROR! <Uuid v1> Please consider sending this error-message along with a description of what happend and what you where doing to this email-address: <config.bugreportEmail>
+  #+END_EXAMPLE
+  Additionally a more complete error will be logged:
+  - The error that was thrown will be logged as is.
+  - A JSON encoded object (for automated collecting of errors) with
+    these fields:
+    - ID :: A Uuid v1 (that is the same as was returned to the client)
+      for matching client-side errors with errors in the log.
+    - USER :: The =Authorization= header
+    - TRACE :: The stack trace of the error
+    - REQUEST :: Object with
+      - url :: The requesting url
+      - method :: HTTP method used (e.g. POST)
+      - ip :: Ip of client
+      - ua :: User agent of client
 
 ** Authentication
 
@@ -190,11 +287,11 @@ package, that provides all the necessary REST endpoints an extendable
 user model and more.
 
 #+BEGIN_SRC js
-  const { prepauthPW } = require("@apparts/types");
-
+  const { prepauthPW: _prepauthPW } = require("@apparts/types");
   // Create the user as described by the README of @apparts/model
   // and import it here:
   const { Users, User, NoUser } = require("../models/user");
+  const prepauthPW = _prepauthPW(User)
 
   const myEndpoint = prepauthPW(
     {
@@ -242,11 +339,12 @@ package, that provides all the necessary REST endpoints an extendable
 user model and more.
 
 #+BEGIN_SRC js
-  const { prepauthToken } = require("@apparts/types");
+  const { prepauthToken: _prepauthToken } = require("@apparts/types");
 
   // Create the user as described by the README of @apparts/model
   // and import it here:
   const { Users, User, NoUser } = require("../models/user");
+  const prepauthToken = _prepauthToken(User);
 
   const myEndpoint = prepauthToken(
     {
@@ -360,19 +458,13 @@ function like shown above. The =returns= has the form of:
 Object with:
 - status :: Expected status code
 - One of
-  - value :: Expected exact value
   - error :: Expected error text, as returned by =HttpError= from the
     "@apparts/error" package
     - When an error key is used, the response will exclude the field
       =description= of the response body from the check. This allows
       to optionally put dynamic content into the =description= field, to
       elaborate further on the error
-  - type :: A type from =types.js= or =object= or =array=.
-    - When type === object :: A key =values= specifies the possible keys in the
-      object and their types or values. Keynames are the keys, the
-      types each are an object, that can contain, =value=, =type=, =values=
-      (in case of ~type === "object"~), =optional= (for keys in the
-      object, that might sometimes not be present)
+  - type :: A type as described in Section "Types".
 
 Functions:
 - =checkType(funktionContainer, response, functionName)=

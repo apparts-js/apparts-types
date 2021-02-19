@@ -4,18 +4,19 @@ const testTypes = require("./types");
 describe("Params", () => {
   const wrong = (path, val, tipe) =>
     expectWrong(
-      path + (typeof val === "object" ? JSON.stringify(val) : val),
-      //     path + JSON.stringify(val),
+      path +
+        encodeURIComponent(typeof val === "object" ? JSON.stringify(val) : val),
       {},
       "params",
       "myField",
       tipe
     );
-  const right = (path, val) =>
+  const right = (path, val, tipe, retVal) =>
     expectSuccess(
-      path + (typeof val === "object" ? JSON.stringify(val) : val),
-      //      path + JSON.stringify(val),
-      {}
+      path +
+        encodeURIComponent(typeof val === "object" ? JSON.stringify(val) : val),
+      {},
+      retVal !== undefined ? retVal : val
     );
 
   test("Should accept empty params assumptions", async () => {
@@ -37,7 +38,7 @@ describe("Params", () => {
         bool: { type: "bool" },
         string: { type: "string" },
         email: { type: "email" },
-        array: { type: "array" },
+        array: { type: "array", items: { type: "/" } },
         arrayInt: { type: "array_int" },
         arrayId: { type: "array_id" },
         password: { type: "password" },
@@ -222,16 +223,6 @@ describe("Params", () => {
     await testTypes[tipe](tipe, path, right, wrong, true);
   });
 
-  test("Should reject malformated array", async () => {
-    const tipe = "array";
-    const path = defPrep(
-      ":myField",
-      { params: { myField: { type: tipe } } },
-      tipe
-    );
-    await testTypes[tipe](tipe, path, right, wrong, true);
-  });
-
   test("Should reject malformated array_int", async () => {
     const tipe = "array_int";
     const path = defPrep(
@@ -278,6 +269,33 @@ describe("Params", () => {
       ":myField",
       { params: { myField: { type: tipe } } },
       tipe
+    );
+    await testTypes[tipe](tipe, path, right, wrong, true);
+  });
+
+  test("Should reject malformated array with emails", async () => {
+    const tipe = "array";
+    const path = defPrep(
+      ":myField",
+      { params: { myField: { type: "array", items: { type: "email" } } } },
+      "array"
+    );
+    await testTypes[tipe](tipe, path, right, wrong, true);
+  });
+
+  test("Should reject malformated object with keys", async () => {
+    const tipe = "object";
+    const path = defPrep(
+      ":myField",
+      {
+        params: {
+          myField: {
+            type: "object",
+            keys: { firstKey: { type: "email" }, secondKey: { type: "int" } },
+          },
+        },
+      },
+      "object"
     );
     await testTypes[tipe](tipe, path, right, wrong, true);
   });
