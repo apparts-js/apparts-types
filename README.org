@@ -467,60 +467,67 @@ Object with:
   - type :: A type as described in Section "Types".
 
 Functions:
-- =checkType(funktionContainer, response, functionName)=
+- =useChecks : <(functionContainer) => { checkType, allChecked}>= ::
+  Returns the functions needed to perform checks 
   - Parameters:
     - =funktionContainer= <object> :: An object that contains the tested
       function under the key as specified in =functionName=
-    - =response= :: The response, that should be checked
-    - =functionName= <string> :: The name of the function
   - Returns:
-    - =true= :: Check passed
-    - =false= :: Check did not pass
-- =allChecked(funktionContainer, functionName)=
-  - Parameters:
-    - =funktionContainer= <object> :: An object that contains the tested
-      function under the key as specified in =functionName=
-    - =functionName= <string> :: The name of the function
-  - Returns:
-    - =true= :: All possible return combinations for the given
-      function have been tested
-    - =false= :: Not everything has been tested
+    - Object with keys:
+      - =checkType : <(response, functionName) => boolean>= :: Checks if
+        type is allowed.
+        - Parameters:
+          - =response= :: The response, that should be checked
+          - =functionName= <string> :: The name of the function
+        - Returns:
+          - =true= :: Check passed
+        - Throws:
+          - An Error when checks have not passed
+      - =allChecked : <(functionName) => boolean>= :: Check if all
+        possible return combinations have been checked
+        - Parameters:
+          - =functionName= <string> :: The name of the function
+        - Returns:
+          - =true= :: All possible return combinations for the given
+            function have been tested
+        - Throws:
+          - An Error when checks have not passed
 
 #+BEGIN_SRC js
-  const { checkApiTypes: {checkType: _checkType, allChecked} } = require("@apparts/types");
+  const { useChecks } = require("@apparts/types");
   const request = require("supertest");
 
   const myEndpoint = require("./myEndpoint");
 
-  const checkType = (res, name) => _checkType(myEndpoint, res, name);
+  const { checkType, allChecked } = useChecks(myEndpoint);
   ///const app = ...;
+
+
   describe("myEndpoint", () => {
+    const functionName = "myEndpoint";
     test("Test with default name", async () => {
       const response = await request(app).post("/v/1/endpoint/3");
-      expect(checkType(response, "myEndpoint")).toBeTruthy();
+      checkType(response, functionName);
       expect(response.statusCode).toBe(200);
       expect(response.body).toBe("ok");
     });
     test("Test with too long name", async () => {
       const response = await request(app).post("/v/1/endpoint/3")
         .send({ name: "x".repeat(200) });
-      expect(checkType(response, "myEndpoint")).toBeTruthy();
+      checkType(response, functionName);
       expect(response.statusCode).toBe(400);
     });
     test("Test with filter", async () => {
       const response = await request(app).post("/v/1/endpoint/3?filter=4");
-      expect(checkType(response, "myEndpoint")).toBeTruthy();
+      checkType(response, functionName);
       expect(response.statusCode).toBe(200);
       expect(response.body).toMatchObject({
         arr: [{ a: 1 }, { a: 2}],
         boo: true
       });
     });
-  });
-
-  describe("All possible responses tested", () => {
-    test("", () => {
-      expect(allChecked(myEndpoint, "myEndpoint")).toBeTruthy();
+    test("All possible responses tested", () => {
+      allChecked(functionName);
     });
   });
 #+END_SRC
