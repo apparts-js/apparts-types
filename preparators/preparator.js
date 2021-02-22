@@ -4,6 +4,7 @@ const uuidv1 = require("uuid/v1");
 const types = require("../types/types");
 const config = require("@apparts/config").get("types-config");
 const recursiveCheck = require("../types/checkType");
+const explainCheck = require("../types/explainCheck");
 const assertionType = require("../apiTypes/preparatorAssertionType");
 const returnType = require("../apiTypes/preparatorReturnType");
 
@@ -21,17 +22,23 @@ const has = (...ps) => Object.hasOwnProperty.call(...ps);
 const prepare = (assertions, next, options = {}) => {
   const fields = assertions;
 
-  if (!recursiveCheck(fields, assertionType)) {
+  const assError = explainCheck(fields, assertionType);
+  if (assError) {
     throw new Error(
       "PREPARATOR: Nope, your assertions are not well defined!\nYour assertions: " +
-        JSON.stringify(assertions, undefined, 2)
+        JSON.stringify(assertions, undefined, 2) +
+        "\nProblem: " +
+        JSON.stringify(assError, undefined, 2)
     );
   }
 
-  if (!recursiveCheck(options.returns || [], returnType)) {
+  const retError = explainCheck(options.returns || [], returnType);
+  if (retError) {
     throw new Error(
       "PREPARATOR: Nope, your return types are not well defined!\nYour returns: " +
-        JSON.stringify(options.returns, undefined, 2)
+        JSON.stringify(options.returns, undefined, 2) +
+        "\nProblem: " +
+        JSON.stringify(retError, undefined, 2)
     );
   }
 
@@ -156,14 +163,14 @@ const check = (wanted, given, field) => {
     if (!exists) {
       if (has(wanted[param], "default")) {
         given[param] = wanted[param]["default"];
-        return true;
+        continue;
       }
       if (wanted[param]["optional"] !== true) {
         const res = {};
         res[param] = "missing " + wanted[param]["type"];
         return res;
       }
-      return true;
+      continue;
     }
 
     if (!validateAndConvert(wanted, param, given, field)) {
@@ -177,14 +184,6 @@ const check = (wanted, given, field) => {
 };
 
 const validateAndConvert = (wanted, param, given, field) => {
-  if (field === "query" || field === "params") {
-    try {
-      given[param] = decodeURIComponent(given[param]);
-    } catch (e) /* istanbul ignore next */ {
-      return false;
-    }
-  }
-
   if (types[wanted[param]["type"]].conv && field !== "body") {
     try {
       given[param] = types[wanted[param]["type"]].conv(given[param]);

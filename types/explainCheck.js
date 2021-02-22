@@ -1,122 +1,88 @@
 const checkTypes = require("./types.js");
 
-const errorField = (error, field) => {
-  error[field] = {};
-  return error[field];
-};
+const pad = (str, len = 10) => " ".repeat(Math.max(len - (str + "").length, 0));
 
-const errorArray = (error, field, index) => {
-  error[field] = error[field] || [];
-  error[field][index] = {};
-  return error[field][index];
-};
-
-const recursiveCheck = (response, type, error = {}) => {
+const explainCheck = (response, type) => {
   if (type.type === "oneOf" && Array.isArray(type.alternatives)) {
-    if (
-      type.alternatives.reduce(
-        (a, b, i) =>
-          a || recursiveCheck(response, b, errorArray(error, "oneOf", i)),
-        false
-      )
-    ) {
-      delete error.oneOf;
-      return true;
-    } else {
-      return false;
-    }
+    const res = type.alternatives.map((b) => explainCheck(response, b));
+    return res.some((a) => a === false) ? false : res;
   }
-  if (type.type === "array") {
-    if (checkTypes.array.check(response)) {
-      if (
-        response.reduce(
-          (a, b, i) =>
-            a && recursiveCheck(b, type.items, errorArray(error, "items", i)),
-          true
-        )
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      error.values = "Expected an array, found " + typeof response;
-      return false;
-    }
+
+  if (type.type === "array" && checkTypes.array.check(response)) {
+    const res = response.map((b) => explainCheck(b, type.items));
+    return res.every((a) => a === false)
+      ? false
+      : res.map((a) => (a === false ? "✔" : a));
   }
+
   if (type.type === "object") {
-    const responseIsObject = typeof response === "object";
-    const hasKeys = typeof type.keys === "object";
-    const hasValues = typeof type.values === "object";
+    const responseIsObject = typeof response === "object" && response !== null;
+    const hasKeys = typeof type.keys === "object" && type.keys !== null;
+    const hasValues = typeof type.values === "object" && type.values !== null;
 
-    if (responseIsObject && hasKeys) {
-      const allExistingValuesCorrectlyTyped = Object.keys(response).reduce(
-        (a, b) => {
-          if (!type.keys[b]) {
-            error[b] = `Did not expect key "${b}"`;
-          }
-          return (
-            a &&
-            type.keys[b] &&
-            recursiveCheck(response[b], type.keys[b], errorField(error, b))
-          );
-        },
-        true
-      );
-      const allRequiredValuesExist = Object.keys(type.keys).reduce((a, b) => {
-        if (response[b] !== undefined || type.keys[b].optional) {
-          return a;
-        } else {
-          error[b] = "Key is missing";
-          return false;
+    if (!responseIsObject) {
+      return "❌ Expected Object";
+    }
+
+    const resp = {};
+    if (hasKeys) {
+      for (const key in response) {
+        if (!type.keys[key]) {
+          resp[key] = "❌ ➕ Too much";
+          return resp;
         }
-      }, true);
 
-      if (allExistingValuesCorrectlyTyped && allRequiredValuesExist) {
-        for (const key in error) {
-          delete error[key];
+        const typeWrong = explainCheck(response[key], type.keys[key]);
+        resp[key] = "✔";
+        if (typeWrong) {
+          resp[key] = typeWrong;
+          return resp;
         }
-        return true;
-      } else {
-        return false;
       }
-    } else if (
-      responseIsObject &&
-      hasValues &&
-      Object.keys(response).reduce(
-        (a, b) =>
-          a && recursiveCheck(response[b], type.values, errorField(error, b)),
-        true
-      )
-    ) {
-      return true;
-    } else {
-      if (!responseIsObject) {
-        error.object = "Not an object";
+      for (const key in type.keys) {
+        const missing = response[key] === undefined && !type.keys[key].optional;
+        if (missing) {
+          resp[key] = "❌ ➖ Missing";
+          return resp;
+        }
       }
-      if (!hasValues) {
-        error.object = "No values specified";
-      }
-
       return false;
     }
+
+    if (hasValues) {
+      for (const key in response) {
+        const typeWrong = explainCheck(response[key], type.values);
+        resp[key] = "✔";
+        if (typeWrong) {
+          resp[key] = typeWrong;
+          return resp;
+        }
+      }
+      return false;
+    }
+    return "❌ Has neither values nor keys";
   }
+
   if (type.value) {
-    if (JSON.stringify(type.value) === JSON.stringify(response)) {
-      return true;
-    } else {
-      error.value = `Value missmatch: Expected "${type.value}", got "${response}"`;
-      return false;
+    if (JSON.stringify(type.value) !== JSON.stringify(response)) {
+      return `❌ Value wrong: Expected '${type.value}', ${pad(
+        type.value
+      )} got '${response}'`;
     }
+    return false;
   }
   if (type.type) {
-    if (checkTypes[type.type] && checkTypes[type.type].check(response)) {
-      return true;
-    } else {
-      error.type = `Type missmatch: Expected "${type.type}".`;
+    if (!checkTypes[type.type]) {
+      return `❌ Unkown type: "${type.type}"`;
     }
+    if (!checkTypes[type.type].check(response)) {
+      return `❌ Type missmatch: Expected '${type.type}', ${pad(
+        type.value
+      )}got '${response}'`;
+    }
+    return false;
   }
-  return false;
+  return `❌ Wrong assertion`;
 };
 
-module.exports = recursiveCheck;
+module.exports = explainCheck;

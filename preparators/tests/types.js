@@ -188,6 +188,7 @@ const string = async (tipe, path, right, wrong, isParams, isQuery) => {
   if (!isParams) {
     await right(path, "", tipe);
   }
+  await right(path, encodeURIComponent("%rty"), tipe);
   await right(path, "its a&stri=ng", tipe);
   await right(path, "its a/string", tipe);
   await right(path, "its a string", tipe);

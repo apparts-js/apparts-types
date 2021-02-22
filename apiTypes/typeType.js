@@ -55,6 +55,7 @@ const directType = {
         { value: "hex" },
         { value: "base64" },
         { value: "bool" },
+        { value: "boolean" },
         { value: "string" },
         { value: "email" },
         { value: "array_int" },
