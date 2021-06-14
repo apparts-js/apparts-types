@@ -89,7 +89,7 @@ p {
   font-weight: bold;
   color: red;
 }
-.returns {
+.returns, .usage {
   font-weight: bold;
 }
 .docs {

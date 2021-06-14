@@ -95,7 +95,7 @@ p {
   font-weight: bold;
   color: red;
 }
-.returns {
+.returns, .usage {
   font-weight: bold;
 }
 .docs {
@@ -206,16 +206,13 @@ Testendpoint for multiple purposes</h3>
 
      
         <li>Body: <br><ul>
-                                                               <li><code>name:
-                                                                         <span class="type">&lt;string&gt; </span>(= "no name")</code></li>
+                                                               <li><code>name: <span class="type">&lt;string&gt;</span> (= "no name")</code></li>
         </li></ul></li>
         <li>Query: <br><ul>
-                                                               <li><code>? filter:
-                                                                         <span class="type">&lt;string&gt; </span></code></li>
+                                                               <li><code>filter: ? <span class="type">&lt;string&gt;</span></code></li>
         </li></ul></li>
         <li>Params: <br><ul>
-                                                               <li><code>id:
-                                                                         <span class="type">&lt;id&gt; </span></code></li>
+                                                               <li><code>id: <span class="type">&lt;id&gt;</span></code></li>
         </li></ul></li>
      </ul>
      <span class="returns">Returns:</span> <br>
@@ -228,12 +225,14 @@ Testendpoint for multiple purposes</h3>
         <code>{ "error": "Name too long" }</code></li>
         
         <li>Status: 200
-        <code>{<br/>&nbsp;&nbsp;"foo": "really!",<br/>&nbsp;&nbsp;"boo": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"kabaz": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"arr": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;],<br/>&nbsp;&nbsp;"objectWithUnknownKeys": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;int&gt;</span></span><br/>&nbsp;&nbsp;},<br/>&nbsp;&nbsp;"objectWithUnknownKeysAndUnknownTypes": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;/&gt;</span></span><br/>&nbsp;&nbsp;}<br/>}</code></li>
+        <code>{<br/>&nbsp;&nbsp;"foo": "really!",<br/>&nbsp;&nbsp;"boo": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"kabaz": ? <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"arr": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;],<br/>&nbsp;&nbsp;"objectWithUnknownKeys": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;int&gt;</span></span><br/>&nbsp;&nbsp;},<br/>&nbsp;&nbsp;"objectWithUnknownKeysAndUnknownTypes": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;/&gt;</span></span><br/>&nbsp;&nbsp;}<br/>}</code></li>
         
         <li>Status: 400
         <code>{ "error": "Fieldmissmatch" }</code></li>
         
      </ul>
+     <span class="usage">Usage:</span> <br><br>
+     <code>try {<br/>&nbsp;&nbsp;const response = await post("endpoint/$1", [ id ])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.query({ filter })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.data({ name })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Name too long" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section><section id="post_/v/1/faultyendpoint/:id">
    <h3><span class="version">v1</span>
@@ -248,16 +247,13 @@ does not match it's behavior.</p>
 
      
         <li>Body: <br><ul>
-                                                               <li><code>name:
-                                                                         <span class="type">&lt;string&gt; </span>(= "no name")</code></li>
+                                                               <li><code>name: <span class="type">&lt;string&gt;</span> (= "no name")</code></li>
         </li></ul></li>
         <li>Query: <br><ul>
-                                                               <li><code>? filter:
-                                                                         <span class="type">&lt;string&gt; </span></code></li>
+                                                               <li><code>filter: ? <span class="type">&lt;string&gt;</span></code></li>
         </li></ul></li>
         <li>Params: <br><ul>
-                                                               <li><code>id:
-                                                                         <span class="type">&lt;id&gt; </span></code></li>
+                                                               <li><code>id: <span class="type">&lt;id&gt;</span></code></li>
         </li></ul></li>
      </ul>
      <span class="returns">Returns:</span> <br>
@@ -276,6 +272,8 @@ does not match it's behavior.</p>
         <code>{ "error": "Fieldmissmatch" }</code></li>
         
      </ul>
+     <span class="usage">Usage:</span> <br><br>
+     <code>try {<br/>&nbsp;&nbsp;const response = await post("faultyendpoint/$1", [ id ])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.query({ filter })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.data({ name })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Name too long" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section><section id="post_/v/1/typelessendpoint">
    <h3><span class="version">v1</span>
@@ -296,6 +294,8 @@ Typeless endpoint</h3>
         <code>{ "error": "Fieldmissmatch" }</code></li>
         
      </ul>
+     <span class="usage">Usage:</span> <br><br>
+     <code>try {<br/>&nbsp;&nbsp;const response = await post("typelessendpoint", [&nbsp;&nbsp;]);<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section><section id="delete_/v/1/withpw">
    <h3><span class="version">v1</span>
@@ -330,6 +330,8 @@ Endpoint with Pw Authentication</h3>
         <code>{ "error": "Fieldmissmatch" }</code></li>
         
      </ul>
+     <span class="usage">Usage:</span> <br><br>
+     <code>try {<br/>&nbsp;&nbsp;const response = await delete("withpw", [&nbsp;&nbsp;])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.auth(user)<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 401, error: "User not found" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;})<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Authorization wrong" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section><section id="patch_/v/1/withtoken">
    <h3><span class="version">v1</span>
@@ -364,6 +366,8 @@ Endpoint with Token Authentication</h3>
         <code>{ "error": "Fieldmissmatch" }</code></li>
         
      </ul>
+     <span class="usage">Usage:</span> <br><br>
+     <code>try {<br/>&nbsp;&nbsp;const response = await patch("withtoken", [&nbsp;&nbsp;])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.auth(user)<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 401, error: "User not found" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;})<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Authorization wrong" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section><section id="put_/v/1/withjwt">
    <h3><span class="version">v1</span>
@@ -398,6 +402,8 @@ Endpoint with JWT Authentication</h3>
         <code>{ "error": "Fieldmissmatch" }</code></li>
         
      </ul>
+     <span class="usage">Usage:</span> <br><br>
+     <code>try {<br/>&nbsp;&nbsp;const response = await put("withjwt", [&nbsp;&nbsp;])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.auth(user)<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 401, error: "Unauthorized" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;})<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 401, error: "Token invalid" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section><section id="get_/v/1/error">
    <h3><span class="version">v1</span>
@@ -411,8 +417,7 @@ Error checkpoint endpoint</h3>
 
      
         <li>Query: <br><ul>
-                                                               <li><code>error:
-                                                                         <span class="type">&lt;bool&gt; </span></code></li>
+                                                               <li><code>error: <span class="type">&lt;bool&gt;</span></code></li>
         </li></ul></li>
      </ul>
      <span class="returns">Returns:</span> <br>
@@ -425,6 +430,8 @@ Error checkpoint endpoint</h3>
         <code>{ "error": "Fieldmissmatch" }</code></li>
         
      </ul>
+     <span class="usage">Usage:</span> <br><br>
+     <code>try {<br/>&nbsp;&nbsp;const response = await get("error", [&nbsp;&nbsp;])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.query({ error })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Text 1" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section>
     </div>

@@ -1,11 +1,60 @@
 const STYLE = require("./style");
 
+const pathToParamPath = (path) => {
+  const pathParts = path.split("/").slice(3);
+
+  const params = pathParts
+    .filter((part) => part.charAt(0) === ":")
+    .map((part) => part.substr(1));
+  let counter = 1;
+  const pathWithParams = pathParts
+    .map((part) => (part.charAt(0) === ":" ? "$" + counter++ : part))
+    .join("/");
+  return { pathWithParams, params };
+};
+
+const usageExample = (method, path, assertions, options, returns) => {
+  let res = "try {";
+  const { pathWithParams, params } = pathToParamPath(path);
+  res += `
+  const response = await ${method}("${pathWithParams}", [ ${params.join(
+    ", "
+  )} ])`;
+  if (assertions.query) {
+    res += `
+    .query({ ${Object.keys(assertions.query).join(", ")} })`;
+  }
+  if (assertions.body) {
+    res += `
+    .data({ ${Object.keys(assertions.body).join(", ")} })`;
+  }
+  if (options.auth) {
+    res += `
+    .auth(user)`;
+  }
+  for (const returnType of returns) {
+    if (returnType.status >= 400 && returnType.error !== "Fieldmissmatch") {
+      res += `
+    .on({ status: ${returnType.status}, error: "${returnType.error}" }, () => {
+       /* handle error */
+    })`;
+    }
+  }
+  res += `;
+} catch (e) {
+  // If e is not false, then no error-catcher caught the error and
+  // you might want to take care of it
+  e && alert(e);
+}`;
+  return res.replace(/\n/g, "<br/>").replace(/ {2}/g, "&nbsp;&nbsp;");
+};
+
 const recursivelyPrintType = (type, indent = 0) => {
   let res = "";
   const spaces = " ".repeat(indent);
   if (type.type === "object") {
     if (typeof type.keys === "object") {
-      res += `{
+      res += `${type.optional ? "? " : ""}{
 ${Object.keys(type.keys)
   .map(
     (key) =>
@@ -14,7 +63,7 @@ ${Object.keys(type.keys)
   .join(",\n")}
 ${spaces}}`;
     } else {
-      res += `{
+      res += `${type.optional ? "? " : ""}{
 ${spaces}  <span class="type">&lt;/&gt;</span>: <span class="type">${recursivelyPrintType(
         type.values,
         indent + 2
@@ -22,11 +71,13 @@ ${spaces}  <span class="type">&lt;/&gt;</span>: <span class="type">${recursively
 ${spaces}}`;
     }
   } else if (type.type === "array") {
-    res += `[
+    res += `${type.optional ? "? " : ""}[
 ${spaces}  ${recursivelyPrintType(type.items, indent + 2)}
 ${spaces}]`;
   } else if (type.type) {
-    res += `<span class="type">&lt;${type.type}&gt;</span>`;
+    res += `${type.optional ? "? " : ""}<span class="type">&lt;${
+      type.type
+    }&gt;</span>`;
   } else {
     res += JSON.stringify(type.value);
   }
@@ -84,23 +135,11 @@ ${title || ""}</h3>
            Object.keys(assertions[type])
              .map(
                (key) => `
-                                                               <li><code>${
-                                                                 assertions[
-                                                                   type
-                                                                 ][key].optional
-                                                                   ? "? "
-                                                                   : ""
-                                                               }${key}:
-                                                                         <span class="type">&lt;${
-                                                                           assertions[
-                                                                             type
-                                                                           ][
-                                                                             key
-                                                                           ]
-                                                                             .type
-                                                                         }&gt; </span>${
+                                                               <li><code>${key}: ${recursivelyPrintType(
+                 assertions[type][key]
+               )}${
                  assertions[type][key].default
-                   ? `(= ${JSON.stringify(assertions[type][key].default)})`
+                   ? ` (= ${JSON.stringify(assertions[type][key].default)})`
                    : ""
                }</code></li>
         </li>`
@@ -125,6 +164,8 @@ ${title || ""}</h3>
        )
        .join("")}
      </ul>
+     <span class="usage">Usage:</span> <br><br>
+     <code>${usageExample(method, path, assertions, options, returns)}</code>
   </div>
 </section>`;
       }
