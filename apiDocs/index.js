@@ -1,4 +1,4 @@
-const STYLE = require("./style");
+const { apiToMd } = require("./apiToMd");
 const { apiToHtml } = require("./apiToHtml");
 const { apiToOpenApi } = require("./apiToOpenApi");
 
@@ -33,6 +33,7 @@ const getApi = (app) => {
 
 module.exports = {
   getApi,
+  apiToMd,
   apiToHtml,
   apiToOpenApi,
 };
