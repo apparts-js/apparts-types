@@ -280,6 +280,54 @@ const OAPI = {
         },
       },
     },
+    "/v/1/cantdecide": {
+      post: {
+        summary: "OneOf endpoint",
+        description: "This endpoint can't decide what it wants.",
+        parameters: [],
+        requestBody: {
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  value: {
+                    oneOf: [
+                      {
+                        type: "integer",
+                      },
+                      {
+                        type: "object",
+                        properties: {},
+                      },
+                    ],
+                  },
+                },
+                required: ["value"],
+              },
+            },
+          },
+          required: true,
+        },
+        responses: {
+          "400": {
+            description: "",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
     "/v/1/withpw": {
       delete: {
         summary: "Endpoint with Pw Authentication",

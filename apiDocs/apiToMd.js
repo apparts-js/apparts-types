@@ -24,6 +24,12 @@ ${spaces}}`;
     res += `${type.optional ? "? " : ""}[
 ${spaces}  ${recursivelyPrintType(type.items, indent + 2)}
 ${spaces}]`;
+  } else if (type.type === "oneOf") {
+    res += `${type.optional ? "? " : ""}(
+${spaces}  ${type.alternatives
+      .map((alt) => recursivelyPrintType(alt, indent + 2))
+      .join(`\n${spaces}  | `)}
+${spaces})`;
   } else if (type.type) {
     res += `${type.optional ? "? " : ""}<${type.type}>`;
   } else {
@@ -116,6 +122,7 @@ ${"```"}`;
 ${description || ""}
 
 **Method:** ${"`" + method.toUpperCase() + "`"}
+
 **Path:** ${"`" + path + "`"}
 ` +
           headersMd +
@@ -137,7 +144,7 @@ Commit hash: ${commitHash}
 ${toc
   .map(
     (a) =>
-      `[${a[4] ? "v" + a[4] : ""} - ${a[1]} ${a[3] || ""} ${a[2]}](#${
+      `- [${a[4] ? "v" + a[4] : ""} - ${a[1]} ${a[3] || ""} ${a[2]}](#${
         a[4] ? "v" + a[4] : ""
       }-${(a[3] || "").toLowerCase().split(" ").join("-")})`
   )

@@ -148,9 +148,30 @@ does not match it's behavior.`,
   }
 );
 
+const myOneOfEndpoint = preparator(
+  {
+    body: {
+      value: {
+        type: "oneOf",
+        alternatives: [
+          { type: "int" },
+          { type: "object", values: { type: "/" } },
+        ],
+      },
+    },
+  },
+  async () => {
+    return "ok";
+  },
+  {
+    title: "OneOf endpoint",
+    description: `This endpoint can't decide what it wants.`,
+  }
+);
+
 const myTypelessEndpoint = preparator(
   {},
-  async ({}) => {
+  async () => {
     return "ok";
   },
   {
@@ -161,7 +182,7 @@ const myTypelessEndpoint = preparator(
 
 const myPwAuthenticatedEndpoint = prepauthPW({})(
   {},
-  async ({}) => {
+  async () => {
     return "ok";
   },
   {
@@ -171,7 +192,7 @@ const myPwAuthenticatedEndpoint = prepauthPW({})(
 );
 const myTokenAuthenticatedEndpoint = prepauthToken({})(
   {},
-  async ({}) => {
+  async () => {
     return "ok";
   },
   {
@@ -181,7 +202,7 @@ const myTokenAuthenticatedEndpoint = prepauthToken({})(
 );
 const myJWTAuthenticatedEndpoint = prepauthTokenJWT("")(
   {},
-  async ({}) => {
+  async () => {
     return "ok";
   },
   {
@@ -212,6 +233,7 @@ app.use(bodyParser.json());
 app.post("/v/1/endpoint/:id", myEndpoint);
 app.post("/v/1/faultyendpoint/:id", myFaultyEndpoint);
 app.post("/v/1/typelessendpoint", myTypelessEndpoint);
+app.post("/v/1/cantdecide", myOneOfEndpoint);
 
 app.delete("/v/1/withpw", myPwAuthenticatedEndpoint);
 app.patch("/v/1/withtoken", myTokenAuthenticatedEndpoint);

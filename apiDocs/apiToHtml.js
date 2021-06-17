@@ -32,6 +32,12 @@ ${spaces}}`;
     res += `${type.optional ? "? " : ""}[
 ${spaces}  ${recursivelyPrintType(type.items, indent + 2)}
 ${spaces}]`;
+  } else if (type.type === "oneOf") {
+    res += `${type.optional ? "? " : ""}(
+${spaces}  ${type.alternatives
+      .map((alt) => recursivelyPrintType(alt, indent + 2))
+      .join(`\n${spaces}  | `)}
+${spaces})`;
   } else if (type.type) {
     res += `${type.optional ? "? " : ""}<span class="type">&lt;${
       type.type

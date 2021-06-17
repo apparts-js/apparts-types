@@ -172,6 +172,10 @@ code {
   <span class="version">v1</span>
   <span class="link">Typeless endpoint</span><br/>
              &nbsp;&nbsp;<span class="method">POST</span><code>/v/1/typelessendpoint</code>
+  </a><a href="#post_/v/1/cantdecide">
+  <span class="version">v1</span>
+  <span class="link">OneOf endpoint</span><br/>
+             &nbsp;&nbsp;<span class="method">POST</span><code>/v/1/cantdecide</code>
   </a><a href="#delete_/v/1/withpw">
   <span class="version">v1</span>
   <span class="link">Endpoint with Pw Authentication</span><br/>
@@ -296,6 +300,31 @@ Typeless endpoint</h3>
      </ul>
      <span class="usage">Usage:</span> <br><br>
      <code>try {<br/>&nbsp;&nbsp;const response = await post("typelessendpoint", [&nbsp;&nbsp;]);<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
+  </div>
+</section><section id="post_/v/1/cantdecide">
+   <h3><span class="version">v1</span>
+OneOf endpoint</h3>
+   <p >This endpoint can't decide what it wants.</p>
+   <div class="api">
+     <strong class="method">POST</strong>
+     <span class="path">/v/1/cantdecide</span><br/>
+     <ul>
+     
+
+     
+        <li>Body: <br><ul>
+                                                               <li><code>value: (<br/>&nbsp;&nbsp;<span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;| {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;/&gt;</span></span><br/>&nbsp;&nbsp;}<br/>)</code></li>
+        </li></ul></li>
+     </ul>
+     <span class="returns">Returns:</span> <br>
+     <ul>
+     
+        <li>Status: 400
+        <code>{ "error": "Fieldmissmatch" }</code></li>
+        
+     </ul>
+     <span class="usage">Usage:</span> <br><br>
+     <code>try {<br/>&nbsp;&nbsp;const response = await post("cantdecide", [&nbsp;&nbsp;])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.data({ value });<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section><section id="delete_/v/1/withpw">
    <h3><span class="version">v1</span>

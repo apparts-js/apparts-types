@@ -50,8 +50,8 @@ const bodyToSchema = (body) => {
   const properties = {};
   const required = [];
   for (const name in body) {
-    const { type, default: def, optional } = body[name];
-    properties[name] = typeToSchemaType(type);
+    const { default: def, optional } = body[name];
+    properties[name] = recursiveReturnType(body[name]);
     if (!def && !optional) {
       required.push(name);
     }
@@ -103,11 +103,23 @@ const getOpenApiParams = ({
   return result;
 };
 
-const recursiveReturnType = ({ value, items, keys, type, optional }) => {
+const recursiveReturnType = ({
+  value,
+  items,
+  keys,
+  type,
+  optional,
+  alternatives,
+}) => {
   if (type === "array") {
     return {
       type: "array",
       items: recursiveReturnType(items),
+    };
+  }
+  if (type === "oneOf") {
+    return {
+      oneOf: alternatives.map((alt) => recursiveReturnType(alt)),
     };
   }
   if (type === "object") {
