@@ -25,7 +25,7 @@ describe("Params", () => {
   });
   test("Should accept params assumptions, matching request", async () => {
     const pathParams =
-      ":id/:uuidv4/:any/:int/:float/:hex/:base64/:bool/:string/:email/:array/:arrayInt/:arrayId/:password/:time/:arrayTime";
+      ":id/:uuidv4/:any/:int/:float/:hex/:base64/:bool/:string/:email/:array/:arrayInt/:arrayId/:password/:time/:arrayTime/:value";
     const path = defPrep(pathParams, {
       params: {
         id: { type: "id" },
@@ -44,6 +44,7 @@ describe("Params", () => {
         password: { type: "password" },
         time: { type: "time" },
         arrayTime: { type: "array_time" },
+        value: { value: "Hi!" },
       },
     });
     await expectSuccess(
@@ -65,6 +66,7 @@ describe("Params", () => {
           "topSecret",
           29029,
           JSON.stringify([1, 2, 3]),
+          "Hi!",
         ].join("/")
     );
   });

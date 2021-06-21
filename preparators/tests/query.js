@@ -59,6 +59,7 @@ describe("Query", () => {
         password: { type: "password" },
         time: { type: "time" },
         arrayTime: { type: "array_time" },
+        value: { value: "Hi!" },
       },
     });
     await expectSuccess(
@@ -81,6 +82,7 @@ describe("Query", () => {
           "password=" + transformVal("topSecret"),
           "time=" + transformVal(29029),
           "arrayTime=" + transformVal([1, 2, 3]),
+          "value=" + transformVal("Hi!"),
         ].join("&")
     );
   });

@@ -29,6 +29,7 @@ describe("Body", () => {
         password: { type: "password" },
         time: { type: "time" },
         arrayTime: { type: "array_time" },
+        value: { value: "Hi!" },
       },
     });
     await expectSuccess(path, {
@@ -48,6 +49,7 @@ describe("Body", () => {
       password: "topSecret",
       time: 29029,
       arrayTime: [1, 2, 3],
+      value: "Hi!",
     });
   });
   test("Should reject with missing param in request", async () => {

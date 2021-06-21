@@ -184,7 +184,11 @@ const check = (wanted, given, field) => {
 };
 
 const validateAndConvert = (wanted, param, given, field) => {
-  if (types[wanted[param]["type"]].conv && field !== "body") {
+  if (
+    types[wanted[param]["type"]] &&
+    types[wanted[param]["type"]].conv &&
+    field !== "body"
+  ) {
     try {
       given[param] = types[wanted[param]["type"]].conv(given[param]);
     } catch (e) {
