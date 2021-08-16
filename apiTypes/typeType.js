@@ -1,3 +1,5 @@
+const description = { type: "string", optional: true };
+
 const rtype = {
   type: "oneOf",
 };
@@ -6,6 +8,7 @@ const oneOf = {
   type: "object",
   keys: {
     type: { value: "oneOf" },
+    description,
     alternatives: {
       type: "array",
       items: rtype,
@@ -17,6 +20,7 @@ const objectKeys = {
   type: "object",
   keys: {
     type: { value: "object" },
+    description,
     keys: {
       type: "object",
       values: {
@@ -29,6 +33,7 @@ const objectValues = {
   type: "object",
   keys: {
     type: { value: "object" },
+    description,
     values: rtype,
   },
 };
@@ -38,12 +43,14 @@ const array = {
   keys: {
     type: { value: "array" },
     items: rtype,
+    description,
   },
 };
 
 const directType = {
   type: "object",
   keys: {
+    description,
     type: {
       type: "oneOf",
       alternatives: [
@@ -71,6 +78,7 @@ const directType = {
 const valuedType = {
   type: "object",
   keys: {
+    description,
     value: { type: "/" },
   },
 };

@@ -11,7 +11,7 @@ const express = require("express");
 const myEndpoint = preparator(
   {
     body: {
-      name: { type: "string", default: "no name" },
+      name: { type: "string", default: "no name", description: "A name" },
     },
     query: {
       filter: { type: "string", optional: true },
@@ -59,13 +59,15 @@ const myEndpoint = preparator(
         status: 200,
         type: "object",
         keys: {
-          foo: { value: "really!" },
+          foo: { value: "really!", description: "Some text" },
           boo: { type: "bool" },
           kabaz: { type: "bool", optional: true },
           arr: {
             type: "array",
+            description: "This is an array",
             items: {
               type: "object",
+              description: "Some array item text",
               keys: {
                 a: { type: "int" },
               },
@@ -74,6 +76,8 @@ const myEndpoint = preparator(
           objectWithUnknownKeys: {
             type: "object",
             values: { type: "int" },
+            description:
+              "Quod illo quos excepturi alias qui. Illo non laudantium commodi. Est quos consequatur debitis in. Iusto fugiat sunt sit. Dolorem quod eius sit non.",
           },
           objectWithUnknownKeysAndUnknownTypes: {
             type: "object",
@@ -154,8 +158,12 @@ const myOneOfEndpoint = preparator(
       value: {
         type: "oneOf",
         alternatives: [
-          { type: "int" },
-          { type: "object", values: { type: "/" } },
+          { type: "int", description: "One option" },
+          {
+            type: "object",
+            values: { type: "/" },
+            description: "Another option",
+          },
         ],
       },
     },

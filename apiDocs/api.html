@@ -210,7 +210,7 @@ Testendpoint for multiple purposes</h3>
 
      
         <li>Body: <br><ul>
-                                                               <li><code>name: <span class="type">&lt;string&gt;</span> (= "no name")</code></li>
+                                                               <li><code>/* A name */ <br/>name: <span class="type">&lt;string&gt;</span> (= "no name")</code></li>
         </li></ul></li>
         <li>Query: <br><ul>
                                                                <li><code>filter: ? <span class="type">&lt;string&gt;</span></code></li>
@@ -229,7 +229,7 @@ Testendpoint for multiple purposes</h3>
         <code>{ "error": "Name too long" }</code></li>
         
         <li>Status: 200
-        <code>{<br/>&nbsp;&nbsp;"foo": "really!",<br/>&nbsp;&nbsp;"boo": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"kabaz": ? <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"arr": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;],<br/>&nbsp;&nbsp;"objectWithUnknownKeys": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;int&gt;</span></span><br/>&nbsp;&nbsp;},<br/>&nbsp;&nbsp;"objectWithUnknownKeysAndUnknownTypes": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;/&gt;</span></span><br/>&nbsp;&nbsp;}<br/>}</code></li>
+        <code>{<br/><br/>&nbsp;&nbsp;/* Some text */ <br/>&nbsp;&nbsp;"foo": "really!",<br/>&nbsp;&nbsp;"boo": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"kabaz": ? <span class="type">&lt;bool&gt;</span>,<br/><br/>&nbsp;&nbsp;/* This is an array */ <br/>&nbsp;&nbsp;"arr": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;/* Some array item text */ <br/>&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;],<br/><br/>&nbsp;&nbsp;/* Quod illo quos excepturi alias qui. Illo non laudantium <br/>&nbsp;&nbsp;&nbsp;&nbsp; commodi. Est quos consequatur debitis in. Iusto fugiat sunt <br/>&nbsp;&nbsp;&nbsp;&nbsp; sit. Dolorem quod eius sit non. */ <br/>&nbsp;&nbsp;"objectWithUnknownKeys": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;int&gt;</span></span><br/>&nbsp;&nbsp;},<br/>&nbsp;&nbsp;"objectWithUnknownKeysAndUnknownTypes": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;/&gt;</span></span><br/>&nbsp;&nbsp;}<br/>}</code></li>
         
         <li>Status: 400
         <code>{ "error": "Fieldmissmatch" }</code></li>
@@ -313,7 +313,7 @@ OneOf endpoint</h3>
 
      
         <li>Body: <br><ul>
-                                                               <li><code>value: (<br/>&nbsp;&nbsp;<span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;| {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;/&gt;</span></span><br/>&nbsp;&nbsp;}<br/>)</code></li>
+                                                               <li><code>value: (<br/><br/>&nbsp;&nbsp;/* One option */ <br/>&nbsp;&nbsp;<span class="type">&lt;int&gt;</span> |<br/><br/>&nbsp;&nbsp;/* Another option */ <br/>&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;/&gt;</span></span><br/>&nbsp;&nbsp;}<br/>)</code></li>
         </li></ul></li>
      </ul>
      <span class="returns">Returns:</span> <br>

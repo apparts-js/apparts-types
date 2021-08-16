@@ -7,6 +7,47 @@ const usageExample = (...args) => {
   return res.replace(/\n/g, "<br/>").replace(/ {2}/g, "&nbsp;&nbsp;");
 };
 
+const htmlifyLines = (text) =>
+  text.replace(/\n/g, "<br/>").replace(/ {2}/g, "&nbsp;&nbsp;");
+
+const brakeLines = (text, lineLength) => {
+  if (!text || text.length <= 0) {
+    return [];
+  }
+  const line = text.slice(0, lineLength);
+  const lineUntilBrake = line
+    .split("")
+    .reverse()
+    .reduce((a, b) => (a.length > 0 ? a + b : b === " " ? b : ""), "")
+    .split("")
+    .reverse()
+    .join("");
+  if (lineUntilBrake.length > 0) {
+    const rest = text.slice(lineUntilBrake.length);
+    return [lineUntilBrake, ...brakeLines(rest, lineLength)];
+  } else {
+    const lines = text.split(" ", 1);
+    return [
+      lines[0],
+      ...brakeLines(text.slice(lines[0].length + 1), lineLength),
+    ];
+  }
+};
+
+const printDescription = ({ description }, indent, addSpace) => {
+  if (description) {
+    return (
+      (addSpace ? "\n" : "") +
+      " ".repeat(indent) +
+      "/* " +
+      brakeLines(description + " */ ", 60).join("\n" + " ".repeat(indent + 3)) +
+      "\n"
+    );
+  } else {
+    return "";
+  }
+};
+
 const recursivelyPrintType = (type, indent = 0) => {
   let res = "";
   const spaces = " ".repeat(indent);
@@ -16,7 +57,9 @@ const recursivelyPrintType = (type, indent = 0) => {
 ${Object.keys(type.keys)
   .map(
     (key) =>
-      spaces + `  "${key}": ${recursivelyPrintType(type.keys[key], indent + 2)}`
+      printDescription(type.keys[key], indent + 2, true) +
+      spaces +
+      `  "${key}": ${recursivelyPrintType(type.keys[key], indent + 2)}`
   )
   .join(",\n")}
 ${spaces}}`;
@@ -30,13 +73,22 @@ ${spaces}}`;
     }
   } else if (type.type === "array") {
     res += `${type.optional ? "? " : ""}[
-${spaces}  ${recursivelyPrintType(type.items, indent + 2)}
+${printDescription(type.items, indent + 2)}${spaces}  ${recursivelyPrintType(
+      type.items,
+      indent + 2
+    )}
 ${spaces}]`;
   } else if (type.type === "oneOf") {
     res += `${type.optional ? "? " : ""}(
-${spaces}  ${type.alternatives
-      .map((alt) => recursivelyPrintType(alt, indent + 2))
-      .join(`\n${spaces}  | `)}
+${type.alternatives
+  .map(
+    (alt) =>
+      printDescription(alt, indent + 2, true) +
+      spaces +
+      "  " +
+      recursivelyPrintType(alt, indent + 2)
+  )
+  .join(` |\n`)}
 ${spaces})`;
   } else if (type.type) {
     res += `${type.optional ? "? " : ""}<span class="type">&lt;${
@@ -45,7 +97,7 @@ ${spaces})`;
   } else {
     res += JSON.stringify(type.value);
   }
-  return res.replace(/\n/g, "<br/>").replace(/ {2}/g, "&nbsp;&nbsp;");
+  return htmlifyLines(res);
 };
 
 const apiToHtml = (api, commitHash, style = STYLE) => {
@@ -99,7 +151,14 @@ ${title || ""}</h3>
            Object.keys(assertions[type])
              .map(
                (key) => `
-                                                               <li><code>${key}: ${recursivelyPrintType(
+                                                               <li><code>${htmlifyLines(
+                                                                 printDescription(
+                                                                   assertions[
+                                                                     type
+                                                                   ][key],
+                                                                   0
+                                                                 )
+                                                               )}${key}: ${recursivelyPrintType(
                  assertions[type][key]
                )}${
                  assertions[type][key].default

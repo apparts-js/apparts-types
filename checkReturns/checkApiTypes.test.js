@@ -149,7 +149,8 @@ MISSING: [
     "type": "object",
     "keys": {
       "foo": {
-        "value": "really!"
+        "value": "really!",
+        "description": "Some text"
       },
       "boo": {
         "type": "bool"
@@ -160,8 +161,10 @@ MISSING: [
       },
       "arr": {
         "type": "array",
+        "description": "This is an array",
         "items": {
           "type": "object",
+          "description": "Some array item text",
           "keys": {
             "a": {
               "type": "int"
@@ -173,7 +176,8 @@ MISSING: [
         "type": "object",
         "values": {
           "type": "int"
-        }
+        },
+        "description": "Quod illo quos excepturi alias qui. Illo non laudantium commodi. Est quos consequatur debitis in. Iusto fugiat sunt sit. Dolorem quod eius sit non."
       },
       "objectWithUnknownKeysAndUnknownTypes": {
         "type": "object",
