@@ -134,7 +134,7 @@ The =preparator= function takes these arguments:
   const myEndpoint = preparator(
     {
       body: {
-        name: { type: "string", default: "no name" },
+        name: { type: "string", default: "no name", description: "A name" },
       },
       query: {
         filter: { type: "string", optional: true }
@@ -181,15 +181,17 @@ The =preparator= function takes these arguments:
           status: 200,
           type: "object",
           values: {
-            foo: { value: "really!" },
+            foo: { value: "really!", description: "Some foo" },
             boo: { type: "bool" },
             kabaz: { type: "bool", optional: true },
             arr: {
               type: "array",
+              description: "Some array",
               value: {
+                description: "Some array items",
                 type: "object",
                 values: {
-                  a: { type: "int" },
+                  a: { type: "int", description: "A number" },
                 },
               },
             },
