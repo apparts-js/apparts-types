@@ -1,4 +1,5 @@
 const recursiveCheck = require("../types/checkType");
+const explainCheck = require("../types/explainCheck");
 
 const useChecks = (funktionContainer) => {
   const checked = {};
@@ -34,7 +35,7 @@ const useChecks = (funktionContainer) => {
     );
   };
 
-  const checkType = (response, functionName) => {
+  const checkType = (response, functionName, options = {}) => {
     if (!funktionContainer[functionName]) {
       throw new Error(
         `Function ### "${functionName}" ### could not be found, maybe you misspelled it?`
@@ -48,7 +49,6 @@ const useChecks = (funktionContainer) => {
     const errors = [];
     for (let i = 0; i < types.length; i++) {
       const type = types[i];
-      errors.push({});
       if (
         type.status === response.statusCode &&
         (JSON.stringify({ error: type.error }) ===
@@ -61,6 +61,37 @@ const useChecks = (funktionContainer) => {
         checked[functionName] = checked[functionName] || types.map(() => false);
         checked[functionName][i] = true;
         return true;
+      } else {
+        errors.push([response.body, type, type.status, response.statusCode]);
+      }
+    }
+    if (options.explainError) {
+      console.log("## Explanation for ## " + functionName);
+      let counter = 0;
+      for (const [body, type, shouldStatus, isStatus] of errors) {
+        console.log(
+          `\n${++counter}: Status should be ${shouldStatus} and is ${isStatus}`
+        );
+        if (type.error) {
+          console.log("Error should be:");
+          console.log(
+            explainCheck(body, {
+              type: "object",
+              keys: {
+                error: {
+                  value: type.error,
+                },
+                description: {
+                  type: "string",
+                  optional: true,
+                },
+              },
+            })
+          );
+        } else {
+          console.log("Type check yields:");
+          console.log(explainCheck(body, type));
+        }
       }
     }
     throw new Error(

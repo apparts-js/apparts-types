@@ -476,11 +476,14 @@ Functions:
       function under the key as specified in =functionName=
   - Returns:
     - Object with keys:
-      - =checkType : <(response, functionName) => boolean>= :: Checks if
+      - =checkType : <(response, functionName, options) => boolean>= :: Checks if
         type is allowed.
         - Parameters:
           - =response= :: The response, that should be checked
-          - =functionName= <string> :: The name of the function
+          - =functionName <string>= :: The name of the function
+          - =options <object>= :: Optional options object
+            - =explainError <boolean> = false= :: If true, prints an
+              explanation on error.
         - Returns:
           - =true= :: Check passed
         - Throws:
@@ -488,7 +491,7 @@ Functions:
       - =allChecked : <(functionName) => boolean>= :: Check if all
         possible return combinations have been checked
         - Parameters:
-          - =functionName= <string> :: The name of the function
+          - =functionName <string>= :: The name of the function
         - Returns:
           - =true= :: All possible return combinations for the given
             function have been tested

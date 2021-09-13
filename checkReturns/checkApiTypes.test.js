@@ -267,3 +267,37 @@ describe("All possible responses tested", () => {
     expect(allChecked("myEndpoint")).toBeTruthy();
   });
 });
+
+describe("Describe error", () => {
+  it("should explain error", async () => {
+    const response = await request(app).post("/v/1/faultyendpoint/3");
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toBe("whut?");
+    const consoleMock = jest.spyOn(console, "log").mockImplementation(() => {});
+    expect(() =>
+      checkType(response, "myFaultyEndpoint", {
+        explainError: true,
+      })
+    ).toThrow();
+    const explanations = consoleMock.mock.calls;
+    expect(explanations.map(([p]) => p).join("\n"))
+      .toBe(`## Explanation for ## myFaultyEndpoint
+
+1: Status should be 200 and is 200
+Type check yields:
+❌ Value wrong: Expected 'ok',          got 'whut?'
+
+2: Status should be 400 and is 200
+Error should be:
+❌ Expected Object
+
+3: Status should be 200 and is 200
+Type check yields:
+❌ Expected Object
+
+4: Status should be 400 and is 200
+Error should be:
+❌ Expected Object`);
+    consoleMock.mockRestore();
+  });
+});
