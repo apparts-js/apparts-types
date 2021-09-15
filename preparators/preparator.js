@@ -128,8 +128,8 @@ const catchError = (res, req, e) => {
     );
     return;
   }
-
   const errorObj = constructErrorObj(req, e);
+  console.log("SERVER ERROR", errorObj.ID, "\n", e);
   try {
     console.log(JSON.stringify(errorObj));
     console.log(errorObj.TRACE);
