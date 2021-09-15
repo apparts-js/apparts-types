@@ -1,6 +1,6 @@
 {
   "name": "@apparts/types",
-  "version": "6.6.1",
+  "version": "6.6.2",
   "description": "Typechecking for requests and in general",
   "main": "index.js",
   "scripts": {
