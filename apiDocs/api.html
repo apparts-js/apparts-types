@@ -214,6 +214,8 @@ Testendpoint for multiple purposes</h3>
         </li></ul></li>
         <li>Query: <br><ul>
                                                                <li><code>filter: ? <span class="type">&lt;string&gt;</span></code></li>
+        </li>
+                                                               <li><code>number: <span class="type">&lt;int&gt;</span> (= 0)</code></li>
         </li></ul></li>
         <li>Params: <br><ul>
                                                                <li><code>id: <span class="type">&lt;id&gt;</span></code></li>
@@ -236,7 +238,7 @@ Testendpoint for multiple purposes</h3>
         
      </ul>
      <span class="usage">Usage:</span> <br><br>
-     <code>try {<br/>&nbsp;&nbsp;const response = await post("endpoint/$1", [ id ])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.query({ filter })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.data({ name })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Name too long" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
+     <code>try {<br/>&nbsp;&nbsp;const response = await post("endpoint/$1", [ id ])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.query({ filter, number })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.data({ name })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Name too long" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section><section id="post_/v/1/faultyendpoint/:id">
    <h3><span class="version">v1</span>

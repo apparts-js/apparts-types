@@ -161,7 +161,7 @@ ${title || ""}</h3>
                                                                )}${key}: ${recursivelyPrintType(
                  assertions[type][key]
                )}${
-                 assertions[type][key].default
+                 assertions[type][key].default !== undefined
                    ? ` (= ${JSON.stringify(assertions[type][key].default)})`
                    : ""
                }</code></li>

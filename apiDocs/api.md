@@ -36,6 +36,10 @@ Behaves radically different, based on what
     ```
     ? <string>
     ```
+  - number:
+    ```
+    <int>
+    ```
 
 - **Params:**
   - id:
@@ -79,7 +83,7 @@ Behaves radically different, based on what
 ```js
 try {
   const response = await post("endpoint/$1", [ id ])
-    .query({ filter })
+    .query({ filter, number })
     .data({ name })
     .on({ status: 400, error: "Name too long" }, () => {
        /* handle error */

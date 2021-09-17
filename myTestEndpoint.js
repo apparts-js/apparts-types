@@ -15,6 +15,7 @@ const myEndpoint = preparator(
     },
     query: {
       filter: { type: "string", optional: true },
+      number: { type: "int", default: 0 },
     },
     params: {
       id: { type: "id" },

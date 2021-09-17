@@ -59,6 +59,15 @@ const OAPI = {
               type: "string",
             },
           },
+          {
+            name: "number",
+            in: "query",
+            required: true,
+            allowEmptyValue: false,
+            schema: {
+              type: "integer",
+            },
+          },
         ],
         requestBody: {
           content: {
@@ -310,7 +319,7 @@ const OAPI = {
           required: true,
         },
         responses: {
-          "400": {
+          400: {
             description: "",
             content: {
               "application/json": {
