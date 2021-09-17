@@ -62,7 +62,7 @@ const OAPI = {
           {
             name: "number",
             in: "query",
-            required: true,
+            required: false,
             allowEmptyValue: false,
             schema: {
               type: "integer",

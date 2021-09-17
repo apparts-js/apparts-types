@@ -79,7 +79,7 @@ const apiToMd = (api, commitHash, style = STYLE) => {
                     `  - ${key}:
     ${"```"}
     ${recursivelyPrintType(assertions[type][key], 4)}${
-                      assertions[type][key].default
+                      assertions[type][key].default !== undefined
                         ? ` (= ${JSON.stringify(
                             assertions[type][key].default
                           )})`

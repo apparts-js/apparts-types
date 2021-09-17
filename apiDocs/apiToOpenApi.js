@@ -52,7 +52,7 @@ const bodyToSchema = (body) => {
   for (const name in body) {
     const { default: def, optional } = body[name];
     properties[name] = recursiveReturnType(body[name]);
-    if (!def && !optional) {
+    if (def === undefined && !optional) {
       required.push(name);
     }
   }
@@ -95,7 +95,7 @@ const getOpenApiParams = ({
     result.push({
       name: queryName,
       in: "query",
-      required: !query.optional,
+      required: !query.optional && query.default === undefined,
       allowEmptyValue: query.optional || query.type === "string" || false,
       schema: typeToSchemaType(query.type),
     });

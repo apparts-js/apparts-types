@@ -38,7 +38,7 @@ Behaves radically different, based on what
     ```
   - number:
     ```
-    <int>
+    <int> (= 0)
     ```
 
 - **Params:**
