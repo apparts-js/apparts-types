@@ -227,6 +227,28 @@ return new HttpCode(304, myData);
 // ...
 #+END_SRC
 
+** Sending a response manually
+
+Keep in mind that the preparator already did these calls for you:
+#+BEGIN_SRC js
+res.setHeader("Content-Type", "application/json");
+res.status(200);
+#+END_SRC
+
+#+BEGIN_SRC js
+  const { preparator, DontRespond } = require("@apparts/types");
+  
+  const myEndpoint = preparator({
+    /* your assertions*/
+  }, async (req, res) => {
+    // handle send by yourself
+    // res.send();
+    return new DontRespond();
+  }, {
+    title: "Endpoint that handles responding",
+  });
+#+END_SRC
+
 ** Error handling by =preperator=
 
 - Should a request not match any of the type assertions as defined, the

@@ -4,7 +4,7 @@ const types = require("./types/types");
 const preparator = require("./preparators/preparator");
 const prepauth = require("./preparators/prepauth");
 const checkApiTypes = require("./checkReturns/checkApiTypes");
-const { HttpCode } = require("./code");
+const { HttpCode, DontRespond } = require("./code");
 const genApiDocs = require("./apiDocs");
 const checkType = require("./types/checkType");
 
@@ -15,5 +15,6 @@ module.exports = {
   ...checkApiTypes,
   checkType,
   HttpCode,
+  DontRespond,
   genApiDocs,
 };

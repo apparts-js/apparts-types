@@ -86,22 +86,19 @@ const prepare = (assertions, next, options = {}) => {
     }
     try {
       const data = await next(req, res);
-      if (
-        typeof data === "object" &&
-        data !== null &&
-        data.type === "HttpError"
-      ) {
-        catchError(res, req, data);
-      } else if (
-        typeof data === "object" &&
-        data !== null &&
-        data.type === "HttpCode"
-      ) {
-        res.status(data.code);
-        res.send(JSON.stringify(data.message));
-      } else {
-        res.send(JSON.stringify(data));
+      if (typeof data === "object" && data !== null) {
+        if (data.type === "HttpError") {
+          catchError(res, req, data);
+          return;
+        } else if (data.type === "HttpCode") {
+          res.status(data.code);
+          res.send(JSON.stringify(data.message));
+          return;
+        } else if (data.type === "DontRespond") {
+          return;
+        }
       }
+      res.send(JSON.stringify(data));
     } catch (e) {
       catchError(res, req, e);
     }

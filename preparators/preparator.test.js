@@ -1,6 +1,6 @@
 const { defPrep, expectSuccess, app, expectError } = require("./tests/common");
 const { HttpError } = require("@apparts/error");
-const { HttpCode } = require("../code");
+const { HttpCode, DontRespond } = require("../code");
 const prepare = require("./preparator");
 const request = require("supertest");
 
@@ -246,6 +246,19 @@ describe("Unknown field", () => {
         })
       )
     ).toThrowError("PREPARATOR: Nope, your assertions are not well defined!");
+  });
+});
+
+describe("Manually sending a response", () => {
+  it("should manually send a response", async () => {
+    app.post(
+      getNextUrl(),
+      prepare({}, async (req, res) => {
+        res.send('"ok123"');
+        return new DontRespond();
+      })
+    );
+    await expectSuccess(getCurrentUrl(), {}, "ok123");
   });
 });
 

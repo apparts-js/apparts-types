@@ -19,4 +19,10 @@ class HttpCode {
   }
 }
 
-module.exports = { HttpCode };
+class DontRespond {
+  constructor() {
+    this.type = "DontRespond";
+  }
+}
+
+module.exports = { HttpCode, DontRespond };
