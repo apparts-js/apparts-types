@@ -321,7 +321,7 @@ user model and more.
     {
       // assertions as with preparator
     },
-    async ({ /*body, params, query*/ }, user) => {
+    async ({ /*body, params, query*/ }, user, response) => {
       // notice the second parameter: a OneModel of the logged in user
       // as you defined earlier.
       return "ok";
@@ -374,7 +374,7 @@ user model and more.
     {
       // assertions as with preparator
     },
-    async ({ /*body, params, query*/ }, user) => {
+    async ({ /*body, params, query*/ }, user, response) => {
       // notice the second parameter: a OneModel of the logged in user
       // as you defined earlier.
       return "ok";
@@ -413,7 +413,7 @@ For this function, you need to install the package [[https://www.npmjs.com/packa
     {
       // assertions as with preparator
     },
-    async ({ /*body, params, query*/ }, user) => {
+    async ({ /*body, params, query*/ }, user, response) => {
       // notice the second parameter: a OneModel of the logged in user
       // as you defined earlier.
       return "ok";

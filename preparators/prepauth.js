@@ -9,14 +9,16 @@ let verifyJWT = function () {
 };
 try {
   verifyJWT = require("jsonwebtoken").verify;
-} catch (e) {}
+} catch (e) {
+  // ignore
+}
 
 let NotFound;
 const _prepauth = (assertions, fun, options = {}, usePw, User) => {
   return prepare(
     assertions,
-    async (req) => {
-      let [email, token] = basicAuth(req);
+    async (req, res) => {
+      const [email, token] = basicAuth(req);
       if (!email || !token) {
         return new HttpError(400, "Authorization wrong");
       }
@@ -31,7 +33,7 @@ const _prepauth = (assertions, fun, options = {}, usePw, User) => {
       } catch (e) {
         return exceptionTo(NotFound, e, new HttpError(401, "User not found"));
       }
-      return fun(req, user);
+      return fun(req, user, res);
     },
     options
   );
@@ -41,77 +43,83 @@ _prepauth.returns = [
   { status: 400, error: "Authorization wrong" },
 ];
 
-const prepauthToken = (User) => (assertions, fun, options = {}) => {
-  try {
-    NotFound = require("@apparts/model").NotFound;
-  } catch (e) {
-    throw '@apparts/types: Missing peer dependency: "@apparts/model"\nPlease install manually with \n\tnpm i --save @apparts/model\n\n';
-  }
+const prepauthToken =
+  (User) =>
+  (assertions, fun, options = {}) => {
+    try {
+      NotFound = require("@apparts/model").NotFound;
+    } catch (e) {
+      throw '@apparts/types: Missing peer dependency: "@apparts/model"\nPlease install manually with \n\tnpm i --save @apparts/model\n\n';
+    }
 
-  return _prepauth(
-    assertions,
-    fun,
-    {
-      ...options,
-      auth: "Basic btoa(uname:token)",
-      returns: [...(options.returns || []), ...prepauthToken.returns],
-    },
-    false,
-    User
-  );
-};
+    return _prepauth(
+      assertions,
+      fun,
+      {
+        ...options,
+        auth: "Basic btoa(uname:token)",
+        returns: [...(options.returns || []), ...prepauthToken.returns],
+      },
+      false,
+      User
+    );
+  };
 prepauthToken.returns = _prepauth.returns;
 
-const prepauthPW = (User) => (assertions, fun, options = {}) => {
-  try {
-    NotFound = require("@apparts/model").NotFound;
-  } catch (e) {
-    throw '@apparts/types: Missing peer dependency: "@apparts/model"\nPlease install manually with \n\tnpm i --save @apparts/model\n\n';
-  }
+const prepauthPW =
+  (User) =>
+  (assertions, fun, options = {}) => {
+    try {
+      NotFound = require("@apparts/model").NotFound;
+    } catch (e) {
+      throw '@apparts/types: Missing peer dependency: "@apparts/model"\nPlease install manually with \n\tnpm i --save @apparts/model\n\n';
+    }
 
-  return _prepauth(
-    assertions,
-    fun,
-    {
-      ...options,
-      auth: "Basic btoa(uname:password)",
-      returns: [...(options.returns || []), ...prepauthPW.returns],
-    },
-    true,
-    User
-  );
-};
+    return _prepauth(
+      assertions,
+      fun,
+      {
+        ...options,
+        auth: "Basic btoa(uname:password)",
+        returns: [...(options.returns || []), ...prepauthPW.returns],
+      },
+      true,
+      User
+    );
+  };
 prepauthPW.returns = _prepauth.returns;
 
-const prepauthTokenJWT = (webtokenkey) => (assertions, fun, options = {}) => {
-  return prepare(
-    assertions,
-    async (req, res) => {
-      let token = bearerAuth(req);
-      if (!token) {
-        return new HttpError(401);
+const prepauthTokenJWT =
+  (webtokenkey) =>
+  (assertions, fun, options = {}) => {
+    return prepare(
+      assertions,
+      async (req, res) => {
+        let token = bearerAuth(req);
+        if (!token) {
+          return new HttpError(401);
+        }
+        let jwt;
+        try {
+          jwt = verifyJWT(token, webtokenkey);
+        } catch (err) {
+          console.log(err);
+          return new HttpError(401, "Token invalid");
+        }
+        const { action } = jwt;
+        if (action !== "login") {
+          return new HttpError(401);
+        } else {
+          return await fun(req, jwt, res);
+        }
+      },
+      {
+        ...options,
+        auth: "Bearer jwt",
+        returns: [...(options.returns || []), ...prepauthTokenJWT.returns],
       }
-      let jwt;
-      try {
-        jwt = verifyJWT(token, webtokenkey);
-      } catch (err) {
-        console.log(err);
-        return new HttpError(401, "Token invalid");
-      }
-      const { action } = jwt;
-      if (action !== "login") {
-        return new HttpError(401);
-      } else {
-        return await fun(req, jwt, res);
-      }
-    },
-    {
-      ...options,
-      auth: "Bearer jwt",
-      returns: [...(options.returns || []), ...prepauthTokenJWT.returns],
-    }
-  );
-};
+    );
+  };
 prepauthTokenJWT.returns = [
   { status: 401, error: "Unauthorized" },
   { status: 401, error: "Token invalid" },
