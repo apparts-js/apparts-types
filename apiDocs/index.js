@@ -9,7 +9,6 @@ const getApi = (app) => {
         const {
           route: {
             path,
-            methods,
             stack: [{ method, handle }],
           },
         } = route;

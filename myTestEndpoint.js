@@ -21,7 +21,7 @@ const myEndpoint = preparator(
       id: { type: "id" },
     },
   },
-  async ({ body: { name }, query: { filter }, params: { id } }) => {
+  async ({ body: { name }, query: { filter } /*, params: { id }*/ }) => {
     if (name.length > 100) {
       return new HttpError(400, "Name too long");
     }
@@ -102,7 +102,7 @@ const myFaultyEndpoint = preparator(
       id: { type: "id" },
     },
   },
-  async ({ body: { name }, query: { filter }, params: { id } }) => {
+  async ({ body: { name }, query: { filter } /*, params: { id }*/ }) => {
     if (name.length > 100) {
       return new HttpError(400, "Name is too long");
     }

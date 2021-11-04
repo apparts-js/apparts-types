@@ -103,14 +103,7 @@ const getOpenApiParams = ({
   return result;
 };
 
-const recursiveReturnType = ({
-  value,
-  items,
-  keys,
-  type,
-  optional,
-  alternatives,
-}) => {
+const recursiveReturnType = ({ value, items, keys, type, alternatives }) => {
   if (type === "array") {
     return {
       type: "array",

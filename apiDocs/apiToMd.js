@@ -1,5 +1,3 @@
-const STYLE = require("./style");
-
 const { usageExample } = require("./generateUsageExample");
 
 const recursivelyPrintType = (type, indent = 0) => {
@@ -38,7 +36,7 @@ ${spaces})`;
   return res;
 };
 
-const apiToMd = (api, commitHash, style = STYLE) => {
+const apiToMd = (api, commitHash) => {
   const toc = [];
   const data = api
     .map(

@@ -95,7 +95,7 @@ const prepauthTokenJWT =
     return prepare(
       assertions,
       async (req, res) => {
-        let token = bearerAuth(req);
+        const token = bearerAuth(req);
         if (!token) {
           return new HttpError(401);
         }
@@ -103,7 +103,6 @@ const prepauthTokenJWT =
         try {
           jwt = verifyJWT(token, webtokenkey);
         } catch (err) {
-          console.log(err);
           return new HttpError(401, "Token invalid");
         }
         const { action } = jwt;
