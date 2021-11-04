@@ -8,6 +8,7 @@
     "test:one": "jest",
     "test:coverage": "jest --coverage",
     "genApiDocs": "node apiDocs/generateHtmlApi.js && node apiDocs/generateMdApi.js",
+    "prepublishOnly": "npm run ci && npm ci",
     "ci": "npm ci && npm run ci:prettier && npm run ci:eslint && npm run ci:test",
     "ci:prettier": "CI=true prettier --check .",
     "ci:test": "CI=true npm run test:one",
