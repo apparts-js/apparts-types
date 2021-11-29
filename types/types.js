@@ -157,6 +157,6 @@ module.exports = {
       ),
   },
   null: {
-    check: (x) => x === null
-  }
+    check: (x) => x === null,
+  },
 };
