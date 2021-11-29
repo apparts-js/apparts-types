@@ -156,4 +156,7 @@ module.exports = {
         x
       ),
   },
+  null: {
+    check: (x) => x === null
+  }
 };
