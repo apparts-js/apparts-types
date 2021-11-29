@@ -42,6 +42,7 @@ A type is defined by an object. The object must either contain a key
 - ~password~ (alias for ~string~)
 - ~time~
 - ~array_time~ (alias for ~array_id~)
+- ~null~
 
 To be used as ={ type: <atomic type> }=.
 
