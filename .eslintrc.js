@@ -10,9 +10,24 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["*.test.js", "**/tests/*.js"],
+      files: ["*.test.js"],
       env: {
         jest: true,
+      },
+    },
+    {
+      files: ["*.ts"],
+      plugins: ["@typescript-eslint", "jest"],
+      extends: [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier",
+      ],
+      parser: "@typescript-eslint/parser",
+      parserOptions: {
+        project: "tsconfig.json",
+        sourceType: "module",
       },
     },
   ],
@@ -24,5 +39,6 @@ module.exports = {
     "no-lonely-if": "error",
     "consistent-return": ["error", { treatUndefinedAsUnspecified: false }],
     curly: "error",
+    "@typescript-eslint/no-explicit-any": 0,
   },
 };
