@@ -77,7 +77,7 @@ describe("ts type", () => {
         },
       ],
     };
-    // @ts-expect-error
+    // @ts-expect-error test type
     t.anArray[1].aOneOf = "test";
 
     expect(testSchema.type).toStrictEqual({
@@ -139,12 +139,12 @@ describe("ts type", () => {
       isThree: 4,
     }));
 
-    // @ts-expect-error
+    // @ts-expect-error test type
     objSchema.derived(() => ({
       isMaybeTrue: false,
     }));
 
-    // @ts-expect-error
+    // @ts-expect-error test type
     objSchema.derived(() => 3);
   });
 
@@ -164,17 +164,17 @@ describe("ts type", () => {
       isThree: 4,
     });
 
-    // @ts-expect-error
+    // @ts-expect-error test type
     objSchema.derived(() => ({
       isMaybeTrue: false,
     }));
 
     objSchema.derived({
-      // @ts-expect-error
+      // @ts-expect-error test type
       isMaybeTrue: false,
     });
 
-    // @ts-expect-error
+    // @ts-expect-error test type
     objSchema.derived(() => 3);
   });
 });

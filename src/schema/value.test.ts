@@ -7,13 +7,13 @@ describe("value type", () => {
     const f = (a: MyValueType) => a;
 
     f(3);
-    // @ts-expect-error
+    // @ts-expect-error test type
     f(4);
-    // @ts-expect-error
+    // @ts-expect-error test type
     f("3");
-    // @ts-expect-error
+    // @ts-expect-error test type
     f(true);
-    // @ts-expect-error
+    // @ts-expect-error test type
     f([]);
   });
 });

@@ -2,7 +2,7 @@ import { boolean, array, InferType } from "./index";
 
 describe("array type", () => {
   it("should fail on optional items-type", async () => {
-    // @ts-expect-error
+    // @ts-expect-error test type
     array(boolean().optional());
   });
 
@@ -13,7 +13,7 @@ describe("array type", () => {
 
     f([true, false]);
     f([]);
-    // @ts-expect-error
+    // @ts-expect-error test type
     f([1]);
   });
 });

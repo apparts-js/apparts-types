@@ -5,7 +5,7 @@ interface Keys {
 }
 
 /* this seems to force TS to show the full type instead of all the wrapped generics */
-type _<T> = T extends {} ? { [k in keyof T]: T[k] } : T;
+type _<T> = T extends object ? { [k in keyof T]: T[k] } : T;
 
 type OptionalKeys<T extends Keys> = {
   [Property in keyof T]: Optional extends T[Property]["__required"]

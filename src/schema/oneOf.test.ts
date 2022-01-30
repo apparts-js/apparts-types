@@ -8,9 +8,9 @@ describe("obj type", () => {
 
     f(true);
     f(3);
-    // @ts-expect-error
+    // @ts-expect-error test type
     f({ maybe: true });
-    // @ts-expect-error
+    // @ts-expect-error test type
     f("test");
   });
 
@@ -27,9 +27,9 @@ describe("obj type", () => {
     const f = (a: OneOf) => a;
 
     f({ testBool: true });
-    // @ts-expect-error
+    // @ts-expect-error test type
     f({});
-    // @ts-expect-error
+    // @ts-expect-error test type
     f(3);
   });
 });

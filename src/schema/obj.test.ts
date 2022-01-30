@@ -11,7 +11,7 @@ describe("obj type", () => {
 
     f({ just: true, maybe: true });
     f({ just: true });
-    // @ts-expect-error
+    // @ts-expect-error test type
     f({ maybe: true });
   });
 
@@ -37,7 +37,7 @@ describe("obj type", () => {
     const g = (a: IndirectType) => a;
     g({ just: true });
     g({ just: true, maybe: true });
-    // @ts-expect-error
+    // @ts-expect-error test type
     g({ maybe: true });
   });
 
@@ -53,7 +53,7 @@ describe("obj type", () => {
 
     f({ just: { key: true }, maybe: { key: true } });
     f({ just: { key: true } });
-    // @ts-expect-error
+    // @ts-expect-error test type
     f({});
   });
 });

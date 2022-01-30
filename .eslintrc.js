@@ -10,7 +10,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["*.test.js"],
+      files: ["*.test.js", "**/tests/**"],
       env: {
         jest: true,
       },
@@ -29,6 +29,9 @@ module.exports = {
         project: "tsconfig.json",
         sourceType: "module",
       },
+      rules: {
+        "@typescript-eslint/no-explicit-any": "off",
+      },
     },
   ],
   rules: {
@@ -39,6 +42,6 @@ module.exports = {
     "no-lonely-if": "error",
     "consistent-return": ["error", { treatUndefinedAsUnspecified: false }],
     curly: "error",
-    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/no-explicit-any": "off",
   },
 };
