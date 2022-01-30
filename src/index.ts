@@ -4,7 +4,17 @@ import { HttpCode, DontRespond } from "./code";
 import genApiDocs from "./apiDocs";
 import checkType from "./types/checkType";
 
+import * as schema from "./schema";
+
 export * from "./preparators/prepauth";
 export * from "./checkReturns/checkApiTypes";
 
-export { types, preparator, checkType, HttpCode, DontRespond, genApiDocs };
+export {
+  schema,
+  types,
+  preparator,
+  checkType,
+  HttpCode,
+  DontRespond,
+  genApiDocs,
+};
