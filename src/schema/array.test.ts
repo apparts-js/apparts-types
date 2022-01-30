@@ -1,13 +1,13 @@
-import { bool, array, InferType } from "./index";
+import { boolean, array, InferType } from "./index";
 
 describe("array type", () => {
   it("should fail on optional items-type", async () => {
     // @ts-expect-error
-    array(bool().optional());
+    array(boolean().optional());
   });
 
   it("should infer type correctly", async () => {
-    const arrayType = array(bool());
+    const arrayType = array(boolean());
     type MyArr = InferType<typeof arrayType>;
     const f = (a: MyArr) => a;
 

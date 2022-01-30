@@ -1,6 +1,19 @@
+export type BaseTypeName =
+  | "int"
+  | "time"
+  | "float"
+  | "boolean"
+  | "string"
+  | "password"
+  | "null"
+  | "/"
+  | "email"
+  | "hex"
+  | "base64";
+
 export type Type = (
   | {
-      type: "int" | "boolean";
+      type: BaseTypeName;
     }
   | {
       type: "object";

@@ -1,4 +1,19 @@
-import { int, bool, obj, array, oneOf, value, InferType } from "./index";
+import {
+  int,
+  boolean,
+  float,
+  string,
+  hex,
+  base64,
+  email,
+  nill,
+  any,
+  obj,
+  array,
+  oneOf,
+  value,
+  InferType,
+} from "./index";
 
 describe("ts type", () => {
   it("should match", () => {
@@ -6,20 +21,64 @@ describe("ts type", () => {
     const isFour = () => 4;
     const testSchema = obj({
       id: int().auto().key().public(),
-      isTrue: bool().derived(deriveIsTrue),
-      isMaybeTrue: bool().optional(),
+      pw: string().semantic("password"),
+      created: int().semantic("time"),
+      aString: string(),
+      aFloat: float(),
+      aHex: hex(),
+      aBase64: base64(),
+      aEmail: email(),
+      aNill: nill(),
+      aAny: any(),
+      isTrue: boolean().derived(deriveIsTrue),
+      isMaybeTrue: boolean().optional(),
       isMaybeThree: int().optional(),
       anObj: obj({
-        isMaybeTrue: bool().optional(),
+        isMaybeTrue: boolean().optional(),
         isThree: int().default(3),
         isFour: int().default(isFour),
       }).optional(),
       anArray: array(
         obj({
           aKey: int(),
+          aOneOf: oneOf([int(), value("hi")]),
         })
       ).optional(),
     });
+    type Test = InferType<typeof testSchema>;
+    const t: Test = {
+      id: 3,
+
+      pw: "aobst",
+      created: 1293,
+      aString: "aosrten",
+      aFloat: 3.4,
+      aHex: "beef",
+      aBase64: "eyB0eXBlOiAiYmFzZTY0In0=",
+      aEmail: "test@test.de",
+      aNill: null,
+      aAny: { type: "any" },
+      isTrue: true,
+      isMaybeTrue: true,
+      isMaybeThree: 3,
+      anObj: {
+        isMaybeTrue: false,
+        isThree: 3,
+        isFour: 4,
+      },
+      anArray: [
+        {
+          aKey: 5,
+          aOneOf: 22,
+        },
+        {
+          aKey: 5,
+          aOneOf: "hi",
+        },
+      ],
+    };
+    // @ts-expect-error
+    t.anArray[1].aOneOf = "test";
 
     expect(testSchema.type).toStrictEqual({
       type: "object",
@@ -30,6 +89,15 @@ describe("ts type", () => {
           public: true,
           key: true,
         },
+        pw: { type: "password" },
+        created: { type: "time" },
+        aString: { type: "string" },
+        aFloat: { type: "float" },
+        aHex: { type: "hex" },
+        aBase64: { type: "base64" },
+        aEmail: { type: "email" },
+        aNill: { type: "null" },
+        aAny: { type: "/" },
         isTrue: { type: "boolean", derived: deriveIsTrue },
         isMaybeTrue: { type: "boolean", optional: true },
         isMaybeThree: { type: "int", optional: true },
@@ -49,6 +117,10 @@ describe("ts type", () => {
             type: "object",
             keys: {
               aKey: { type: "int" },
+              aOneOf: {
+                type: "oneOf",
+                alternatives: [{ type: "int" }, { type: "value", value: "hi" }],
+              },
             },
           },
         },
@@ -58,7 +130,7 @@ describe("ts type", () => {
 
   it("should reject wrongly typed derived values", async () => {
     const objSchema = obj({
-      isMaybeTrue: bool().optional(),
+      isMaybeTrue: boolean().optional(),
       isThree: int(),
     });
 
@@ -78,7 +150,7 @@ describe("ts type", () => {
 
   it("should reject wrongly typed default values", async () => {
     const objSchema = obj({
-      isMaybeTrue: bool().optional(),
+      isMaybeTrue: boolean().optional(),
       isThree: int(),
     });
 

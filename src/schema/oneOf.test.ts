@@ -1,8 +1,8 @@
-import { obj, oneOf, bool, int, InferType } from "./index";
+import { obj, oneOf, boolean, int, InferType } from "./index";
 
 describe("obj type", () => {
   it("should defer type correctly", async () => {
-    const oneOfSchema = oneOf([bool(), int()]);
+    const oneOfSchema = oneOf([boolean(), int()]);
     type OneOf = InferType<typeof oneOfSchema>;
     const f = (a: OneOf) => a;
 
@@ -20,7 +20,7 @@ describe("obj type", () => {
         testNumber: int(),
       }),
       obj({
-        testBool: bool(),
+        testBool: boolean(),
       }),
     ]);
     type OneOf = InferType<typeof oneOfSchema>;

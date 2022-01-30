@@ -1,10 +1,10 @@
-import { bool, obj, InferType } from "./index";
+import { boolean, obj, InferType } from "./index";
 
 describe("obj type", () => {
   it("should defer optional correctly", async () => {
     const hasOptionals = obj({
-      just: bool(),
-      maybe: bool().optional(),
+      just: boolean(),
+      maybe: boolean().optional(),
     });
     type HasOptionals = InferType<typeof hasOptionals>;
     const f = (a: HasOptionals) => a;
@@ -28,8 +28,8 @@ describe("obj type", () => {
     */
 
     const keys = {
-      just: bool(),
-      maybe: bool().optional(),
+      just: boolean(),
+      maybe: boolean().optional(),
     };
     const indirectlyCreated = obj(keys);
     type IndirectType = InferType<typeof indirectlyCreated>;
@@ -44,9 +44,9 @@ describe("obj type", () => {
   it("should defer optionals obj obj", async () => {
     const hasDesc = obj({
       maybe: obj({
-        key: bool(),
+        key: boolean(),
       }).optional(),
-      just: obj({ key: bool() }),
+      just: obj({ key: boolean() }),
     });
     type HasDesc = InferType<typeof hasDesc>;
     const f = (a: HasDesc) => a;
