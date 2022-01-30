@@ -1,4 +1,4 @@
-import { int, bool, obj, InferType } from "./schema";
+import { int, bool, obj, InferType } from "./index";
 
 //export interface Test extends InferType<typeof testSchema> {}
 //let a: Test2;
@@ -16,12 +16,6 @@ describe("ts type", () => {
             isThree: int({}),
           },
         }),
-      },
-    });
-    const testSchema2 = obj({
-      keys: {
-        maybe: bool({ optional: true }),
-        just: bool(),
       },
     });
     expect(testSchema.type).toStrictEqual({
@@ -43,7 +37,6 @@ describe("ts type", () => {
 
   it("should defer optional correctly", async () => {
     const hasOptionals = obj({
-      optional: undefined,
       keys: {
         just: bool(),
         just2: bool({}),
@@ -87,7 +80,9 @@ describe("ts type", () => {
       just2: true,
       maybe: true,
     });
+  });
 
+  it("should defer optinals when created indirectly", async () => {
     /*
       This test is here because in development there was a WTF moment,
       when optional-inferred types were correct when the type was
@@ -111,5 +106,44 @@ describe("ts type", () => {
     g({ just: true, maybe: true });
     // @ts-expect-error
     g({ maybe: true });
+  });
+
+  it("should defer optionals with description", async () => {
+    const hasDesc = obj({
+      keys: {
+        just: bool({ description: "Test" }),
+        maybe: bool({ optional: true, description: "Test" }),
+      },
+    });
+    type HasDesc = InferType<typeof hasDesc>;
+    const f = (a: HasDesc) => a;
+
+    f({ just: true, maybe: true });
+    f({ just: true });
+    // @ts-expect-error
+    f({});
+  });
+
+  it("should defer optionals obj obj", async () => {
+    const hasDesc = obj({
+      keys: {
+        maybe: obj({
+          optional: true,
+          keys: {
+            key: bool(),
+          },
+        }),
+        just: obj({
+          keys: { key: bool() },
+        }),
+      },
+    });
+    type HasDesc = InferType<typeof hasDesc>;
+    const f = (a: HasDesc) => a;
+
+    f({ just: { key: true }, maybe: { key: true } });
+    f({ just: { key: true } });
+    // @ts-expect-error
+    f({});
   });
 });

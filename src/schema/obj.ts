@@ -1,45 +1,4 @@
-interface Type {}
-interface Schema<T, P extends Params> {
-  __params: P;
-  __type: T;
-  type: Type;
-}
-
-interface Params {
-  optional?: true;
-  description?: string;
-  semantic?: string;
-}
-
-class Int<P extends Params> implements Schema<number, P> {
-  constructor(params: Params) {
-    this.type = {
-      type: "int",
-      ...params,
-    };
-  }
-  type: Type;
-  __type: number;
-  __params: P;
-}
-export const int = <P extends Params>(params?: P): Int<P> => {
-  return new Int<P>(params);
-};
-
-class Bool<P extends Params> implements Schema<boolean, P> {
-  constructor(params: P) {
-    this.type = {
-      type: "boolean",
-      ...params,
-    };
-  }
-  type: Type;
-  __type: boolean;
-  __params: P;
-}
-export const bool = <P extends Params>(params?: P): Bool<P> => {
-  return new Bool(params);
-};
+import { Params, Schema, Type } from "./utilTypes";
 
 interface ObjParams<T extends Keys> extends Params {
   keys: T;
@@ -52,7 +11,9 @@ interface Keys {
 /* this seems to force TS to show the full type instead of all the wrapped generics */
 type _<T> = T extends {} ? { [k in keyof T]: T[k] } : T;
 
-/* Required<{}> tricks TS as optional: true does not have type object */
+/* Required<{}> tricks TS as optional: true does not have type object.
+   Not sure why it works. I discovered it by accident.
+ */
 type OptionalKeys<T extends Keys> = {
   [Property in keyof T]: Required<{}> extends T[Property]["__params"]["optional"]
     ? never
@@ -102,5 +63,3 @@ export const obj = <T extends Keys, P extends ObjParams<T>>(
 ): Obj<T, P> => {
   return new Obj(params);
 };
-
-export type InferType<T extends Schema<any, any>> = T["__type"];
