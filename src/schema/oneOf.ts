@@ -1,5 +1,6 @@
 import { Required, Optional, IsRequired, Schema, Type } from "./utilTypes";
 
+// https://dev.to/shakyshane/2-ways-to-create-a-union-from-an-array-in-typescript-1kd6
 type Schemas = Array<Schema<any, Required>>;
 export type OneOfType<T extends Schemas> = {
   [key in keyof T]: T[key] extends Schema<any, Required>
