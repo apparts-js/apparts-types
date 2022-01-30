@@ -1,16 +1,20 @@
-import { Params, Schema, Type } from "./utilTypes";
+import { Optional, Required, IsRequired, Schema, Type } from "./utilTypes";
 
-class Bool<P extends Params> implements Schema<boolean, P> {
-  constructor(params: P) {
-    this.type = {
+class Bool<Required extends IsRequired> extends Schema<boolean, Required> {
+  constructor(type?: Type) {
+    super();
+    this.type = type || {
       type: "boolean",
-      ...params,
     };
   }
   type: Type;
-  __type: boolean;
-  __params: P;
+  readonly __type: boolean;
+  readonly __required: Required;
+  optional() {
+    this.type.optional = true;
+    return new Bool<Optional>(this.type);
+  }
 }
-export const bool = <P extends Params>(params?: P): Bool<P> => {
-  return new Bool(params);
+export const bool = (): Bool<Required> => {
+  return new Bool();
 };

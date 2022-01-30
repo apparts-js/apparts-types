@@ -1,16 +1,20 @@
-import { Params, Schema, Type } from "./utilTypes";
+import { Optional, Required, IsRequired, Schema, Type } from "./utilTypes";
 
-class Int<P extends Params> implements Schema<number, P> {
-  constructor(params: Params) {
-    this.type = {
+class Int<Required extends IsRequired> extends Schema<number, Required> {
+  constructor(type?: Type) {
+    super();
+    this.type = type || {
       type: "int",
-      ...params,
     };
   }
   type: Type;
-  __type: number;
-  __params: P;
+  readonly __type: number;
+  readonly __required: Required;
+  optional() {
+    this.type.optional = true;
+    return new Int<Optional>(this.type);
+  }
 }
-export const int = <P extends Params>(params?: P): Int<P> => {
-  return new Int<P>(params);
+export const int = (): Int<Required> => {
+  return new Int();
 };

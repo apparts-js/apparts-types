@@ -1,8 +1,4 @@
-import { Params, Schema, Type } from "./utilTypes";
-
-interface ObjParams<T extends Keys> extends Params {
-  keys: T;
-}
+import { Required, Optional, IsRequired, Schema, Type } from "./utilTypes";
 
 interface Keys {
   [T: string]: Schema<any, any>;
@@ -11,13 +7,10 @@ interface Keys {
 /* this seems to force TS to show the full type instead of all the wrapped generics */
 type _<T> = T extends {} ? { [k in keyof T]: T[k] } : T;
 
-/* Required<{}> tricks TS as optional: true does not have type object.
-   Not sure why it works. I discovered it by accident.
- */
 type OptionalKeys<T extends Keys> = {
-  [Property in keyof T]: Required<{}> extends T[Property]["__params"]["optional"]
-    ? never
-    : Property;
+  [Property in keyof T]: Optional extends T[Property]["__required"]
+    ? Property
+    : never;
 }[keyof T];
 
 type RequiredKeys<T extends Keys> = Exclude<keyof T, OptionalKeys<T>>;
@@ -33,33 +26,36 @@ type ObjKeyType<T extends Keys> = _<
   }
 >;
 
-class Obj<T extends Keys, P extends Params>
-  implements Schema<ObjKeyType<T>, P>
-{
-  /*
-
-      {
-        [Property in keyof T]: T[Property]["__type"];
+class Obj<T extends Keys, Required extends IsRequired> extends Schema<
+  ObjKeyType<T>,
+  Required
+> {
+  constructor(keys: T, type?: Type) {
+    super();
+    if (!type) {
+      const typeKeys = {};
+      for (const key in keys) {
+        typeKeys[key as string] = keys[key].type;
       }
-*/
-  constructor({ keys, ...params }: ObjParams<T>) {
-    const typeKeys = {};
-    for (const key in keys) {
-      typeKeys[key as string] = keys[key].type;
+      this.type = {
+        type: "object",
+        keys: typeKeys,
+      };
+    } else {
+      this.type = type;
     }
-    this.type = {
-      type: "object",
-      keys: typeKeys,
-      ...params,
-    };
+    this.keys = keys;
+  }
+  optional() {
+    this.type.optional = true;
+    return new Obj<T, Optional>(this.keys, this.type);
   }
   type: Type;
-  __type: ObjKeyType<T>;
-  __params: P;
+  readonly __type: ObjKeyType<T>;
+  readonly __required: Required;
+  private keys: T;
 }
 
-export const obj = <T extends Keys, P extends ObjParams<T>>(
-  params: ObjParams<T>
-): Obj<T, P> => {
-  return new Obj(params);
+export const obj = <T extends Keys>(keys: T): Obj<T, Required> => {
+  return new Obj(keys);
 };

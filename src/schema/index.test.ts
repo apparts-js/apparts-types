@@ -6,17 +6,13 @@ import { int, bool, obj, InferType } from "./index";
 describe("ts type", () => {
   it("should match", () => {
     const testSchema = obj({
-      keys: {
-        isTrue: bool(),
-        isMaybeTrue: bool({ optional: true }),
-        isMaybeThree: int({ optional: true }),
-        anObj: obj({
-          keys: {
-            isMaybeTrue: bool({ optional: true }),
-            isThree: int({}),
-          },
-        }),
-      },
+      isTrue: bool(),
+      isMaybeTrue: bool().optional(),
+      isMaybeThree: int().optional(),
+      anObj: obj({
+        isMaybeTrue: bool().optional(),
+        isThree: int(),
+      }).optional(),
     });
     expect(testSchema.type).toStrictEqual({
       type: "object",
@@ -26,6 +22,7 @@ describe("ts type", () => {
         isMaybeThree: { type: "int", optional: true },
         anObj: {
           type: "object",
+          optional: true,
           keys: {
             isMaybeTrue: { type: "boolean", optional: true },
             isThree: { type: "int" },
@@ -37,49 +34,16 @@ describe("ts type", () => {
 
   it("should defer optional correctly", async () => {
     const hasOptionals = obj({
-      keys: {
-        just: bool(),
-        just2: bool({}),
-        just3: bool({ optional: undefined }),
-        maybe: bool({ optional: true }),
-      },
+      just: bool(),
+      maybe: bool().optional(),
     });
     type HasOptionals = InferType<typeof hasOptionals>;
     const f = (a: HasOptionals) => a;
 
-    f({
-      just: true,
-      just2: true,
-      just3: true,
-      maybe: true,
-    });
-
-    f({
-      just: true,
-      just2: true,
-      just3: true,
-    });
-
+    f({ just: true, maybe: true });
+    f({ just: true });
     // @ts-expect-error
-    f({
-      just2: true,
-      just3: true,
-      maybe: true,
-    });
-
-    // @ts-expect-error
-    f({
-      just: true,
-      just3: true,
-      maybe: true,
-    });
-
-    // @ts-expect-error
-    f({
-      just: true,
-      just2: true,
-      maybe: true,
-    });
+    f({ maybe: true });
   });
 
   it("should defer optinals when created indirectly", async () => {
@@ -95,10 +59,10 @@ describe("ts type", () => {
     */
 
     const keys = {
-      just: bool({}),
-      maybe: bool({ optional: true }),
+      just: bool(),
+      maybe: bool().optional(),
     };
-    const indirectlyCreated = obj({ keys });
+    const indirectlyCreated = obj(keys);
     type IndirectType = InferType<typeof indirectlyCreated>;
 
     const g = (a: IndirectType) => a;
@@ -108,35 +72,12 @@ describe("ts type", () => {
     g({ maybe: true });
   });
 
-  it("should defer optionals with description", async () => {
-    const hasDesc = obj({
-      keys: {
-        just: bool({ description: "Test" }),
-        maybe: bool({ optional: true, description: "Test" }),
-      },
-    });
-    type HasDesc = InferType<typeof hasDesc>;
-    const f = (a: HasDesc) => a;
-
-    f({ just: true, maybe: true });
-    f({ just: true });
-    // @ts-expect-error
-    f({});
-  });
-
   it("should defer optionals obj obj", async () => {
     const hasDesc = obj({
-      keys: {
-        maybe: obj({
-          optional: true,
-          keys: {
-            key: bool(),
-          },
-        }),
-        just: obj({
-          keys: { key: bool() },
-        }),
-      },
+      maybe: obj({
+        key: bool(),
+      }).optional(),
+      just: obj({ key: bool() }),
     });
     type HasDesc = InferType<typeof hasDesc>;
     const f = (a: HasDesc) => a;
