@@ -9,14 +9,13 @@
     "test:one": "jest",
     "test:coverage": "jest --coverage",
     "genApiDocs": "node apiDocs/generateHtmlApi.js && node apiDocs/generateMdApi.js",
-    "prepublishOnly": "npm run ci && npm ci",
+    "prepublishOnly": "npm run clean && npm ci  && npm run ci && npm run build",
     "ci": "npm ci && npm run ci:prettier && npm run ci:eslint && npm run ci:test",
     "ci:prettier": "CI=true prettier --check .",
     "ci:test": "CI=true npm run test:one",
     "ci:eslint": "eslint . --ext .js,.jsx,.ts,.tsx -c .eslintrc.ci.js",
     "build": "npm run clean && tsc -p tsconfig.release.json",
     "build:watch": "tsc -w -p tsconfig.release.json",
-    "prepublishOnly": "npm run clean && npm ci  && npm run ci && npm run build",
     "clean": "rimraf coverage build tmp"
   },
   "jest": {
