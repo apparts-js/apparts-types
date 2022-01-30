@@ -8,6 +8,18 @@ export type Type = (
         [T: string]: Type;
       };
     }
+  | {
+      type: "array";
+      items: Type;
+    }
+  | {
+      type: "oneOf";
+      alternatives: Type[];
+    }
+  | {
+      type: "value";
+      value: any;
+    }
 ) & {
   optional?: true;
   description?: string;

@@ -26,9 +26,9 @@ type ObjKeyType<T extends Keys> = _<
   }
 >;
 
-class Obj<T extends Keys, Required extends IsRequired> extends Schema<
+class Obj<T extends Keys, R extends IsRequired> extends Schema<
   ObjKeyType<T>,
-  Required
+  R
 > {
   constructor(keys: T, type?: Type) {
     super();
@@ -52,7 +52,7 @@ class Obj<T extends Keys, Required extends IsRequired> extends Schema<
   }
   type: Type;
   readonly __type: ObjKeyType<T>;
-  readonly __required: Required;
+  readonly __required: R;
   private keys: T;
 }
 
