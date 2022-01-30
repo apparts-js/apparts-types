@@ -70,6 +70,7 @@ const directType = {
         { value: "password" },
         { value: "time" },
         { value: "array_time" },
+        { value: "null" },
       ],
     },
   },
