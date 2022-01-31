@@ -49,6 +49,7 @@ export type Type = (
   derived?: (...ps: any) => any;
   default?: any | ((...ps: any) => any);
   mapped?: string;
+  readOnly?: boolean;
 };
 
 export type Optional = false;
@@ -90,6 +91,11 @@ export abstract class Schema<SchemaType, Required extends IsRequired> {
 
   mapped(mapped: string) {
     this.type.mapped = mapped;
+    return this;
+  }
+
+  readOnly() {
+    this.type.readOnly = true;
     return this;
   }
 
