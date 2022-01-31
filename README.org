@@ -26,7 +26,7 @@ A type is defined by an object. The object must either contain a key
 =value= as described under "Compound types".
 
 All types definitions can be produced by the use of functions from
-`schema`:
+=schema=:
 
 #+BEGIN_SRC js
 import { schema } from "@apparts/types";
