@@ -14,16 +14,17 @@ export type BaseTypeName =
   | "hex"
   | "base64";
 
-export type Type = (
+export type ObjType = {
+  type: "object";
+  keys: {
+    [T: string]: Type;
+  };
+};
+export type HasType =
   | {
       type: BaseTypeName;
     }
-  | {
-      type: "object";
-      keys: {
-        [T: string]: Type;
-      };
-    }
+  | ObjType
   | {
       type: "object";
       values: Type;
@@ -35,9 +36,10 @@ export type Type = (
   | {
       type: "oneOf";
       alternatives: Type[];
-    }
+    };
+export type Type = (
+  | HasType
   | {
-      type: "value";
       value: any;
     }
 ) & {

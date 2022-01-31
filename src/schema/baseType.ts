@@ -1,4 +1,11 @@
-import { Optional, Required, IsRequired, Schema, Type } from "./utilTypes";
+import {
+  Optional,
+  Required,
+  IsRequired,
+  Schema,
+  Type,
+  HasType,
+} from "./utilTypes";
 
 class BaseType<T, R extends IsRequired> extends Schema<T, R> {
   constructor(type: Type) {
@@ -16,7 +23,7 @@ class BaseType<T, R extends IsRequired> extends Schema<T, R> {
 
 class Int<R extends IsRequired> extends BaseType<number, R> {
   semantic(type: "time" | "id") {
-    this.type.type = type;
+    (this.type as HasType).type = type;
     return this;
   }
   optional() {
@@ -45,7 +52,7 @@ export const boolean = (): BaseType<boolean, Required> => {
 
 class Strring<R extends IsRequired> extends BaseType<string, R> {
   semantic(type: "password" | "id") {
-    this.type.type = type;
+    (this.type as HasType).type = type;
     return this;
   }
   optional() {

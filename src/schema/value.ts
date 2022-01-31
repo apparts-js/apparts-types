@@ -4,7 +4,6 @@ class Value<T, Required extends IsRequired> extends Schema<T, Required> {
   constructor(value: T, type?: Type) {
     super();
     this.type = type || {
-      type: "value",
       value,
     };
     this.value = value;

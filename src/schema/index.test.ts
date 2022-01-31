@@ -119,7 +119,7 @@ describe("ts type", () => {
               aKey: { type: "int" },
               aOneOf: {
                 type: "oneOf",
-                alternatives: [{ type: "int" }, { type: "value", value: "hi" }],
+                alternatives: [{ type: "int" }, { value: "hi" }],
               },
             },
           },

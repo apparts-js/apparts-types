@@ -1,4 +1,11 @@
-import { Required, Optional, IsRequired, Schema, Type } from "./utilTypes";
+import {
+  Required,
+  Optional,
+  IsRequired,
+  Schema,
+  Type,
+  ObjType,
+} from "./utilTypes";
 
 interface Keys {
   [T: string]: Schema<any, any>;
@@ -54,6 +61,10 @@ class Obj<T extends Keys, R extends IsRequired> extends Schema<
   readonly __type: ObjKeyType<T>;
   readonly __required: R;
   private keys: T;
+
+  getModelType() {
+    return (this.type as ObjType).keys;
+  }
 }
 
 type ObjValueType<T extends Schema<any, Required>> = {
