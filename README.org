@@ -25,6 +25,16 @@ A type is defined by an object. The object must either contain a key
 =type= that is an atomic type or be of the form of =object=, =array=, =oneOf=,
 =value= as described under "Compound types".
 
+All types definitions can be produced by the use of functions from
+`schema`:
+
+#+BEGIN_SRC js
+import { schema } from "@apparts/types";
+#+END_SRC
+
+*It is recommended*, to use these functions to build type definitions,
+as they can also be used to *infer TypeScript types.*
+
 ** Atomic types:
 
 - ~id~ (as configured)
@@ -44,56 +54,165 @@ A type is defined by an object. The object must either contain a key
 - ~array_time~ (alias for ~array_id~)
 - ~null~
 
-To be used as ={ type: <atomic type> }=.
+The type definition for each of the atomic types looks like: ={ type: <atomic type> }=.
+
+Build a type definition for an atomic type with these functions:
+#+BEGIN_SRC js
+import { schema } from "@apparts/types";
+const intSchema = schema.int();
+const floatSchema = schema.float();
+const booleanSchema = schema.boolean(); 
+const stringSchema = schema.string();
+const hexSchema = schema.hex();
+const uuidv4Schema = schema.uuidv4();
+const base64Schema = schema.base64();
+const emailSchema = schema.email();
+const nillSchema = schema.nill(); // { type: "null" }
+const anySchema = schema.any(); // { type: "/" }
+#+END_SRC
+
+Certain types only differ in semantics from other more basic
+types. They are created like this:
+
+#+BEGIN_SRC js
+// Creating ids depends on how your Ids look like, either a string or an int
+const idIntSchema = schema.int().semantic("id"); // { type: "id" }
+const idStrSchema = schema.string().semantic("id"); // { type: "id" }
+
+const passwordSchema = schema.string().semantic("password"); // { type: "password" }
+const timeSchema = schema.int().semantic("time"); // { type: "time" }
+#+END_SRC
+
 
 ** Compound types
 
 Compound objects make it possible to check complex JSON values for
 validity. Any sub-type can be either an atomic type or a compound type.
 
-- =object= :: Matches if the vale is an object and all the values of the
+- =object= :: Matches if the value is an object and all the values of the
   object have the types as specified by =values=, or if the specific
   keys of the object are known, as specified by the key in =keys=.
   - With known keys:
-  #+BEGIN_SRC js
-    {
+    #+BEGIN_SRC js
+    // build type schema
+    import { schema } from "@apparts/types";
+    const objSchema = schema.obj({
+      <key1>: <subschema1>,
+      <key2>: <subschema2>,
+      // ...
+    });
+
+    const typeDefinition = {
       type: "object",
       keys: {
         <key1>: { type: <type> [, optional: true]},
         ...
       }
-    }
-  #+END_SRC
+    } // = objSchema.getType();
+    #+END_SRC
   - With unknown keys:
-  #+BEGIN_SRC js
-    {
-      type: "object",
-      values: <type>
-    }
-  #+END_SRC
+    #+BEGIN_SRC js
+    // build type schema
+    import { schema } from "@apparts/types";
+    const objSchema = schema.objValues(<subschema>);
+    const typeDefinition = {
+        type: "object",
+        values: <type>
+    } // = objSchema.getType();
+    #+END_SRC
 - =array= :: Matches if the value is an array and all items of the array
   match the type, as specified by =items=.
   #+BEGIN_SRC js
-    {
+    // build type schema
+    import { schema } from "@apparts/types";
+    const arraySchema = schema.array(<subschema>);
+    const typeDefinition = {
       type: "array",
       items: <type>
-    }
+    } // = arraySchema.getType();
   #+END_SRC
 - =oneOf= :: Matches if at least one of the alternatives matches
   #+BEGIN_SRC js
-    {
+    // build type schema
+    import { schema } from "@apparts/types";
+    const oneOfSchema = schema.oneOf([
+      <subschema1>,
+      <subschema2>,
+      // ...
+      ]);
+
+    const typeDefinition = {
       type: "oneOf",
       alternatives: [
           <type>, ...
       ]
-    }
+    } // = oneOfSchema.getType();
   #+END_SRC
 - =value= :: Matches the exact content
   #+BEGIN_SRC js
-  {
+  // build type schema
+  import { schema } from "@apparts/types";
+  const valueSchema = schema.value(<a value>);
+
+  const typeDefinition = {
     value: <a value>
-  }
+  } // = valueSchema.getType();
   #+END_SRC
+
+** Using Schemas
+
+One can build types by hand by constructing the type definition
+object. This is not recommended though, as it is easy to mess up and
+no TypeScript types can be inferred. Instead, @apparts/types provides
+functions to build a type definition:
+
+#+BEGIN_SRC js
+// the functions then are available through schema.<function name>
+import { schema } from "@apparts/types";
+// or directly from the package
+import {
+  int,
+  float,
+  boolean,
+  string,
+  hex,
+  uuidv4,
+  base64,
+  email,
+  nill,
+  any,
+  array,
+  obj,
+  oneOf,
+  value,
+  InferType
+} from "@apparts/types";
+#+END_SRC
+
+Using a schema, one can get the type definition with the =getType=
+function:
+
+#+BEGIN_SRC js
+const userSchema = schema.obj({
+  firstName: string(),
+  lastName: string(),
+  gender: string().optional(),
+});
+userSchema.getType(); // returns the type definition
+#+END_SRC
+
+Also, one can get a TypeScript type:
+
+#+BEGIN_SRC ts
+type User = InferType<typeof userSchema>;
+
+// The resulting type looks like this:
+type User = {
+  firstName: string;
+  lastName: string;
+  gender?: string;
+};
+#+END_SRC
 
 ** Encoding for the preparator
 

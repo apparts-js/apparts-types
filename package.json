@@ -3,7 +3,7 @@
   "version": "6.10.0",
   "description": "Typechecking for requests and in general",
   "main": "build/index.js",
-  "module": "src/index.ts",
+  "types": "build/index.d.ts",
   "scripts": {
     "test": "jest --watch",
     "test:one": "jest",
@@ -16,6 +16,7 @@
     "ci:eslint": "eslint . --ext .js,.jsx,.ts,.tsx -c .eslintrc.ci.js",
     "build": "npm run clean && tsc -p tsconfig.release.json",
     "build:watch": "tsc -w -p tsconfig.release.json",
+    "build:types": "tsc --emitDeclarationOnly -p tsconfig.release.json --outDir dts",
     "clean": "rimraf coverage build tmp"
   },
   "jest": {
