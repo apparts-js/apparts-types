@@ -10,7 +10,7 @@ class Array<
     super();
     this.type = type || {
       type: "array",
-      items: items.type,
+      items: items.getType(),
     };
   }
   type: Type;

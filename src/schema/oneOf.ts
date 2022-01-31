@@ -16,7 +16,7 @@ class OneOf<
     super();
     this.type = type || {
       type: "oneOf",
-      alternatives: alternatives.map(({ type }) => type),
+      alternatives: alternatives.map((alt) => alt.getType()),
     };
   }
   type: Type;

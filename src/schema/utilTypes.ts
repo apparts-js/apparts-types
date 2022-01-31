@@ -1,7 +1,10 @@
 export type BaseTypeName =
+  | "id"
+  | "uuidv4"
   | "int"
   | "time"
   | "float"
+  | "bool"
   | "boolean"
   | "string"
   | "password"
@@ -20,6 +23,10 @@ export type Type = (
       keys: {
         [T: string]: Type;
       };
+    }
+  | {
+      type: "object";
+      values: Type;
     }
   | {
       type: "array";
@@ -50,6 +57,7 @@ export type IsRequired = Optional | Required;
 
 export abstract class Schema<SchemaType, Required extends IsRequired> {
   abstract optional(): Schema<SchemaType, Optional>;
+
   description(description: string) {
     this.type.description = description;
     return this;
@@ -87,5 +95,9 @@ export abstract class Schema<SchemaType, Required extends IsRequired> {
 
   readonly __type: SchemaType;
   readonly __required: Required;
-  type: Type;
+  protected type: Type;
+
+  getType() {
+    return this.type;
+  }
 }

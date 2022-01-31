@@ -15,7 +15,7 @@ class BaseType<T, R extends IsRequired> extends Schema<T, R> {
 }
 
 class Int<R extends IsRequired> extends BaseType<number, R> {
-  semantic(type: "time") {
+  semantic(type: "time" | "id") {
     this.type.type = type;
     return this;
   }
@@ -44,7 +44,7 @@ export const boolean = (): BaseType<boolean, Required> => {
 };
 
 class Strring<R extends IsRequired> extends BaseType<string, R> {
-  semantic(type: "password") {
+  semantic(type: "password" | "id") {
     this.type.type = type;
     return this;
   }
@@ -63,6 +63,12 @@ export const string = (): Strring<Required> => {
 export const hex = (): BaseType<string, Required> => {
   return new BaseType({
     type: "hex",
+  });
+};
+
+export const uuidv4 = (): BaseType<string, Required> => {
+  return new BaseType({
+    type: "uuidv4",
   });
 };
 

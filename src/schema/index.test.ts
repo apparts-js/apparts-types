@@ -80,7 +80,7 @@ describe("ts type", () => {
     // @ts-expect-error test type
     t.anArray[1].aOneOf = "test";
 
-    expect(testSchema.type).toStrictEqual({
+    expect(testSchema.getType()).toStrictEqual({
       type: "object",
       keys: {
         id: {

@@ -35,7 +35,7 @@ class Obj<T extends Keys, R extends IsRequired> extends Schema<
     if (!type) {
       const typeKeys = {};
       for (const key in keys) {
-        typeKeys[key as string] = keys[key].type;
+        typeKeys[key as string] = keys[key].getType();
       }
       this.type = {
         type: "object",
@@ -50,12 +50,48 @@ class Obj<T extends Keys, R extends IsRequired> extends Schema<
     this.type.optional = true;
     return new Obj<T, Optional>(this.keys, this.type);
   }
-  type: Type;
+  protected type: Type;
   readonly __type: ObjKeyType<T>;
   readonly __required: R;
   private keys: T;
 }
 
+type ObjValueType<T extends Schema<any, Required>> = {
+  [key: string]: T["__type"];
+};
+
+class ObjValues<
+  T extends Schema<any, Required>,
+  R extends IsRequired
+> extends Schema<ObjValueType<T>, R> {
+  constructor(values: T, type?: Type) {
+    super();
+    if (!type) {
+      this.type = {
+        type: "object",
+        values: values.getType(),
+      };
+    } else {
+      this.type = type;
+    }
+    this.values = values;
+  }
+  optional() {
+    this.type.optional = true;
+    return new ObjValues<T, Optional>(this.values, this.type);
+  }
+  protected type: Type;
+  readonly __type: ObjValueType<T>;
+  readonly __required: R;
+  private values: T;
+}
+
 export const obj = <T extends Keys>(keys: T): Obj<T, Required> => {
   return new Obj(keys);
+};
+
+export const objValues = <T extends Schema<any, Required>>(
+  values: T
+): ObjValues<T, Required> => {
+  return new ObjValues(values);
 };

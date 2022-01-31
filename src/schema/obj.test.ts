@@ -1,4 +1,4 @@
-import { boolean, obj, InferType } from "./index";
+import { boolean, obj, objValues, InferType } from "./index";
 
 describe("obj type", () => {
   it("should defer optional correctly", async () => {
@@ -55,5 +55,19 @@ describe("obj type", () => {
     f({ just: { key: true } });
     // @ts-expect-error test type
     f({});
+  });
+});
+
+describe("objValues type", () => {
+  it("should defer type correctly", async () => {
+    const valuesObjSchema = objValues(boolean());
+    type ValuesObjType = InferType<typeof valuesObjSchema>;
+    const f = (a: ValuesObjType) => a;
+
+    f({});
+    f({ just: true, maybe: false });
+    f({ just: true });
+    // @ts-expect-error test type
+    f({ number: 43 });
   });
 });
