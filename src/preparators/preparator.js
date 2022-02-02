@@ -1,6 +1,6 @@
 "use strict";
 
-const uuidv1 = require("uuid/v1");
+const { v1: uuidv1 } = require("uuid");
 const types = require("../types/types");
 const config = require("@apparts/config").get("types-config");
 const recursiveCheck = require("../types/checkType");
