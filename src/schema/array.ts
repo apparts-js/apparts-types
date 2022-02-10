@@ -1,4 +1,4 @@
-import { Required, Optional, IsRequired, Schema, Type } from "./utilTypes";
+import { Required, IsRequired, Schema, Type } from "./utilTypes";
 
 type ArrayType<T extends Schema<any, Required>> = T["__type"][];
 
@@ -17,12 +17,7 @@ class Array<
   readonly __type: ArrayType<T>;
   readonly __required: R;
 
-  optional() {
-    this.type.optional = true;
-    return new Array<T, Optional>(this.items, this.type);
-  }
-
-  cloneWithType(type: Type) {
+  cloneWithType<R extends IsRequired>(type: Type) {
     return new Array<T, R>(this.items, type);
   }
 

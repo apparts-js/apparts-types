@@ -1,4 +1,4 @@
-import { Optional, Required, IsRequired, Schema, Type } from "./utilTypes";
+import { Required, IsRequired, Schema, Type } from "./utilTypes";
 
 class Value<T, R extends IsRequired> extends Schema<T, R> {
   constructor(value: T, type?: Type) {
@@ -13,11 +13,7 @@ class Value<T, R extends IsRequired> extends Schema<T, R> {
   readonly __required: R;
   private value: T;
 
-  optional() {
-    this.type.optional = true;
-    return new Value<T, Optional>(this.value, this.type);
-  }
-  cloneWithType(type: Type) {
+  cloneWithType<R extends IsRequired>(type: Type) {
     return new Value<T, R>(this.value, type);
   }
 }

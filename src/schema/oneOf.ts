@@ -1,4 +1,4 @@
-import { Required, Optional, IsRequired, Schema, Type } from "./utilTypes";
+import { Required, IsRequired, Schema, Type } from "./utilTypes";
 
 // https://dev.to/shakyshane/2-ways-to-create-a-union-from-an-array-in-typescript-1kd6
 type Schemas = Array<Schema<any, Required>>;
@@ -23,11 +23,7 @@ class OneOf<
   readonly __type: OneOfType<T>;
   readonly __required: R;
 
-  optional() {
-    this.type.optional = true;
-    return new OneOf<T, Optional>(this.items, this.type);
-  }
-  cloneWithType(type: Type) {
+  cloneWithType<R extends IsRequired>(type: Type) {
     return new OneOf<T, R>(this.items, type);
   }
 

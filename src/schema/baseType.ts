@@ -1,11 +1,4 @@
-import {
-  Optional,
-  Required,
-  IsRequired,
-  Schema,
-  Type,
-  HasType,
-} from "./utilTypes";
+import { Required, IsRequired, Schema, Type, HasType } from "./utilTypes";
 
 class BaseType<T, R extends IsRequired> extends Schema<T, R> {
   constructor(type: Type) {
@@ -15,14 +8,8 @@ class BaseType<T, R extends IsRequired> extends Schema<T, R> {
   type: Type;
   readonly __type: T;
   readonly __required: R;
-  optional() {
-    return new BaseType<T, Optional>({
-      ...this.type,
-      optional: true,
-    });
-  }
 
-  cloneWithType(type: Type) {
+  cloneWithType<R extends IsRequired>(type: Type) {
     return new BaseType<T, R>(type);
   }
 }
@@ -32,12 +19,7 @@ class Int<R extends IsRequired> extends BaseType<number, R> {
     (this.type as HasType).type = type;
     return this;
   }
-  optional() {
-    this.type.optional = true;
-    return new Int<Optional>(this.type);
-  }
-
-  cloneWithType(type: Type) {
+  cloneWithType<R extends IsRequired>(type: Type) {
     return new Int<R>(type);
   }
 }
@@ -65,11 +47,7 @@ class Strring<R extends IsRequired> extends BaseType<string, R> {
     (this.type as HasType).type = type;
     return this;
   }
-  optional() {
-    this.type.optional = true;
-    return new Strring<Optional>(this.type);
-  }
-  cloneWithType(type: Type) {
+  cloneWithType<R extends IsRequired>(type: Type) {
     return new Strring<R>(type);
   }
 }

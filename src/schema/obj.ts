@@ -53,12 +53,7 @@ class Obj<T extends Keys, R extends IsRequired> extends Schema<
     }
     this.keys = keys;
   }
-  optional() {
-    this.type.optional = true;
-    return new Obj<T, Optional>(this.keys, this.type);
-  }
-
-  cloneWithType(type: Type) {
+  cloneWithType<R extends IsRequired>(type: Type) {
     return new Obj<T, R>(this.keys, type);
   }
 
@@ -92,12 +87,7 @@ class ObjValues<
     }
     this.values = values;
   }
-  optional() {
-    this.type.optional = true;
-    return new ObjValues<T, Optional>(this.values, this.type);
-  }
-
-  cloneWithType(type: Type) {
+  cloneWithType<R extends IsRequired>(type: Type) {
     return new ObjValues<T, R>(this.values, type);
   }
   protected type: Type;
