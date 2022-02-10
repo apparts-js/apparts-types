@@ -87,7 +87,7 @@ export abstract class Schema<SchemaType, R extends IsRequired> {
     return this.cloneWithType<R>({ ...this.type, key: true });
   }
 
-  derived(derived: (...ps: any) => SchemaType) {
+  derived(derived: (...ps: any) => SchemaType | Promise<SchemaType>) {
     return this.cloneWithType<R>({ ...this.type, derived });
   }
 
