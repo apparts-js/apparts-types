@@ -177,4 +177,21 @@ describe("ts type", () => {
     // @ts-expect-error test type
     objSchema.derived(() => 3);
   });
+
+  it("should create new instance on modification", async () => {
+    const testBool = boolean();
+    testBool.optional();
+    testBool.description("Test");
+    testBool.default(true);
+    testBool.public();
+    testBool.auto();
+    testBool.key();
+    testBool.derived(() => true);
+    testBool.mapped("abc");
+    testBool.readOnly();
+
+    expect(testBool.getType()).toStrictEqual({
+      type: "boolean",
+    });
+  });
 });

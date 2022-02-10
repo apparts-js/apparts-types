@@ -27,6 +27,10 @@ class OneOf<
     this.type.optional = true;
     return new OneOf<T, Optional>(this.items, this.type);
   }
+  cloneWithType(type: Type) {
+    return new OneOf<T, R>(this.items, type);
+  }
+
   private items: T;
 }
 export const oneOf = <T extends Schema<any, Required>[]>(

@@ -16,8 +16,14 @@ class BaseType<T, R extends IsRequired> extends Schema<T, R> {
   readonly __type: T;
   readonly __required: R;
   optional() {
-    this.type.optional = true;
-    return new BaseType<T, Optional>(this.type);
+    return new BaseType<T, Optional>({
+      ...this.type,
+      optional: true,
+    });
+  }
+
+  cloneWithType(type: Type) {
+    return new BaseType<T, R>(type);
   }
 }
 
@@ -29,6 +35,10 @@ class Int<R extends IsRequired> extends BaseType<number, R> {
   optional() {
     this.type.optional = true;
     return new Int<Optional>(this.type);
+  }
+
+  cloneWithType(type: Type) {
+    return new Int<R>(type);
   }
 }
 
@@ -58,6 +68,9 @@ class Strring<R extends IsRequired> extends BaseType<string, R> {
   optional() {
     this.type.optional = true;
     return new Strring<Optional>(this.type);
+  }
+  cloneWithType(type: Type) {
+    return new Strring<R>(type);
   }
 }
 

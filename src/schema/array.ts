@@ -21,6 +21,11 @@ class Array<
     this.type.optional = true;
     return new Array<T, Optional>(this.items, this.type);
   }
+
+  cloneWithType(type: Type) {
+    return new Array<T, R>(this.items, type);
+  }
+
   private items: T;
 }
 export const array = <T extends Schema<any, Required>>(

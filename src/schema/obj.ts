@@ -57,6 +57,11 @@ class Obj<T extends Keys, R extends IsRequired> extends Schema<
     this.type.optional = true;
     return new Obj<T, Optional>(this.keys, this.type);
   }
+
+  cloneWithType(type: Type) {
+    return new Obj<T, R>(this.keys, type);
+  }
+
   protected type: Type;
   readonly __type: ObjKeyType<T>;
   readonly __required: R;
@@ -90,6 +95,10 @@ class ObjValues<
   optional() {
     this.type.optional = true;
     return new ObjValues<T, Optional>(this.values, this.type);
+  }
+
+  cloneWithType(type: Type) {
+    return new ObjValues<T, R>(this.values, type);
   }
   protected type: Type;
   readonly __type: ObjValueType<T>;

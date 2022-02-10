@@ -59,46 +59,39 @@ export type Required = true;
 export type IsRequired = Optional | Required;
 
 export abstract class Schema<SchemaType, Required extends IsRequired> {
+  abstract cloneWithType(type: Type): Schema<SchemaType, Required>;
   abstract optional(): Schema<SchemaType, Optional>;
 
   description(description: string) {
-    this.type.description = description;
-    return this;
+    return this.cloneWithType({ ...this.type, description });
   }
 
   default(defaultF: SchemaType | (() => SchemaType)) {
-    this.type.default = defaultF;
-    return this;
+    return this.cloneWithType({ ...this.type, default: defaultF });
   }
 
   public() {
-    this.type.public = true;
-    return this;
+    return this.cloneWithType({ ...this.type, public: true });
   }
 
   auto() {
-    this.type.auto = true;
-    return this;
+    return this.cloneWithType({ ...this.type, auto: true });
   }
 
   key() {
-    this.type.key = true;
-    return this;
+    return this.cloneWithType({ ...this.type, key: true });
   }
 
   derived(derived: (...ps: any) => SchemaType) {
-    this.type.derived = derived;
-    return this;
+    return this.cloneWithType({ ...this.type, derived });
   }
 
   mapped(mapped: string) {
-    this.type.mapped = mapped;
-    return this;
+    return this.cloneWithType({ ...this.type, mapped });
   }
 
   readOnly() {
-    this.type.readOnly = true;
-    return this;
+    return this.cloneWithType({ ...this.type, readOnly: true });
   }
 
   readonly __type: SchemaType;
