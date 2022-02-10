@@ -86,7 +86,7 @@ export abstract class Schema<SchemaType, Required extends IsRequired> {
     return this;
   }
 
-  derived(derived: (...ps: any) => SchemaType) {
+  derived(derived: (...ps: any) => SchemaType | Promise<SchemaType>) {
     this.type.derived = derived;
     return this;
   }
