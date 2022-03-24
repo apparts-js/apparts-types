@@ -1,6 +1,6 @@
 import { Required, IsRequired, Schema, Type } from "./utilTypes";
 
-class Value<T, R extends IsRequired> extends Schema<T, R> {
+export class Value<T, R extends IsRequired> extends Schema<T, R> {
   constructor(value: T, type?: Type) {
     super();
     this.type = type || {

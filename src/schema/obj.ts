@@ -33,7 +33,7 @@ type ObjKeyType<T extends Keys> = _<
   }
 >;
 
-class Obj<T extends Keys, R extends IsRequired> extends Schema<
+export class Obj<T extends Keys, R extends IsRequired> extends Schema<
   ObjKeyType<T>,
   R
 > {
@@ -71,7 +71,7 @@ type ObjValueType<T extends Schema<any, Required>> = {
   [key: string]: T["__type"];
 };
 
-class ObjValues<
+export class ObjValues<
   T extends Schema<any, Required>,
   R extends IsRequired
 > extends Schema<ObjValueType<T>, R> {

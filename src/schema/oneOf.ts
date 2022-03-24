@@ -8,7 +8,7 @@ export type OneOfType<T extends Schemas> = {
     : never;
 }[number];
 
-class OneOf<
+export class OneOf<
   T extends Schema<any, Required>[],
   R extends IsRequired
 > extends Schema<OneOfType<T>, R> {

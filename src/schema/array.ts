@@ -2,7 +2,7 @@ import { Required, IsRequired, Schema, Type } from "./utilTypes";
 
 type ArrayType<T extends Schema<any, Required>> = T["__type"][];
 
-class Array<
+export class Array<
   T extends Schema<any, Required>,
   R extends IsRequired
 > extends Schema<ArrayType<T>, R> {
