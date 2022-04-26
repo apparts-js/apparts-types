@@ -221,6 +221,7 @@ const email = async (tipe, path, right, wrong, isParams) => {
   await wrong(path, "abc@def.g", tipe);
   await wrong(path, "abc@.gh", tipe);
   await right(path, "abc@def.gh", tipe);
+  await right(path, "abc@base.kitchen", tipe);
 };
 
 const array = async (tipe, path, right, wrong, isParams) => {
