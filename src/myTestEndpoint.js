@@ -71,6 +71,7 @@ const myEndpoint = preparator(
               description: "Some array item text",
               keys: {
                 a: { type: "int" },
+                c: { type: "object", optional: true },
               },
             },
           },
