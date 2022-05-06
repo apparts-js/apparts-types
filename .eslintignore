@@ -2,3 +2,4 @@
 .eslintrc.ci.js
 jest.config.js
 build/
+src/apiDocs/reactDocs.js
