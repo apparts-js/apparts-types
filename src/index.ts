@@ -9,6 +9,8 @@ export * from "./schema";
 export * from "./preparators/prepauth";
 export * from "./checkReturns/checkApiTypes";
 
+const section = genApiDocs.section;
+
 export {
   schema,
   types,
@@ -17,4 +19,5 @@ export {
   HttpCode,
   DontRespond,
   genApiDocs,
+  section,
 };

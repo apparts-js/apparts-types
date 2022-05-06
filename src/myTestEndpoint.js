@@ -4,6 +4,7 @@ const {
   prepauthToken,
   prepauthPW,
   prepauthTokenJWT,
+  section,
 } = require("./index");
 const { HttpError } = require("@apparts/error");
 const express = require("express");
@@ -104,7 +105,7 @@ const myEndpoint = preparator(
 const myFaultyEndpoint = preparator(
   {
     body: {
-      name: { type: "string", default: "no name" },
+      name: { type: "string", default: "no name", description: "A name" },
     },
     query: {
       filter: { type: "string", optional: true },
@@ -250,14 +251,57 @@ const myErrorCheckpoint = preparator(
 const app = express();
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
-app.post("/v/1/endpoint/:id", myEndpoint);
-app.post("/v/1/faultyendpoint/:id", myFaultyEndpoint);
-app.post("/v/1/typelessendpoint", myTypelessEndpoint);
-app.post("/v/1/cantdecide", myOneOfEndpoint);
 
-app.delete("/v/1/withpw", myPwAuthenticatedEndpoint);
-app.patch("/v/1/withtoken", myTokenAuthenticatedEndpoint);
-app.put("/v/1/withjwt", myJWTAuthenticatedEndpoint);
+section({
+  app,
+  title: "Introduction",
+  description: `
+This API is for demo and testing purposes. You should never use it.
+
+But to brighten you up, here is a table:
+
+| **asrt** | **1** | **2** | **3** | **4** |
+|----------|-------|-------|-------|-------|
+| no       | yes   | yes   | no    | no    |
+| yes      | no    | no    | ye    | kanye |
+
+  `,
+});
+section({
+  app,
+  title: "Some test endpoints",
+  routes: (app) => {
+    app.post("/v/1/endpoint/:id", myEndpoint);
+    app.post("/v/1/faultyendpoint/:id", myFaultyEndpoint);
+    app.post("/v/1/typelessendpoint", myTypelessEndpoint);
+
+    section({
+      app,
+      title: "Undecided",
+      description: `### Testing the *description*
+
+Here is some inline \`Code\`. It should actually be inline.
+
+~~~js
+// Some not inline code:
+console.log("Hollow orld");
+~~~
+      `,
+      routes: (app) => {
+        app.post("/v/1/cantdecide", myOneOfEndpoint);
+      },
+    });
+    section({
+      app,
+      title: "Auth",
+      routes: (app) => {
+        app.delete("/v/1/withpw", myPwAuthenticatedEndpoint);
+        app.patch("/v/1/withtoken", myTokenAuthenticatedEndpoint);
+        app.put("/v/1/withjwt", myJWTAuthenticatedEndpoint);
+      },
+    });
+  },
+});
 
 app.get("/v/1/error", myErrorCheckpoint);
 

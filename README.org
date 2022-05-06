@@ -567,16 +567,24 @@ Create a file =genApiDocs.js=:
 const addRoutes = require("./routes");
 const express = require("express");
 const {
-  genApiDocs: { getApi, apiToHtml, apiToOpenApi },
+  genApiDocs: {
+    getApi,
+    apiToReact,
+    /*
+    apiToOpenApi,
+    apiToHtml,
+    apiToMd,
+    */ },
 } = require("@apparts/types");
 
 const app = express();
 addRoutes(app);
 
-const docs = apiToHtml(getApi(app));
+const docs = apiToReact(getApi(app));
 
-// Also available: docs in the open api format
-//const openApiDocs = apiToOpenApi(getApi(app));
+//// Also available: docs in the open api format, markdown
+//// and plain html. See imports.
+// const openApiDocs = apiToOpenApi(getApi(app));
 
 console.log(docs);
 #+END_SRC
@@ -588,6 +596,58 @@ node genApiDocs.js > api.html
 #+END_SRC
 
 See your Api-documentation in the generated =api.html= file.
+
+** API Sections
+
+(Only supported by =apiToReact=)
+
+You can add context to your API documentation by structuring it in
+sections and adding markdown descriptions to them. Sections can be
+nested. They don't have to have any routes in them (e.g. if you need a
+chapter "Introduction"), but can. See example below.
+
+The =section= function takes these arguments:
+- app :: The express app
+- title :: The section title
+- description :: (optional) The section description. Markdown is supported.
+- routes :: (optional) A function in which you add routes to
+  express or add subsections. These sections and routes will be
+  displayed with the section.
+
+#+BEGIN_SRC js
+const { section } = require("@apparts/types");
+
+section({
+  app,
+  title: "Introduction",
+  description: `
+This API doc is for demo and testing purposes.
+
+But to cheer you up, here is a table:
+
+| **asrt** | **1** | **2** | **3** | **4** |
+|----------|-------|-------|-------|-------|
+| no       | yes   | yes   | no    | no    |
+| yes      | no    | no    | ye    | kanye |
+
+  `,
+    routes: (app) => {
+      app.post("/v/1/endpoint/:id", myEndpoint);
+      app.post("/v/1/faultyendpoint/:id", myFaultyEndpoint);
+
+      // subsection:
+      section({
+        app,
+        title: "Auth",
+        routes: (app) => {
+          app.delete("/v/1/withpw", myPwAuthenticatedEndpoint);
+          app.patch("/v/1/withtoken", myTokenAuthenticatedEndpoint);
+          app.put("/v/1/withjwt", myJWTAuthenticatedEndpoint);
+        },
+      });
+    },
+});
+#+END_SRC
 
 * Test API Types
 
