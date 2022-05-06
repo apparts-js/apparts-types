@@ -11,21 +11,21 @@ const recursiveCheck = (response, type) => {
     return response.reduce((a, b) => a && recursiveCheck(b, type.items), true);
   }
   if (type.type === "object") {
-    const isOptionalAndNull = type.optional && response === null;
-    if (isOptionalAndNull) {
-      return true;
-    }
-
     const responseIsObject = typeof response === "object" && response !== null;
     const hasKeys = typeof type.keys === "object" && type.keys !== null;
     const hasValues = typeof type.values === "object" && type.values !== null;
 
     if (responseIsObject && hasKeys) {
-      const allExistingValuesCorrectlyTyped = Object.keys(response).reduce(
-        (a, b) =>
-          a && type.keys[b] && recursiveCheck(response[b], type.keys[b]),
-        true
-      );
+      const notOptionalAndNull = (key) =>
+        !(response[key] === null && type.keys[key] && type.keys[key].optional);
+
+      const allExistingValuesCorrectlyTyped = Object.keys(response)
+        .filter(notOptionalAndNull)
+        .reduce(
+          (a, b) =>
+            a && type.keys[b] && recursiveCheck(response[b], type.keys[b]),
+          true
+        );
       const allRequiredValuesExist = Object.keys(type.keys).reduce(
         (a, b) => a && (response[b] !== undefined || type.keys[b].optional),
         true

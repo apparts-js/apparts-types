@@ -177,6 +177,10 @@ MISSING: [
                   "type": "int"
                 }
               }
+            },
+            "e": {
+              "type": "int",
+              "optional": true
             }
           }
         }

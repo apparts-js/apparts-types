@@ -29,7 +29,7 @@ const myEndpoint = preparator(
     if (filter) {
       // Return values are JSONified automatically!
       const resp = {
-        arr: [{ a: 1 }, { a: 2, c: null }],
+        arr: [{ a: 1 }, { a: 2, c: null, e: null }],
         foo: "really!",
         boo: true,
         objectWithUnknownKeys: {
@@ -77,6 +77,10 @@ const myEndpoint = preparator(
                   keys: {
                     d: { type: "int" },
                   },
+                },
+                e: {
+                  type: "int",
+                  optional: true,
                 },
               },
             },

@@ -67,7 +67,8 @@ Behaves radically different, based on what
           "a": <int>,
           "c": ? {
             "d": <int>
-          }
+          },
+          "e": ? <int>
         }
       ],
       "objectWithUnknownKeys": {

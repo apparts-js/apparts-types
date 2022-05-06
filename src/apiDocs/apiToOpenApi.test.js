@@ -116,6 +116,9 @@ const OAPI = {
                                 },
                                 required: ["d"],
                               },
+                              e: {
+                                type: "integer",
+                              },
                             },
                             required: ["a"],
                           },
