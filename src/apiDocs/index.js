@@ -8,11 +8,9 @@ const getRoutes = (app) => {
     .map((route) => {
       if (route.route && route.route.path) {
         const {
-          route: {
-            path,
-            stack: [{ method, handle }],
-          },
+          route: { path, stack = [] },
         } = route;
+        const { method, handle } = stack[stack.length - 1];
         const { returns, title, description, ...options } =
           handle.options || {};
         return {
