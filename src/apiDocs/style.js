@@ -55,18 +55,16 @@ module.exports = `
 
 body {
   background: var(--bright-5);
-}
-* {
   font-family: sans-serif;
 }
+* {
+  line-height: 1.5rem;
+}
 section {
-  background: var(--bright-3);
+  background: rgba(0,0,0,0.05);
   padding: 40px;
   border-radius: 10px;
-  margin: 20px;
-}
-p {
-  margin-bottom: 40px;
+  margin: 20px 0px 20px 0px;
 }
 .path {
   font-weight: bold;
@@ -114,7 +112,6 @@ li {
   margin-bottom: 10px;
 }
 h2{
-  margin-left: 50px;
 }
 .toc code {
   display: inline-block;
@@ -129,9 +126,17 @@ h2{
 code {
   font-family: mono, monospace;
   background: var(--bright-2);
-  display: block;
-  padding: 4px;
+  padding: 2px;
   border-radius: 4px;
+}
+
+code.block, pre code {
+  display: block;
+  padding: 4px 10px;
+}
+
+span.code {
+  font-family: mono, monospace;
 }
 
 @media (min-width: 1000px) {

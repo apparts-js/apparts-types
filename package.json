@@ -3,12 +3,15 @@
   "version": "6.13.2",
   "description": "Typechecking for requests and in general",
   "main": "build/index.js",
+  "files": [
+    "src/apiDocs/reactDocs.js"
+  ],
   "types": "build/index.d.ts",
   "scripts": {
     "test": "jest --watch",
     "test:one": "jest",
     "test:coverage": "jest --coverage",
-    "genApiDocs": "node apiDocs/generateHtmlApi.js && node apiDocs/generateMdApi.js",
+    "genApiDocs": "ts-node src/apiDocs/generateHtmlApi.js && ts-node src/apiDocs/generateMdApi.js && ts-node src/apiDocs/generateReactApi.js",
     "prepublishOnly": "npm run clean && npm ci  && npm run ci && npm run build",
     "ci": "npm ci && npm run ci:prettier && npm run ci:eslint && npm run ci:test",
     "ci:prettier": "CI=true prettier --check .",

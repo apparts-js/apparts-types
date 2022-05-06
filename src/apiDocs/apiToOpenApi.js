@@ -207,7 +207,7 @@ const genOpenApiPaths = (api) => {
 };
 
 const apiToOpenApi = (api, apiName, commitHash) => {
-  const paths = genOpenApiPaths(api);
+  const paths = genOpenApiPaths(api.routes);
 
   return {
     openapi: "3.0.3",

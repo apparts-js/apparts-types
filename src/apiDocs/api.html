@@ -61,18 +61,16 @@
 
 body {
   background: var(--bright-5);
-}
-* {
   font-family: sans-serif;
 }
+* {
+  line-height: 1.5rem;
+}
 section {
-  background: var(--bright-3);
+  background: rgba(0,0,0,0.05);
   padding: 40px;
   border-radius: 10px;
-  margin: 20px;
-}
-p {
-  margin-bottom: 40px;
+  margin: 20px 0px 20px 0px;
 }
 .path {
   font-weight: bold;
@@ -120,7 +118,6 @@ li {
   margin-bottom: 10px;
 }
 h2{
-  margin-left: 50px;
 }
 .toc code {
   display: inline-block;
@@ -135,9 +132,17 @@ h2{
 code {
   font-family: mono, monospace;
   background: var(--bright-2);
-  display: block;
-  padding: 4px;
+  padding: 2px;
   border-radius: 4px;
+}
+
+code.block, pre code {
+  display: block;
+  padding: 4px 10px;
+}
+
+span.code {
+  font-family: mono, monospace;
 }
 
 @media (min-width: 1000px) {
@@ -163,35 +168,35 @@ code {
         <a href="#post_/v/1/endpoint/:id">
   <span class="version">v1</span>
   <span class="link">Testendpoint for multiple purposes</span><br/>
-             &nbsp;&nbsp;<span class="method">POST</span><code>/v/1/endpoint/:id</code>
+             &nbsp;&nbsp;<span class="method">POST</span><code class="block">/v/1/endpoint/:id</code>
   </a><a href="#post_/v/1/faultyendpoint/:id">
   <span class="version">v1</span>
   <span class="link">Faulty Testendpoint</span><br/>
-             &nbsp;&nbsp;<span class="method">POST</span><code>/v/1/faultyendpoint/:id</code>
+             &nbsp;&nbsp;<span class="method">POST</span><code class="block">/v/1/faultyendpoint/:id</code>
   </a><a href="#post_/v/1/typelessendpoint">
   <span class="version">v1</span>
   <span class="link">Typeless endpoint</span><br/>
-             &nbsp;&nbsp;<span class="method">POST</span><code>/v/1/typelessendpoint</code>
+             &nbsp;&nbsp;<span class="method">POST</span><code class="block">/v/1/typelessendpoint</code>
   </a><a href="#post_/v/1/cantdecide">
   <span class="version">v1</span>
   <span class="link">OneOf endpoint</span><br/>
-             &nbsp;&nbsp;<span class="method">POST</span><code>/v/1/cantdecide</code>
+             &nbsp;&nbsp;<span class="method">POST</span><code class="block">/v/1/cantdecide</code>
   </a><a href="#delete_/v/1/withpw">
   <span class="version">v1</span>
   <span class="link">Endpoint with Pw Authentication</span><br/>
-             &nbsp;&nbsp;<span class="method">DELETE</span><code>/v/1/withpw</code>
+             &nbsp;&nbsp;<span class="method">DELETE</span><code class="block">/v/1/withpw</code>
   </a><a href="#patch_/v/1/withtoken">
   <span class="version">v1</span>
   <span class="link">Endpoint with Token Authentication</span><br/>
-             &nbsp;&nbsp;<span class="method">PATCH</span><code>/v/1/withtoken</code>
+             &nbsp;&nbsp;<span class="method">PATCH</span><code class="block">/v/1/withtoken</code>
   </a><a href="#put_/v/1/withjwt">
   <span class="version">v1</span>
   <span class="link">Endpoint with JWT Authentication</span><br/>
-             &nbsp;&nbsp;<span class="method">PUT</span><code>/v/1/withjwt</code>
+             &nbsp;&nbsp;<span class="method">PUT</span><code class="block">/v/1/withjwt</code>
   </a><a href="#get_/v/1/error">
   <span class="version">v1</span>
   <span class="link">Error checkpoint endpoint</span><br/>
-             &nbsp;&nbsp;<span class="method">GET</span><code>/v/1/error</code>
+             &nbsp;&nbsp;<span class="method">GET</span><code class="block">/v/1/error</code>
   </a>
       </div>
     </div>
@@ -210,35 +215,35 @@ Testendpoint for multiple purposes</h3>
 
      
         <li>Body: <br><ul>
-                                                               <li><code>/* A name */ <br/>name: <span class="type">&lt;string&gt;</span> (= "no name")</code></li>
+                                                               <li><code class="block">/* A name */ <br/>name: <span class="type">&lt;string&gt;</span> (= "no name")</code></li>
         </li></ul></li>
         <li>Query: <br><ul>
-                                                               <li><code>filter: ? <span class="type">&lt;string&gt;</span></code></li>
+                                                               <li><code class="block">filter: ? <span class="type">&lt;string&gt;</span></code></li>
         </li>
-                                                               <li><code>number: <span class="type">&lt;int&gt;</span> (= 0)</code></li>
+                                                               <li><code class="block">number: <span class="type">&lt;int&gt;</span> (= 0)</code></li>
         </li></ul></li>
         <li>Params: <br><ul>
-                                                               <li><code>id: <span class="type">&lt;id&gt;</span></code></li>
+                                                               <li><code class="block">id: <span class="type">&lt;id&gt;</span></code></li>
         </li></ul></li>
      </ul>
      <span class="returns">Returns:</span> <br>
      <ul>
      
         <li>Status: 200
-        <code>"ok"</code></li>
+        <code class="block">"ok"</code></li>
         
         <li>Status: 400
-        <code>{ "error": "Name too long" }</code></li>
+        <code class="block">{ "error": "Name too long" }</code></li>
         
         <li>Status: 200
-        <code>{<br/><br/>&nbsp;&nbsp;/* Some text */ <br/>&nbsp;&nbsp;"foo": "really!",<br/>&nbsp;&nbsp;"boo": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"kabaz": ? <span class="type">&lt;bool&gt;</span>,<br/><br/>&nbsp;&nbsp;/* This is an array */ <br/>&nbsp;&nbsp;"arr": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;/* Some array item text */ <br/>&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;],<br/><br/>&nbsp;&nbsp;/* Quod illo quos excepturi alias qui. Illo non laudantium <br/>&nbsp;&nbsp;&nbsp;&nbsp; commodi. Est quos consequatur debitis in. Iusto fugiat sunt <br/>&nbsp;&nbsp;&nbsp;&nbsp; sit. Dolorem quod eius sit non. */ <br/>&nbsp;&nbsp;"objectWithUnknownKeys": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;int&gt;</span></span><br/>&nbsp;&nbsp;},<br/>&nbsp;&nbsp;"objectWithUnknownKeysAndUnknownTypes": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;/&gt;</span></span><br/>&nbsp;&nbsp;}<br/>}</code></li>
+        <code class="block">{<br/><br/>&nbsp;&nbsp;/* Some text */ <br/>&nbsp;&nbsp;"foo": "really!",<br/>&nbsp;&nbsp;"boo": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"kabaz": ? <span class="type">&lt;bool&gt;</span>,<br/><br/>&nbsp;&nbsp;/* This is an array */ <br/>&nbsp;&nbsp;"arr": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;/* Some array item text */ <br/>&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;],<br/><br/>&nbsp;&nbsp;/* Quod illo quos excepturi alias qui. Illo non laudantium <br/>&nbsp;&nbsp;&nbsp;&nbsp; commodi. Est quos consequatur debitis in. Iusto fugiat sunt <br/>&nbsp;&nbsp;&nbsp;&nbsp; sit. Dolorem quod eius sit non. */ <br/>&nbsp;&nbsp;"objectWithUnknownKeys": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;int&gt;</span></span><br/>&nbsp;&nbsp;},<br/>&nbsp;&nbsp;"objectWithUnknownKeysAndUnknownTypes": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;/&gt;</span></span><br/>&nbsp;&nbsp;}<br/>}</code></li>
         
         <li>Status: 400
-        <code>{ "error": "Fieldmissmatch" }</code></li>
+        <code class="block">{ "error": "Fieldmissmatch" }</code></li>
         
      </ul>
      <span class="usage">Usage:</span> <br><br>
-     <code>try {<br/>&nbsp;&nbsp;const response = await post("endpoint/$1", [ id ])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.query({ filter, number })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.data({ name })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Name too long" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
+     <code class="block">try {<br/>&nbsp;&nbsp;const response = await post("endpoint/$1", [ id ])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.query({ filter, number })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.data({ name })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Name too long" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section><section id="post_/v/1/faultyendpoint/:id">
    <h3><span class="version">v1</span>
@@ -253,33 +258,33 @@ does not match it's behavior.</p>
 
      
         <li>Body: <br><ul>
-                                                               <li><code>name: <span class="type">&lt;string&gt;</span> (= "no name")</code></li>
+                                                               <li><code class="block">/* A name */ <br/>name: <span class="type">&lt;string&gt;</span> (= "no name")</code></li>
         </li></ul></li>
         <li>Query: <br><ul>
-                                                               <li><code>filter: ? <span class="type">&lt;string&gt;</span></code></li>
+                                                               <li><code class="block">filter: ? <span class="type">&lt;string&gt;</span></code></li>
         </li></ul></li>
         <li>Params: <br><ul>
-                                                               <li><code>id: <span class="type">&lt;id&gt;</span></code></li>
+                                                               <li><code class="block">id: <span class="type">&lt;id&gt;</span></code></li>
         </li></ul></li>
      </ul>
      <span class="returns">Returns:</span> <br>
      <ul>
      
         <li>Status: 200
-        <code>"ok"</code></li>
+        <code class="block">"ok"</code></li>
         
         <li>Status: 400
-        <code>{ "error": "Name too long" }</code></li>
+        <code class="block">{ "error": "Name too long" }</code></li>
         
         <li>Status: 200
-        <code>{<br/>&nbsp;&nbsp;"boo": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"arr": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;]<br/>}</code></li>
+        <code class="block">{<br/>&nbsp;&nbsp;"boo": <span class="type">&lt;bool&gt;</span>,<br/>&nbsp;&nbsp;"arr": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"a": <span class="type">&lt;int&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;]<br/>}</code></li>
         
         <li>Status: 400
-        <code>{ "error": "Fieldmissmatch" }</code></li>
+        <code class="block">{ "error": "Fieldmissmatch" }</code></li>
         
      </ul>
      <span class="usage">Usage:</span> <br><br>
-     <code>try {<br/>&nbsp;&nbsp;const response = await post("faultyendpoint/$1", [ id ])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.query({ filter })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.data({ name })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Name too long" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
+     <code class="block">try {<br/>&nbsp;&nbsp;const response = await post("faultyendpoint/$1", [ id ])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.query({ filter })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.data({ name })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Name too long" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section><section id="post_/v/1/typelessendpoint">
    <h3><span class="version">v1</span>
@@ -297,11 +302,11 @@ Typeless endpoint</h3>
      <ul>
      
         <li>Status: 400
-        <code>{ "error": "Fieldmissmatch" }</code></li>
+        <code class="block">{ "error": "Fieldmissmatch" }</code></li>
         
      </ul>
      <span class="usage">Usage:</span> <br><br>
-     <code>try {<br/>&nbsp;&nbsp;const response = await post("typelessendpoint", [&nbsp;&nbsp;]);<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
+     <code class="block">try {<br/>&nbsp;&nbsp;const response = await post("typelessendpoint", [&nbsp;&nbsp;]);<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section><section id="post_/v/1/cantdecide">
    <h3><span class="version">v1</span>
@@ -315,18 +320,18 @@ OneOf endpoint</h3>
 
      
         <li>Body: <br><ul>
-                                                               <li><code>value: (<br/><br/>&nbsp;&nbsp;/* One option */ <br/>&nbsp;&nbsp;<span class="type">&lt;int&gt;</span> |<br/><br/>&nbsp;&nbsp;/* Another option */ <br/>&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;/&gt;</span></span><br/>&nbsp;&nbsp;}<br/>)</code></li>
+                                                               <li><code class="block">value: (<br/><br/>&nbsp;&nbsp;/* One option */ <br/>&nbsp;&nbsp;<span class="type">&lt;int&gt;</span> |<br/><br/>&nbsp;&nbsp;/* Another option */ <br/>&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">&lt;/&gt;</span>: <span class="type"><span class="type">&lt;/&gt;</span></span><br/>&nbsp;&nbsp;}<br/>)</code></li>
         </li></ul></li>
      </ul>
      <span class="returns">Returns:</span> <br>
      <ul>
      
         <li>Status: 400
-        <code>{ "error": "Fieldmissmatch" }</code></li>
+        <code class="block">{ "error": "Fieldmissmatch" }</code></li>
         
      </ul>
      <span class="usage">Usage:</span> <br><br>
-     <code>try {<br/>&nbsp;&nbsp;const response = await post("cantdecide", [&nbsp;&nbsp;])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.data({ value });<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
+     <code class="block">try {<br/>&nbsp;&nbsp;const response = await post("cantdecide", [&nbsp;&nbsp;])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.data({ value });<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section><section id="delete_/v/1/withpw">
    <h3><span class="version">v1</span>
@@ -340,7 +345,7 @@ Endpoint with Pw Authentication</h3>
         <li>Header:
             <ul>
         <li>
-        <code>Authorization: Basic btoa(uname:password)</code>
+        <code class="block">Authorization: Basic btoa(uname:password)</code>
         </li>
         </ul>
         </li>
@@ -352,17 +357,17 @@ Endpoint with Pw Authentication</h3>
      <ul>
      
         <li>Status: 401
-        <code>{ "error": "User not found" }</code></li>
+        <code class="block">{ "error": "User not found" }</code></li>
         
         <li>Status: 400
-        <code>{ "error": "Authorization wrong" }</code></li>
+        <code class="block">{ "error": "Authorization wrong" }</code></li>
         
         <li>Status: 400
-        <code>{ "error": "Fieldmissmatch" }</code></li>
+        <code class="block">{ "error": "Fieldmissmatch" }</code></li>
         
      </ul>
      <span class="usage">Usage:</span> <br><br>
-     <code>try {<br/>&nbsp;&nbsp;const response = await delete("withpw", [&nbsp;&nbsp;])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.auth(user)<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 401, error: "User not found" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;})<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Authorization wrong" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
+     <code class="block">try {<br/>&nbsp;&nbsp;const response = await delete("withpw", [&nbsp;&nbsp;])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.auth(user)<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 401, error: "User not found" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;})<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Authorization wrong" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section><section id="patch_/v/1/withtoken">
    <h3><span class="version">v1</span>
@@ -376,7 +381,7 @@ Endpoint with Token Authentication</h3>
         <li>Header:
             <ul>
         <li>
-        <code>Authorization: Basic btoa(uname:token)</code>
+        <code class="block">Authorization: Basic btoa(uname:token)</code>
         </li>
         </ul>
         </li>
@@ -388,17 +393,17 @@ Endpoint with Token Authentication</h3>
      <ul>
      
         <li>Status: 401
-        <code>{ "error": "User not found" }</code></li>
+        <code class="block">{ "error": "User not found" }</code></li>
         
         <li>Status: 400
-        <code>{ "error": "Authorization wrong" }</code></li>
+        <code class="block">{ "error": "Authorization wrong" }</code></li>
         
         <li>Status: 400
-        <code>{ "error": "Fieldmissmatch" }</code></li>
+        <code class="block">{ "error": "Fieldmissmatch" }</code></li>
         
      </ul>
      <span class="usage">Usage:</span> <br><br>
-     <code>try {<br/>&nbsp;&nbsp;const response = await patch("withtoken", [&nbsp;&nbsp;])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.auth(user)<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 401, error: "User not found" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;})<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Authorization wrong" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
+     <code class="block">try {<br/>&nbsp;&nbsp;const response = await patch("withtoken", [&nbsp;&nbsp;])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.auth(user)<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 401, error: "User not found" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;})<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Authorization wrong" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section><section id="put_/v/1/withjwt">
    <h3><span class="version">v1</span>
@@ -412,7 +417,7 @@ Endpoint with JWT Authentication</h3>
         <li>Header:
             <ul>
         <li>
-        <code>Authorization: Bearer jwt</code>
+        <code class="block">Authorization: Bearer jwt</code>
         </li>
         </ul>
         </li>
@@ -424,17 +429,17 @@ Endpoint with JWT Authentication</h3>
      <ul>
      
         <li>Status: 401
-        <code>{ "error": "Unauthorized" }</code></li>
+        <code class="block">{ "error": "Unauthorized" }</code></li>
         
         <li>Status: 401
-        <code>{ "error": "Token invalid" }</code></li>
+        <code class="block">{ "error": "Token invalid" }</code></li>
         
         <li>Status: 400
-        <code>{ "error": "Fieldmissmatch" }</code></li>
+        <code class="block">{ "error": "Fieldmissmatch" }</code></li>
         
      </ul>
      <span class="usage">Usage:</span> <br><br>
-     <code>try {<br/>&nbsp;&nbsp;const response = await put("withjwt", [&nbsp;&nbsp;])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.auth(user)<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 401, error: "Unauthorized" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;})<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 401, error: "Token invalid" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
+     <code class="block">try {<br/>&nbsp;&nbsp;const response = await put("withjwt", [&nbsp;&nbsp;])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.auth(user)<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 401, error: "Unauthorized" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;})<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 401, error: "Token invalid" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section><section id="get_/v/1/error">
    <h3><span class="version">v1</span>
@@ -448,21 +453,21 @@ Error checkpoint endpoint</h3>
 
      
         <li>Query: <br><ul>
-                                                               <li><code>error: <span class="type">&lt;bool&gt;</span></code></li>
+                                                               <li><code class="block">error: <span class="type">&lt;bool&gt;</span></code></li>
         </li></ul></li>
      </ul>
      <span class="returns">Returns:</span> <br>
      <ul>
      
         <li>Status: 400
-        <code>{ "error": "Text 1" }</code></li>
+        <code class="block">{ "error": "Text 1" }</code></li>
         
         <li>Status: 400
-        <code>{ "error": "Fieldmissmatch" }</code></li>
+        <code class="block">{ "error": "Fieldmissmatch" }</code></li>
         
      </ul>
      <span class="usage">Usage:</span> <br><br>
-     <code>try {<br/>&nbsp;&nbsp;const response = await get("error", [&nbsp;&nbsp;])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.query({ error })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Text 1" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
+     <code class="block">try {<br/>&nbsp;&nbsp;const response = await get("error", [&nbsp;&nbsp;])<br/>&nbsp;&nbsp;&nbsp;&nbsp;.query({ error })<br/>&nbsp;&nbsp;&nbsp;&nbsp;.on({ status: 400, error: "Text 1" }, () => {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* handle error */<br/>&nbsp;&nbsp;&nbsp;&nbsp;});<br/>} catch (e) {<br/>&nbsp;&nbsp;// If e is not false, then no error-catcher caught the error and<br/>&nbsp;&nbsp;// you might want to take care of it<br/>&nbsp;&nbsp;e && alert(e);<br/>}</code>
   </div>
 </section>
     </div>

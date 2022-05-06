@@ -6,4 +6,4 @@ const { apiToMd } = require("./apiToMd");
 
 const html = apiToMd(getApi(app), "testcommithash");
 const fs = require("fs");
-fs.writeFileSync("./apiDocs/api.md", html);
+fs.writeFileSync("./src/apiDocs/api.md", html);

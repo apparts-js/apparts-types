@@ -102,7 +102,7 @@ ${spaces})`;
 
 const apiToHtml = (api, commitHash, style = STYLE) => {
   const toc = [];
-  const data = api
+  const data = api.routes
     .map(
       ({
         method = "",
@@ -135,7 +135,7 @@ ${title || ""}</h3>
         <li>Header:
             <ul>
         <li>
-        <code>Authorization: ${options.auth}</code>
+        <code class="block">Authorization: ${options.auth}</code>
         </li>
         </ul>
         </li>
@@ -151,7 +151,7 @@ ${title || ""}</h3>
            Object.keys(assertions[type])
              .map(
                (key) => `
-                                                               <li><code>${htmlifyLines(
+                                                               <li><code class="block">${htmlifyLines(
                                                                  printDescription(
                                                                    assertions[
                                                                      type
@@ -178,7 +178,7 @@ ${title || ""}</h3>
        .map(
          ({ status, error, ...rest }) => `
         <li>Status: ${status}
-        <code>${
+        <code class="block">${
           error
             ? `{ "error": ${JSON.stringify(error)} }`
             : recursivelyPrintType(rest)
@@ -188,7 +188,13 @@ ${title || ""}</h3>
        .join("")}
      </ul>
      <span class="usage">Usage:</span> <br><br>
-     <code>${usageExample(method, path, assertions, options, returns)}</code>
+     <code class="block">${usageExample(
+       method,
+       path,
+       assertions,
+       options,
+       returns
+     )}</code>
   </div>
 </section>`;
       }
@@ -214,7 +220,9 @@ ${title || ""}</h3>
               `<a href="#${a[0]}">
   <span class="version">${a[4] ? "v" + a[4] : ""}</span>
   <span class="link">${a[3] || ""}</span><br/>
-             &nbsp;&nbsp;<span class="method">${a[1]}</span><code>${a[2]}</code>
+             &nbsp;&nbsp;<span class="method">${
+               a[1]
+             }</span><code class="block">${a[2]}</code>
   </a>`
           )
           .join("")}

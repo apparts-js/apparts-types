@@ -38,7 +38,7 @@ ${spaces})`;
 
 const apiToMd = (api, commitHash) => {
   const toc = [];
-  const data = api
+  const data = api.routes
     .map(
       ({
         method = "",
