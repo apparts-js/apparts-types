@@ -4,7 +4,8 @@
   "description": "Typechecking for requests and in general",
   "main": "build/index.js",
   "files": [
-    "src/apiDocs/reactDocs.js"
+    "src/apiDocs/reactDocs.js",
+    "build/**/*"
   ],
   "types": "build/index.d.ts",
   "scripts": {
