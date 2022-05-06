@@ -64,7 +64,10 @@ Behaves radically different, based on what
       "kabaz": ? <bool>,
       "arr": [
         {
-          "a": <int>
+          "a": <int>,
+          "c": ? {
+            "d": <int>
+          }
         }
       ],
       "objectWithUnknownKeys": {

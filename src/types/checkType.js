@@ -11,7 +11,7 @@ const recursiveCheck = (response, type) => {
     return response.reduce((a, b) => a && recursiveCheck(b, type.items), true);
   }
   if (type.type === "object") {
-    const isOptionalAndNull = type.type.optional && response === null;
+    const isOptionalAndNull = type.optional && response === null;
     if (isOptionalAndNull) {
       return true;
     }

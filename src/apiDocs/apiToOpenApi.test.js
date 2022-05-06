@@ -107,6 +107,15 @@ const OAPI = {
                             type: "object",
                             properties: {
                               a: { type: "integer" },
+                              c: {
+                                type: "object",
+                                properties: {
+                                  d: {
+                                    type: "integer",
+                                  },
+                                },
+                                required: ["d"],
+                              },
                             },
                             required: ["a"],
                           },
