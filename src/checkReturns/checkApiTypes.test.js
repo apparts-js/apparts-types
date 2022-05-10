@@ -168,6 +168,19 @@ MISSING: [
           "keys": {
             "a": {
               "type": "int"
+            },
+            "c": {
+              "type": "object",
+              "optional": true,
+              "keys": {
+                "d": {
+                  "type": "int"
+                }
+              }
+            },
+            "e": {
+              "type": "int",
+              "optional": true
             }
           }
         }
