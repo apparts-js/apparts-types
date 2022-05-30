@@ -1,9 +1,10 @@
-const { apiToMd } = require("./apiToMd");
-const { apiToHtml } = require("./apiToHtml");
-const { apiToReact } = require("./apiToReact");
-const { apiToOpenApi } = require("./apiToOpenApi");
+export { apiToMd } from "./apiToMd";
+export { apiToHtml } from "./apiToHtml";
+export { apiToReact } from "./apiToReact";
+export { apiToOpenApi } from "./apiToOpenApi";
+import { Application } from "express";
 
-const getRoutes = (app) => {
+const getRoutes = (app: Application) => {
   return ((app._router || {}).stack || [])
     .map((route) => {
       if (route.route && route.route.path) {
@@ -29,13 +30,34 @@ const getRoutes = (app) => {
     .filter((a) => !!a);
 };
 
-const section = ({ app, title, description, routes }) => {
+type ApiSection = {
+  title: string;
+  description?: string;
+  subsections?: ApiSection[];
+};
+
+type ExtendedExpressApp = Application & {
+  appartsApiSections: ApiSection[];
+};
+
+export const section = ({
+  app,
+  title,
+  description,
+  routes,
+}: {
+  app: Application;
+  title: string;
+  description?: string;
+  routes?: (app: Application) => void;
+}) => {
+  const exdendedApp = app as ExtendedExpressApp;
   const prevRoutes = getRoutes(app);
-  const prevSections = app.appartsApiSections || [];
-  app.appartsApiSections = [];
+  const prevSections = exdendedApp.appartsApiSections || [];
+  exdendedApp.appartsApiSections = [];
   routes && routes(app);
   const newRoutes = getRoutes(app);
-  const addedSections = app.appartsApiSections;
+  const addedSections = exdendedApp.appartsApiSections;
   const addedRoutes = newRoutes.filter(
     ({ method, path }) =>
       !prevRoutes.find(
@@ -43,15 +65,15 @@ const section = ({ app, title, description, routes }) => {
       )
   );
 
-  app.appartsApiSections = prevSections;
-  app.appartsApiSections.push({
+  exdendedApp.appartsApiSections = prevSections;
+  exdendedApp.appartsApiSections.push({
     title,
     description,
     subsections: addedSections,
   });
 
   addedRoutes.forEach((route) => {
-    const sectionId = app.appartsApiSections.length - 1;
+    const sectionId = exdendedApp.appartsApiSections.length - 1;
     // Has to be attached to the route instead of the function, as
     // otherwise, routes that use the same function would be handled
     // multiple times in here. That would brake stuff.
@@ -62,16 +84,8 @@ const section = ({ app, title, description, routes }) => {
   });
 };
 
-const getApi = (app) => {
+export const getApi = (app: Application) => {
+  const exdendedApp = app as ExtendedExpressApp;
   const api = getRoutes(app);
-  return { routes: api, sections: app.appartsApiSections || [] };
-};
-
-module.exports = {
-  getApi,
-  apiToMd,
-  apiToHtml,
-  apiToOpenApi,
-  apiToReact,
-  section,
+  return { routes: api, sections: exdendedApp.appartsApiSections || [] };
 };
