@@ -110,6 +110,15 @@ module.exports = {
     },
     check: (x) => typeof x === "object" && x !== null && !Array.isArray(x),
   },
+  oneOf: {
+    conv: (x) => {
+      try {
+        return JSON.parse(x);
+      } catch (e) {
+        return x;
+      }
+    },
+  },
   array_int: {
     conv: (x) => {
       const conved = JSON.parse(x);

@@ -60,6 +60,28 @@ describe("Query", () => {
         time: { type: "time" },
         arrayTime: { type: "array_time" },
         value: { value: "Hi!" },
+        object: {
+          type: "object",
+          keys: {
+            test: { type: "string" },
+          },
+        },
+        oneOfObj: {
+          type: "oneOf",
+          alternatives: [
+            {
+              type: "object",
+              keys: {
+                test: { type: "string" },
+              },
+            },
+            { type: "int" },
+          ],
+        },
+        oneOfAtomic: {
+          type: "oneOf",
+          alternatives: [{ type: "int" }, { type: "string" }],
+        },
       },
     });
     await expectSuccess(
@@ -83,6 +105,9 @@ describe("Query", () => {
           "time=" + transformVal(29029),
           "arrayTime=" + transformVal([1, 2, 3]),
           "value=" + transformVal("Hi!"),
+          "object=" + transformVal({ test: "Hi!" }),
+          "oneOfObj=" + transformVal({ test: "Hi!" }),
+          "oneOfAtomic=" + transformVal("Hi!"),
         ].join("&")
     );
   });
