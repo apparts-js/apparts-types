@@ -50,14 +50,10 @@
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
-    "@apparts/config": "^1.0.5",
-    "@apparts/error": "^1.1.0",
-    "@apparts/model": "^4.0.2"
+    "@apparts/config": "^1.0.5"
   },
   "devDependencies": {
     "@apparts/config": "^1.0.5",
-    "@apparts/error": "^1.1.0",
-    "@apparts/model": "^4.0.2",
     "@tsconfig/node14": "^1.0.1",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.4.0",
