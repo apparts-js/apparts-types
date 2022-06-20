@@ -45,6 +45,7 @@ export type Type = (
 ) & {
   optional?: true;
   description?: string;
+  title?: string;
   public?: boolean;
   auto?: boolean;
   key?: boolean;
@@ -69,6 +70,10 @@ export abstract class Schema<SchemaType, R extends IsRequired> {
 
   description(description: string) {
     return this.cloneWithType<R>({ ...this.type, description });
+  }
+
+  title(title: string) {
+    return this.cloneWithType<R>({ ...this.type, title });
   }
 
   default(defaultF: SchemaType | (() => SchemaType)) {
