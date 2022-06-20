@@ -1,3 +1,2 @@
-export * from "./types/types";
-export * from "./types/checkType";
+export * from "./types";
 export * from "./schema";
