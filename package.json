@@ -5,7 +5,8 @@
   "main": "build/index.js",
   "files": [
     "src/apiDocs/reactDocs.js",
-    "build/**/*"
+    "build/**/*",
+    "src/**/*"
   ],
   "types": "build/index.d.ts",
   "scripts": {
