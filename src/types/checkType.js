@@ -1,4 +1,4 @@
-import { types as checkTypes } from "./types.js";
+import { types as checkTypes } from "./types";
 
 export const checkType = (response, type) => {
   if (type.type === "oneOf" && Array.isArray(type.alternatives)) {

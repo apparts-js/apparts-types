@@ -1,4 +1,4 @@
-const checkTypes = require("./types.js");
+import { types as checkTypes } from "./types";
 
 const pad = (str, len = 10) => " ".repeat(Math.max(len - (str + "").length, 0));
 
