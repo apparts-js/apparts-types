@@ -47,9 +47,6 @@
   ],
   "author": "Philipp Uhl",
   "license": "MIT",
-  "dependencies": {
-    "uuid": "^8.3.2"
-  },
   "peerDependencies": {
     "@apparts/config": "^1.0.5"
   },
