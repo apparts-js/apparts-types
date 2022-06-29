@@ -77,7 +77,7 @@ export abstract class Schema<SchemaType, R extends IsRequired> {
   }
 
   default(defaultF: SchemaType | (() => SchemaType)) {
-    return this.cloneWithType<Optional>({ ...this.type, default: defaultF });
+    return this.cloneWithType<Required>({ ...this.type, default: defaultF });
   }
 
   public() {
