@@ -1,8 +1,8 @@
-const checkTypes = require("./types.js");
+import { types as checkTypes } from "./types";
 
 const pad = (str, len = 10) => " ".repeat(Math.max(len - (str + "").length, 0));
 
-const explainCheck = (response, type) => {
+export const explainCheck = (response, type) => {
   if (type.type === "oneOf" && Array.isArray(type.alternatives)) {
     const res = type.alternatives.map((b) => explainCheck(response, b));
     return res.some((a) => a === false) ? false : res;
@@ -84,5 +84,3 @@ const explainCheck = (response, type) => {
   }
   return `❌ Wrong assertion`;
 };
-
-module.exports = explainCheck;

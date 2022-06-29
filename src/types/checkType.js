@@ -1,14 +1,14 @@
-const checkTypes = require("./types.js");
+import { types as checkTypes } from "./types";
 
-const recursiveCheck = (response, type) => {
+export const checkType = (response, type) => {
   if (type.type === "oneOf" && Array.isArray(type.alternatives)) {
     return type.alternatives.reduce(
-      (a, b) => a || recursiveCheck(response, b),
+      (a, b) => a || checkType(response, b),
       false
     );
   }
   if (type.type === "array" && checkTypes.array.check(response)) {
-    return response.reduce((a, b) => a && recursiveCheck(b, type.items), true);
+    return response.reduce((a, b) => a && checkType(b, type.items), true);
   }
   if (type.type === "object") {
     const responseIsObject = typeof response === "object" && response !== null;
@@ -19,16 +19,19 @@ const recursiveCheck = (response, type) => {
       const notOptionalAndNull = (key) =>
         !(response[key] === null && type.keys[key] && type.keys[key].optional);
 
-      const allExistingValuesCorrectlyTyped = Object.keys(response)
-        .filter(notOptionalAndNull)
-        .reduce(
-          (a, b) =>
-            a && type.keys[b] && recursiveCheck(response[b], type.keys[b]),
+      const allExistingValuesCorrectlyTyped = Boolean(
+        Object.keys(response)
+          .filter(notOptionalAndNull)
+          .reduce(
+            (a, b) => a && type.keys[b] && checkType(response[b], type.keys[b]),
+            true
+          )
+      );
+      const allRequiredValuesExist = Boolean(
+        Object.keys(type.keys).reduce(
+          (a, b) => a && (response[b] !== undefined || type.keys[b].optional),
           true
-        );
-      const allRequiredValuesExist = Object.keys(type.keys).reduce(
-        (a, b) => a && (response[b] !== undefined || type.keys[b].optional),
-        true
+        )
       );
       return allExistingValuesCorrectlyTyped && allRequiredValuesExist;
     } else {
@@ -36,7 +39,7 @@ const recursiveCheck = (response, type) => {
         responseIsObject &&
         hasValues &&
         Object.keys(response).reduce(
-          (a, b) => a && recursiveCheck(response[b], type.values),
+          (a, b) => a && checkType(response[b], type.values),
           true
         )
       );
@@ -51,4 +54,6 @@ const recursiveCheck = (response, type) => {
   return false;
 };
 
-module.exports = recursiveCheck;
+export const checkSchema = (response, schema) => {
+  return checkType(response, schema.getType());
+};

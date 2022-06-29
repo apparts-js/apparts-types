@@ -1,11 +1,12 @@
 {
   "name": "@apparts/types",
-  "version": "6.15.2",
-  "description": "Typechecking for requests and in general",
+  "version": "7.0.5",
+  "description": "A Typechecking Library",
   "main": "build/index.js",
   "files": [
     "src/apiDocs/reactDocs.js",
-    "build/**/*"
+    "build/**/*",
+    "src/**/*"
   ],
   "types": "build/index.d.ts",
   "scripts": {
@@ -23,18 +24,6 @@
     "build:types": "tsc --emitDeclarationOnly -p tsconfig.release.json --outDir dts",
     "clean": "rimraf coverage build tmp"
   },
-  "jest": {
-    "testTimeout": 5000,
-    "clearMocks": true,
-    "coveragePathIgnorePatterns": [
-      "<rootDir>/node_modules/"
-    ],
-    "watchPathIgnorePatterns": [
-      "/\\.#.*",
-      "/.*~",
-      "/#.*#"
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "git@github.com:phuhl/apparts-types.git"
@@ -46,18 +35,11 @@
   ],
   "author": "Philipp Uhl",
   "license": "MIT",
-  "dependencies": {
-    "uuid": "^8.3.2"
-  },
   "peerDependencies": {
-    "@apparts/config": "^1.0.5",
-    "@apparts/error": "^1.1.0",
-    "@apparts/model": "^4.0.2"
+    "@apparts/config": "^1.1.0"
   },
   "devDependencies": {
-    "@apparts/config": "^1.0.5",
-    "@apparts/error": "^1.1.0",
-    "@apparts/model": "^4.0.2",
+    "@apparts/config": "^1.1.0",
     "@tsconfig/node14": "^1.0.1",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.4.0",

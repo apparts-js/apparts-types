@@ -10,32 +10,13 @@ const bfalse = function (value) {
   return /^((?:false)|0)$/i.test(value);
 };
 
-let id;
-switch (config.idType) {
-  case "string":
-    id = { check: (x) => module.exports.string.check(x) };
-    break;
-  case "UUIDv4":
-    id = { check: (x) => module.exports.uuidv4.check(x) };
-    break;
-  case undefined:
-  case "int":
-    id = {
-      check: (x) => module.exports.int.check(x),
-      conv: (x) => module.exports.int.conv(x),
-    };
-    break;
-  default:
-    id = { check: (x) => new RegExp(config.idType).test(x) };
-}
-
-module.exports = {
+const types = {
   "/": { check: () => true },
   int: {
     check: (x) => typeof x === "number" && Math.round(x) === x,
     conv: (x) => {
       const parsed = parseInt(x);
-      if (parsed != x || !module.exports.int.check(parsed)) {
+      if (parsed != x || !types.int.check(parsed)) {
         throw "Not an int";
       }
       return parsed;
@@ -45,7 +26,7 @@ module.exports = {
     check: (x) => typeof x === "number",
     conv: (x) => {
       const parsed = parseFloat(x);
-      if (parsed != x || !module.exports.float.check(parsed)) {
+      if (parsed != x || !types.float.check(parsed)) {
         throw "Not a float";
       }
       return parsed;
@@ -93,7 +74,7 @@ module.exports = {
   array: {
     conv: (x) => {
       const conved = JSON.parse(x);
-      if (!module.exports.array.check(conved)) {
+      if (!types.array.check(conved)) {
         throw "Not an array";
       }
       return conved;
@@ -103,7 +84,7 @@ module.exports = {
   object: {
     conv: (x) => {
       const conved = JSON.parse(x);
-      if (!module.exports.object.check(conved)) {
+      if (!types.object.check(conved)) {
         throw "Not an object";
       }
       return conved;
@@ -122,7 +103,7 @@ module.exports = {
   array_int: {
     conv: (x) => {
       const conved = JSON.parse(x);
-      if (!module.exports.array_int.check(conved)) {
+      if (!types.array_int.check(conved)) {
         throw "Not an array_int";
       }
       return conved;
@@ -131,13 +112,13 @@ module.exports = {
       if (!Array.isArray(x)) {
         return false;
       }
-      return x.reduce((a, v) => a && module.exports.int.check(v), true);
+      return x.reduce((a, v) => a && types.int.check(v), true);
     },
   },
   array_id: {
     conv: (x) => {
       const conved = JSON.parse(x);
-      if (!module.exports.array_id.check(conved)) {
+      if (!types.array_id.check(conved)) {
         throw "Not an array_id";
       }
       return conved;
@@ -146,19 +127,18 @@ module.exports = {
       if (!Array.isArray(x)) {
         return false;
       }
-      return x.reduce((a, v) => a && module.exports.id.check(v), true);
+      return x.reduce((a, v) => a && types.id.check(v), true);
     },
   },
   password: { check: (x) => typeof x === "string" },
   time: {
-    check: (x) => module.exports.int.check(x),
-    conv: (x) => module.exports.int.conv(x),
+    check: (x) => types.int.check(x),
+    conv: (x) => types.int.conv(x),
   },
   array_time: {
-    check: (x) => module.exports.array_int.check(x),
-    conv: (x) => module.exports.array_int.conv(x),
+    check: (x) => types.array_int.check(x),
+    conv: (x) => types.array_int.conv(x),
   },
-  id,
   uuidv4: {
     check: (x) =>
       /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(
@@ -169,3 +149,23 @@ module.exports = {
     check: (x) => x === null,
   },
 };
+
+switch (config.idType) {
+  case "string":
+    types.id = { check: (x) => types.string.check(x) };
+    break;
+  case "UUIDv4":
+    types.id = { check: (x) => types.uuidv4.check(x) };
+    break;
+  case undefined:
+  case "int":
+    types.id = {
+      check: (x) => types.int.check(x),
+      conv: (x) => types.int.conv(x),
+    };
+    break;
+  default:
+    types.id = { check: (x) => new RegExp(config.idType).test(x) };
+}
+
+export { types };
