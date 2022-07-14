@@ -15,7 +15,7 @@ export class BaseType<T, R extends IsRequired> extends Schema<T, R> {
 }
 
 export class Int<R extends IsRequired> extends BaseType<number, R> {
-  semantic(type: "time" | "id") {
+  semantic(type: "time" | "daytime" | "date" | "id") {
     (this.type as HasType).type = type;
     return this;
   }

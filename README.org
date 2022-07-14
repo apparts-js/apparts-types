@@ -48,6 +48,7 @@ as they can also be used to *infer TypeScript types.*
 - ~array_id~
 - ~password~ (alias for ~string~)
 - ~time~
+- ~daytime~
 - ~array_time~ (alias for ~array_id~)
 - ~null~
 
@@ -77,7 +78,9 @@ const idIntSchema = schema.int().semantic("id"); // { type: "id" }
 const idStrSchema = schema.string().semantic("id"); // { type: "id" }
 
 const passwordSchema = schema.string().semantic("password"); // { type: "password" }
+const timeSchema = schema.int().semantic("date"); // { type: "date" }
 const timeSchema = schema.int().semantic("time"); // { type: "time" }
+const timeSchema = schema.int().semantic("daytime"); // { type: "daytime" }
 #+END_SRC
 
 

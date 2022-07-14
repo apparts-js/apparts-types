@@ -131,7 +131,15 @@ const types = {
     },
   },
   password: { check: (x) => typeof x === "string" },
+  date: {
+    check: (x) => types.int.check(x),
+    conv: (x) => types.int.conv(x),
+  },
   time: {
+    check: (x) => types.int.check(x),
+    conv: (x) => types.int.conv(x),
+  },
+  daytime: {
     check: (x) => types.int.check(x),
     conv: (x) => types.int.conv(x),
   },

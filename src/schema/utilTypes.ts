@@ -3,6 +3,8 @@ export type BaseTypeName =
   | "uuidv4"
   | "int"
   | "time"
+  | "daytime"
+  | "date"
   | "float"
   | "bool"
   | "boolean"
