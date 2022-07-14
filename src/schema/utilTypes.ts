@@ -1,3 +1,5 @@
+import { fillInDefaults } from "../utils/fillInDefaults";
+
 export type BaseTypeName =
   | "id"
   | "uuidv4"
@@ -112,5 +114,9 @@ export abstract class Schema<SchemaType, R extends IsRequired> {
 
   getType() {
     return this.type;
+  }
+
+  fillInDefaults(subject: unknown) {
+    return fillInDefaults(this.type, subject, subject);
   }
 }
