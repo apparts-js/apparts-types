@@ -86,6 +86,16 @@ export const section = ({
 
 export const getApi = (app: Application) => {
   const exdendedApp = app as ExtendedExpressApp;
-  const api = getRoutes(app);
+  const api = getRoutes(app).map(
+    ({ method, path, assertions, returns, title, description, options }) => ({
+      method,
+      path,
+      assertions,
+      returns,
+      title,
+      description,
+      options,
+    })
+  );
   return { routes: api, sections: exdendedApp.appartsApiSections || [] };
 };
