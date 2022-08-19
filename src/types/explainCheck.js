@@ -16,7 +16,10 @@ export const explainCheck = (response, type) => {
   }
 
   if (type.type === "object") {
-    const responseIsObject = typeof response === "object" && response !== null;
+    const responseIsObject =
+      typeof response === "object" &&
+      !Array.isArray(response) &&
+      response !== null;
     const hasKeys = typeof type.keys === "object" && type.keys !== null;
     const hasValues = typeof type.values === "object" && type.values !== null;
 

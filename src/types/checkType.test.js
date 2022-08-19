@@ -412,6 +412,26 @@ const object = () => {
   expect(checkType(type, { firstKey: "abc@de.de", secondKey: 3.3 })).toBe(
     false
   );
+
+  const objectValueType = {
+    type: "object",
+    values: {
+      type: "object",
+      keys: { firstKey: { type: "string" } },
+    },
+  };
+  expect(
+    checkType(objectValueType, {
+      a: { firstKey: "abc@de.de" },
+      b: { firstKey: "abc@de.de" },
+    })
+  ).toBe(true);
+  expect(
+    checkType(objectValueType, [
+      { firstKey: "abc@de.de" },
+      { firstKey: "abc@de.de" },
+    ])
+  ).toBe(false);
 };
 describe("object", () => {
   it("should correctly classify", async () => {
