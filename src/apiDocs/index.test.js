@@ -4,7 +4,7 @@ const { app } = require("../myTestEndpoint");
 describe("getApi", () => {
   test("Should return API JSON", () => {
     const api = getApi(app);
-    expect(api).toStrictEqual({
+    expect(api).toMatchObject({
       routes: [
         {
           method: "post",
