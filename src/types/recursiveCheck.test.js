@@ -17,6 +17,11 @@ import {
   value,
 } from "./tests/types";
 
+// TODO:
+// - array children
+// - oneOf children
+// - objValue children
+
 describe("recursiveCheck, explain wrong type", () => {
   it("should explain wrong value", async () => {
     expect(recursiveCheck({ value: "test" }, "Test")).toStrictEqual({
@@ -118,11 +123,6 @@ describe("recursiveCheck, explain obj wrong child", () => {
     });
   });
 });
-
-// TODO:
-// - array children
-// - oneOf children
-// - objValue children
 
 describe("recursiveCheck should accept valid input", () => {
   it("should correctly classify value", async () => {
