@@ -14,12 +14,6 @@ import {
   any,
 } from "./tests/types";
 
-describe("explainCheck error messages", () => {
-  it("should correctly describe wrong field", async () => {
-    expect(explainCheck(4.4, { type: "id" })).toBe("");
-  });
-});
-
 const checkType = (a, b) => !explainCheck(b, a);
 describe("explainCheck should accept valid input", () => {
   it("should correctly classify any", async () => {
