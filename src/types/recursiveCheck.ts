@@ -104,6 +104,6 @@ export const recursiveCheck = (
   return { key, shouldType: type, isValue: response };
 };
 
-export const checkSchema = (response, schema) => {
+export const recursiveCheckSchema = (response, schema) => {
   return recursiveCheck(schema.getType(), response);
 };
