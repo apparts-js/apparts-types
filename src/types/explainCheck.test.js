@@ -1,6 +1,4 @@
-import { checkType as _checkType } from "./checkType";
-const checkType = (a, b) => _checkType(b, a);
-
+import { explainCheck } from "./explainCheck";
 import {
   object,
   time,
@@ -14,14 +12,16 @@ import {
   uuidv4,
   int,
   any,
-  value,
 } from "./tests/types";
 
-describe("checkType should accept valid input", () => {
-  it("should correctly classify value", async () => {
-    value(checkType);
+describe("explainCheck error messages", () => {
+  it("should correctly describe wrong field", async () => {
+    expect(explainCheck(4.4, { type: "id" })).toBe("");
   });
+});
 
+const checkType = (a, b) => !explainCheck(b, a);
+describe("explainCheck should accept valid input", () => {
   it("should correctly classify any", async () => {
     any(checkType);
   });
