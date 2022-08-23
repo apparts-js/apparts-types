@@ -44,12 +44,9 @@ as they can also be used to *infer TypeScript types.*
 - ~bool~
 - ~string~
 - ~email~
-- ~array_int~
-- ~array_id~
 - ~password~ (alias for ~string~)
 - ~time~
 - ~daytime~
-- ~array_time~ (alias for ~array_id~)
 - ~null~
 
 The type definition for each of the atomic types looks like: ={ type: <atomic type> }=.
