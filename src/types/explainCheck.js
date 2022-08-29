@@ -66,7 +66,7 @@ export const explainCheck = (response, type) => {
     return "❌ Has neither values nor keys";
   }
 
-  if (type.value) {
+  if ("value" in type) {
     if (JSON.stringify(type.value) !== JSON.stringify(response)) {
       return `❌ Value wrong: Expected '${type.value}', ${pad(
         type.value

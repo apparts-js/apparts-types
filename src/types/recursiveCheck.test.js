@@ -15,6 +15,7 @@ import {
   int,
   any,
   value,
+  oneOf,
 } from "./tests/types";
 
 // TODO:
@@ -183,5 +184,9 @@ describe("recursiveCheck should accept valid input", () => {
 
   it("should correctly classify object", async () => {
     object(checkType);
+  });
+
+  it("should correctly classify oneOf", async () => {
+    oneOf(checkType);
   });
 });

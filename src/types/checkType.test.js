@@ -15,6 +15,7 @@ import {
   int,
   any,
   value,
+  oneOf,
 } from "./tests/types";
 
 describe("checkType should accept valid input", () => {
@@ -76,5 +77,9 @@ describe("checkType should accept valid input", () => {
 
   it("should correctly classify object", async () => {
     object(checkType);
+  });
+
+  it("should correctly classify object", async () => {
+    oneOf(checkType);
   });
 });

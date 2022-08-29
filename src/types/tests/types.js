@@ -3,8 +3,12 @@ export const value = (checkType) => {
   expect(checkType({ value: 4 }, 4)).toBe(true);
   expect(checkType({ value: "true" }, true)).toBe(false);
   expect(checkType({ value: true }, true)).toBe(true);
+  expect(checkType({ value: false }, false)).toBe(true);
   expect(checkType({ value: "test" }, "Test")).toBe(false);
   expect(checkType({ value: "test" }, "test")).toBe(true);
+  expect(checkType({ value: 0 }, 0)).toBe(true);
+  expect(checkType({ value: "" }, "")).toBe(true);
+  expect(checkType({ value: null }, null)).toBe(true);
 };
 
 export const any = (checkType) => {
@@ -285,4 +289,49 @@ export const object = (checkType) => {
       { firstKey: "abc@de.de" },
     ])
   ).toBe(false);
+};
+
+export const oneOf = (checkType) => {
+  const type = {
+    type: "oneOf",
+    alternatives: [{ type: "email" }, { type: "int" }],
+  };
+  expect(checkType(type, "abc@de.de")).toBe(true);
+  expect(checkType(type, 4)).toBe(true);
+  expect(checkType(type, 4.4)).toBe(false);
+  expect(checkType(type, [])).toBe(false);
+  expect(checkType(type, ["abc@def.gh", "abc1@def.gh", "abc3@def.gh"])).toBe(
+    false
+  );
+  expect(checkType(type, ["a", 3])).toBe(false);
+  expect(checkType(type, ["a", 3, true, false, null, undefined, 3.3])).toBe(
+    false
+  );
+  expect(checkType(type, { an: "object" })).toBe(false);
+  expect(checkType(type, "its a string")).toBe(false);
+  expect(checkType(type, "7ce767a4-ec6e-4ff5-b163-f501165eaf83")).toBe(false);
+  expect(checkType(type, "")).toBe(false);
+  expect(checkType(type, "3")).toBe(false);
+  expect(checkType(type, true)).toBe(false);
+  expect(checkType(type, false)).toBe(false);
+  expect(checkType(type, null)).toBe(false);
+  expect(checkType(type, "ABCDEF1234567890")).toBe(false);
+  expect(checkType(type, "dGVzdA==")).toBe(false);
+  expect(checkType(type, {})).toBe(false);
+  expect(checkType(type, { firstKey: "abc@de.de" })).toBe(false);
+  expect(
+    checkType(type, { firstKey: "abc@de.de", secondKey: 3, thirdKey: true })
+  ).toBe(false);
+  expect(checkType(type, { firstKey: "abc@de.de", secondKey: 3 })).toBe(false);
+  expect(checkType(type, { firstKey: "abc@de.de", secondKey: 3.3 })).toBe(
+    false
+  );
+
+  const valueType = {
+    type: "oneOf",
+    alternatives: [{ value: "test1" }, { value: "test2" }, { value: "" }],
+  };
+  expect(checkType(valueType, "abc@de.de")).toBe(false);
+  expect(checkType(valueType, "test2")).toBe(true);
+  expect(checkType(valueType, "")).toBe(true);
 };
