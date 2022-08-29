@@ -45,7 +45,7 @@ const recursiveCheck = (response, type) => {
       );
     }
   }
-  if (type.value) {
+  if ("value" in type) {
     return JSON.stringify(type.value) === JSON.stringify(response);
   }
   if (type.type) {
