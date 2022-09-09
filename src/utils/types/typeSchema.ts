@@ -1,5 +1,5 @@
 // A schema that describes a type
-
+import { rtype } from "./typeType";
 import {
   any,
   string,
@@ -93,8 +93,9 @@ type TypeSchemaType = OneOf<
 const description = string().optional();
 
 const typeSchemaOneOfArray = [];
-export const typeSchema: TypeSchemaType = oneOf(
-  typeSchemaOneOfArray
+export const typeSchema: TypeSchemaType = new OneOf(
+  typeSchemaOneOfArray,
+  rtype
 ) as TypeSchemaType;
 
 export const objectKeysSchema = obj({
