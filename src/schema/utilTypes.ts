@@ -57,6 +57,6 @@ export type Type = (
   readOnly?: boolean;
 };
 
-export type Optional = false;
-export type Required = true;
-export type IsRequired = Optional | Required;
+export type Required = "__required";
+export type Public = "__public";
+export type FlagsType = Public | Required;

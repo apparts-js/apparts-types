@@ -1,5 +1,5 @@
-import { Schema, FlagsType } from "./Schema";
-import { Required, IsRequired, Type, ObjType } from "./utilTypes";
+import { Schema } from "./Schema";
+import { Required, Public, FlagsType, Type, ObjType } from "./utilTypes";
 
 interface Keys {
   [T: string]: Schema<any, any, any>;
@@ -28,12 +28,12 @@ type ObjKeyTypeWithFlags<
   {
     // optional keys
     [Key in MakeKeys<
-      WOFlag<WithFlag<T, FlagList>, "__required">
+      WOFlag<WithFlag<T, FlagList>, Required>
     > as T[Key] extends never ? never : Key]?: T[Key][CustomType];
   } & {
     // required keys
     [Key in MakeKeys<
-      WithFlag<WithFlag<T, FlagList>, "__required">
+      WithFlag<WithFlag<T, FlagList>, Required>
     > as T[Key] extends never ? never : Key]-?: T[Key][CustomType];
   }
 >;
@@ -44,7 +44,7 @@ export class Obj<
   Flags extends FlagsType
 > extends Schema<
   ObjKeyTypeWithFlags<PublicType, "__type", never>,
-  ObjKeyTypeWithFlags<PublicType, "__publicType", "__public">,
+  ObjKeyTypeWithFlags<PublicType, "__publicType", Public>,
   Flags
 > {
   constructor(keys: T, type?: Type) {
@@ -72,7 +72,7 @@ export class Obj<
   readonly __publicType: ObjKeyTypeWithFlags<
     PublicType,
     "__publicType",
-    "__public"
+    Public
   >;
 
   readonly __Flags: Flags;
@@ -84,7 +84,7 @@ export class Obj<
   }
 }
 
-export const obj = <T extends Keys>(keys: T): Obj<T, T, "__required"> => {
+export const obj = <T extends Keys>(keys: T): Obj<T, T, Required> => {
   return new Obj(keys);
 };
 

@@ -1,5 +1,5 @@
-import { Schema, FlagsType } from "./Schema";
-import { Required, IsRequired, Type, HasType } from "./utilTypes";
+import { Schema } from "./Schema";
+import { Required, FlagsType, Type, HasType } from "./utilTypes";
 
 export class BaseType<T, PublicType, Flags extends FlagsType> extends Schema<
   T,
@@ -42,7 +42,7 @@ export const float = (): BaseType<number, Required> => {
   });
 };
 */
-export const boolean = (): BaseType<boolean, boolean, "__required"> => {
+export const boolean = (): BaseType<boolean, boolean, Required> => {
   return new BaseType({
     type: "boolean",
   });
