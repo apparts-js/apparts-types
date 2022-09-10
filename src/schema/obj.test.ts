@@ -1,6 +1,7 @@
 import {
   boolean,
-  obj /*, objValues*/,
+  obj,
+  objValues,
   InferType,
   InferPublicType,
   InferNotDerivedType,
@@ -58,8 +59,8 @@ describe("obj type", () => {
     f({ isDerived: true, isNotDerived: true });
   });
 
-  //  it("should defer optinals when created indirectly", async () => {
-  /*
+  it("should defer optinals when created indirectly", async () => {
+    /*
       This test is here because in development there was a WTF moment,
       when optional-inferred types were correct when the type was
       created indirectly (keys where assigned to there own variable
@@ -70,7 +71,7 @@ describe("obj type", () => {
       test is here.
     */
 
-  /*    const keys = {
+    const keys = {
       just: boolean(),
       maybe: boolean().optional(),
     };
@@ -112,5 +113,5 @@ describe("objValues type", () => {
     f({ just: true });
     // @ts-expect-error test type
     f({ number: 43 });
-  });*/
+  });
 });

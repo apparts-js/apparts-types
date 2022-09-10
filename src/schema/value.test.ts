@@ -1,4 +1,4 @@
-/*import { value, InferType } from "./index";
+import { value, InferType } from "./index";
 
 describe("value type", () => {
   it("should infer type correctly", async () => {
@@ -17,4 +17,3 @@ describe("value type", () => {
     f([]);
   });
 });
-*/

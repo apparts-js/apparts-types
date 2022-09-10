@@ -1,4 +1,4 @@
-/*import { boolean, array, InferType } from "./index";
+import { boolean, array, InferType } from "./index";
 
 describe("array type", () => {
   it("should fail on optional items-type", async () => {
@@ -17,4 +17,3 @@ describe("array type", () => {
     f([1]);
   });
 });
-*/

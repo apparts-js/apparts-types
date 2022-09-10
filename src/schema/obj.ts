@@ -6,6 +6,7 @@ import {
   Type,
   ObjType,
   Derived,
+  CustomTypes,
 } from "./utilTypes";
 
 interface Keys {
@@ -26,7 +27,6 @@ type WOFlag<T extends Keys, Flag extends FlagsType> = {
   [Key in keyof T]: [Flag] extends [T[Key]["__flags"]] ? never : T[Key];
 };
 
-type CustomTypes = "__type" | "__publicType" | "__notDerivedType";
 type ObjKeyTypeWithFlags<
   T extends Keys,
   CustomType extends CustomTypes,
@@ -104,15 +104,14 @@ export const obj = <T extends Keys>(keys: T): Obj<Required, T> => {
   return new Obj(keys);
 };
 
-/*type ObjValueType<T extends Schema<any, any, Required, any>> = {
+type ObjValueType<T extends Schema<any, any, Required, any>> = {
   [key: string]: T["__type"];
 };
 
 export class ObjValues<
-  T extends Schema<any, Required, any>,
-  R extends IsRequired,
-  P extends boolean
-> extends Schema<ObjValueType<T>, R, P> {
+  Flags extends FlagsType,
+  T extends Schema<any, Required, any>
+> extends Schema<Flags, ObjValueType<T>> {
   constructor(values: T, type?: Type) {
     super();
     if (!type) {
@@ -125,19 +124,16 @@ export class ObjValues<
     }
     this.values = values;
   }
-  cloneWithType<R extends IsRequired, P extends boolean>(type: Type) {
-    return new ObjValues<T, R, P>(this.values, type);
+  cloneWithType<Flags extends FlagsType>(type: Type) {
+    return new ObjValues<Flags, T>(this.values, type);
   }
   protected type: Type;
   readonly __type: ObjValueType<T>;
-  readonly __required: R;
   private values: T;
 }
 
-
-export const objValues = <T extends Schema<any, Required, any>>(
+export const objValues = <T extends Schema<Required, any>>(
   values: T
-): ObjValues<T, Required, any> => {
+): ObjValues<Required, T> => {
   return new ObjValues(values);
 };
-*/

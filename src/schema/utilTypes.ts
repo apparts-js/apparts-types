@@ -57,11 +57,15 @@ export type Type = (
   readOnly?: boolean;
 };
 
+// Not for usage, just for making sure, that Flags is not nothing
+export type _Optional = "__optional";
+
 export type Required = "__required";
 export type Public = "__public";
 export type Derived = "__derived";
 export type FlagsType =
   | Public
+  | _Optional
   | Required
   | Derived
   // __all is for enabling a default value on the WOFlag type in
@@ -69,3 +73,5 @@ export type FlagsType =
   // transport meaning. It just makes sure, that no Flag combination
   // satisfies [FlagTypes] extends [FlagCombination].
   | "__all";
+
+export type CustomTypes = "__type" | "__publicType" | "__notDerivedType";

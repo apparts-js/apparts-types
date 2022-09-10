@@ -1,4 +1,4 @@
-/*import { obj, oneOf, boolean, int, InferType } from "./index";
+import { obj, oneOf, boolean, int, InferType } from "./index";
 
 describe("obj type", () => {
   it("should defer type correctly", async () => {
@@ -33,4 +33,3 @@ describe("obj type", () => {
     f(3);
   });
 });
-*/

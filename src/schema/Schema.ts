@@ -1,4 +1,11 @@
-import { Required, Public, FlagsType, Type, Derived } from "./utilTypes";
+import {
+  Required,
+  Public,
+  FlagsType,
+  Type,
+  Derived,
+  _Optional,
+} from "./utilTypes";
 import { fillInDefaults } from "../utils/fillInDefaults";
 
 export abstract class Schema<
@@ -12,7 +19,7 @@ export abstract class Schema<
   ): Schema<Flags, SchemaType, PublicType, NotDerivedType>;
 
   optional() {
-    return this.cloneWithType<Exclude<Flags, Required>>({
+    return this.cloneWithType<Exclude<Flags, Required> | _Optional>({
       ...this.type,
       optional: true,
     });
