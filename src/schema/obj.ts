@@ -1,5 +1,12 @@
 import { Schema } from "./Schema";
-import { Required, Public, FlagsType, Type, ObjType } from "./utilTypes";
+import {
+  Required,
+  Public,
+  FlagsType,
+  Type,
+  ObjType,
+  Derived,
+} from "./utilTypes";
 
 interface Keys {
   [T: string]: Schema<any, any, any>;
@@ -19,33 +26,36 @@ type WOFlag<T extends Keys, Flag extends FlagsType> = {
   [Key in keyof T]: [Flag] extends [T[Key]["__flags"]] ? never : T[Key];
 };
 
-type CustomTypes = "__type" | "__publicType";
+type CustomTypes = "__type" | "__publicType" | "__notDerivedType";
 type ObjKeyTypeWithFlags<
   T extends Keys,
   CustomType extends CustomTypes,
-  FlagList extends FlagsType
+  WithFlagList extends FlagsType = never,
+  WOFlagList extends FlagsType = FlagsType
 > = _<
   {
     // optional keys
     [Key in MakeKeys<
-      WOFlag<WithFlag<T, FlagList>, Required>
+      WOFlag<WOFlag<WithFlag<T, WithFlagList>, WOFlagList>, Required>
     > as T[Key] extends never ? never : Key]?: T[Key][CustomType];
   } & {
     // required keys
     [Key in MakeKeys<
-      WithFlag<WithFlag<T, FlagList>, Required>
+      WithFlag<WOFlag<WithFlag<T, WithFlagList>, WOFlagList>, Required>
     > as T[Key] extends never ? never : Key]-?: T[Key][CustomType];
   }
 >;
 
 export class Obj<
+  Flags extends FlagsType,
   T extends Keys,
-  PublicType extends Keys,
-  Flags extends FlagsType
+  PublicType extends Keys = T,
+  NotDerivedType extends Keys = T
 > extends Schema<
-  ObjKeyTypeWithFlags<PublicType, "__type", never>,
+  Flags,
+  ObjKeyTypeWithFlags<T, "__type", never>,
   ObjKeyTypeWithFlags<PublicType, "__publicType", Public>,
-  Flags
+  ObjKeyTypeWithFlags<NotDerivedType, "__notDerivedType", never, Derived>
 > {
   constructor(keys: T, type?: Type) {
     super();
@@ -64,15 +74,21 @@ export class Obj<
     this.keys = keys;
   }
   cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new Obj<T, PublicType, Flags>(this.keys, type);
+    return new Obj<Flags, T, PublicType, NotDerivedType>(this.keys, type);
   }
 
   protected type: Type;
-  readonly __type: ObjKeyTypeWithFlags<PublicType, "__type", never>;
+  readonly __type: ObjKeyTypeWithFlags<T, "__type", never>;
   readonly __publicType: ObjKeyTypeWithFlags<
     PublicType,
     "__publicType",
     Public
+  >;
+  readonly __notDerivedType: ObjKeyTypeWithFlags<
+    NotDerivedType,
+    "__notDerivedType",
+    never,
+    Derived
   >;
 
   readonly __Flags: Flags;
@@ -84,7 +100,7 @@ export class Obj<
   }
 }
 
-export const obj = <T extends Keys>(keys: T): Obj<T, T, Required> => {
+export const obj = <T extends Keys>(keys: T): Obj<Required, T> => {
   return new Obj(keys);
 };
 

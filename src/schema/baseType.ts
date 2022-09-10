@@ -1,22 +1,17 @@
 import { Schema } from "./Schema";
 import { Required, FlagsType, Type, HasType } from "./utilTypes";
 
-export class BaseType<T, PublicType, Flags extends FlagsType> extends Schema<
-  T,
-  PublicType,
-  Flags
-> {
+export class BaseType<Flags extends FlagsType, T> extends Schema<Flags, T> {
   constructor(type: Type) {
     super();
     this.type = type;
   }
   type: Type;
   readonly __type: T;
-  readonly __publicType: PublicType;
   readonly __flags: Flags;
 
   cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new BaseType<T, PublicType, Flags>(type);
+    return new BaseType<Flags, T>(type);
   }
 }
 /*
@@ -42,7 +37,7 @@ export const float = (): BaseType<number, Required> => {
   });
 };
 */
-export const boolean = (): BaseType<boolean, boolean, Required> => {
+export const boolean = (): BaseType<Required, boolean> => {
   return new BaseType({
     type: "boolean",
   });

@@ -1,10 +1,15 @@
-import { Required, Public, FlagsType, Type } from "./utilTypes";
+import { Required, Public, FlagsType, Type, Derived } from "./utilTypes";
 import { fillInDefaults } from "../utils/fillInDefaults";
 
-export abstract class Schema<SchemaType, PublicType, Flags extends FlagsType> {
+export abstract class Schema<
+  Flags extends FlagsType,
+  SchemaType,
+  PublicType = SchemaType,
+  NotDerivedType = SchemaType
+> {
   abstract cloneWithType<Flags extends FlagsType>(
     type: Type
-  ): Schema<SchemaType, PublicType, Flags>;
+  ): Schema<Flags, SchemaType, PublicType, NotDerivedType>;
 
   optional() {
     return this.cloneWithType<Exclude<Flags, Required>>({
@@ -44,7 +49,7 @@ export abstract class Schema<SchemaType, PublicType, Flags extends FlagsType> {
   }
 
   derived(derived: (...ps: any) => SchemaType | Promise<SchemaType>) {
-    return this.cloneWithType<Flags>({ ...this.type, derived });
+    return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
   }
 
   mapped(mapped: string) {
@@ -57,6 +62,8 @@ export abstract class Schema<SchemaType, PublicType, Flags extends FlagsType> {
 
   readonly __type: SchemaType;
   readonly __publicType: PublicType;
+  readonly __notDerivedType: NotDerivedType;
+
   readonly __flags: Flags;
   protected type: Type;
 

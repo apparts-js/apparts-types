@@ -3,6 +3,7 @@ import {
   obj /*, objValues*/,
   InferType,
   InferPublicType,
+  InferNotDerivedType,
 } from "./index";
 
 describe("obj type", () => {
@@ -39,6 +40,22 @@ describe("obj type", () => {
     f({ isPrivate: true, isPublic: true });
     // @ts-expect-error test type
     f({ isPrivateOptional: true, isPublic: true });
+  });
+
+  it("should defer not-derived correctly", async () => {
+    const hasDerived = obj({
+      isNotDerived: boolean(),
+      isDerived: boolean().derived(() => false),
+    });
+
+    type HasNoDerived = InferNotDerivedType<typeof hasDerived>;
+    const f = (a: HasNoDerived) => a;
+
+    f({ isNotDerived: true });
+    // @ts-expect-error test type
+    f({ isDerived: true });
+    // @ts-expect-error test type
+    f({ isDerived: true, isNotDerived: true });
   });
 
   //  it("should defer optinals when created indirectly", async () => {
