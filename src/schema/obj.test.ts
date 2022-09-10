@@ -63,7 +63,7 @@ describe("obj type", () => {
     /*
       This test is here because in development there was a WTF moment,
       when optional-inferred types were correct when the type was
-      created indirectly (keys where assigned to there own variable
+      created indirectly (keys where assigned to their own variable
       first), but were incorrect when created directly (keys were
       written as inline object in the obj({}) definition).
 
