@@ -1,4 +1,5 @@
-import { Required, IsRequired, Schema, Type, HasType } from "./utilTypes";
+import { Schema } from "./Schema";
+import { Required, IsRequired, Type, HasType } from "./utilTypes";
 
 export class BaseType<T, R extends IsRequired> extends Schema<T, R> {
   constructor(type: Type) {

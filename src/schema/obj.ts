@@ -1,11 +1,5 @@
-import {
-  Required,
-  Optional,
-  IsRequired,
-  Schema,
-  Type,
-  ObjType,
-} from "./utilTypes";
+import { Schema } from "./Schema";
+import { Required, Optional, IsRequired, Type, ObjType } from "./utilTypes";
 
 interface Keys {
   [T: string]: Schema<any, any>;

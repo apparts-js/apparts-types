@@ -1,4 +1,5 @@
-import { Required, IsRequired, Schema, Type } from "./utilTypes";
+import { Schema } from "./Schema";
+import { Required, IsRequired, Type } from "./utilTypes";
 
 // https://dev.to/shakyshane/2-ways-to-create-a-union-from-an-array-in-typescript-1kd6
 type Schemas = Array<Schema<any, Required>>;

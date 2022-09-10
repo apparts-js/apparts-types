@@ -1,4 +1,5 @@
-import { Required, IsRequired, Schema, Type } from "./utilTypes";
+import { Schema } from "./Schema";
+import { Required, IsRequired, Type } from "./utilTypes";
 
 type ArrayType<T extends Schema<any, Required>> = T["__type"][];
 
