@@ -1,60 +1,65 @@
 import { Optional, Required, IsRequired, Type } from "./utilTypes";
 import { fillInDefaults } from "../utils/fillInDefaults";
 
-export abstract class Schema<
-  SchemaType,
-  PublicType,
-  R extends IsRequired,
-  P extends boolean
-> {
-  abstract cloneWithType<R extends IsRequired, P extends boolean>(
+export type FlagsType = "__public" | "__required";
+
+export abstract class Schema<SchemaType, PublicType, Flags extends FlagsType> {
+  abstract cloneWithType<Flags extends FlagsType>(
     type: Type
-  ): Schema<SchemaType, PublicType, R, P>;
+  ): Schema<SchemaType, PublicType, Flags>;
 
   optional() {
-    return this.cloneWithType<Optional, P>({ ...this.type, optional: true });
+    return this.cloneWithType<Exclude<Flags, "__required">>({
+      ...this.type,
+      optional: true,
+    });
   }
 
   description(description: string) {
-    return this.cloneWithType<R, P>({ ...this.type, description });
+    return this.cloneWithType<Flags>({ ...this.type, description });
   }
 
   title(title: string) {
-    return this.cloneWithType<R, P>({ ...this.type, title });
+    return this.cloneWithType<Flags>({ ...this.type, title });
   }
 
   default(defaultF: SchemaType | (() => SchemaType)) {
-    return this.cloneWithType<Required, P>({ ...this.type, default: defaultF });
+    return this.cloneWithType<Flags | "__required">({
+      ...this.type,
+      default: defaultF,
+    });
   }
 
   public() {
-    return this.cloneWithType<R, true>({ ...this.type, public: true });
+    return this.cloneWithType<Flags | "__public">({
+      ...this.type,
+      public: true,
+    });
   }
 
   auto() {
-    return this.cloneWithType<R, P>({ ...this.type, auto: true });
+    return this.cloneWithType<Flags>({ ...this.type, auto: true });
   }
 
   key() {
-    return this.cloneWithType<R, P>({ ...this.type, key: true });
+    return this.cloneWithType<Flags>({ ...this.type, key: true });
   }
 
   derived(derived: (...ps: any) => SchemaType | Promise<SchemaType>) {
-    return this.cloneWithType<R, P>({ ...this.type, derived });
+    return this.cloneWithType<Flags>({ ...this.type, derived });
   }
 
   mapped(mapped: string) {
-    return this.cloneWithType<R, P>({ ...this.type, mapped });
+    return this.cloneWithType<Flags>({ ...this.type, mapped });
   }
 
   readOnly() {
-    return this.cloneWithType<R, P>({ ...this.type, readOnly: true });
+    return this.cloneWithType<Flags>({ ...this.type, readOnly: true });
   }
 
   readonly __type: SchemaType;
   readonly __publicType: PublicType;
-  readonly __required: R;
-  readonly __public: P;
+  readonly __flags: Flags;
   protected type: Type;
 
   getType() {

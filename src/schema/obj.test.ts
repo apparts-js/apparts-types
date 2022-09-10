@@ -37,6 +37,8 @@ describe("obj type", () => {
     f({ isPrivate: true });
     // @ts-expect-error test type
     f({ isPrivate: true, isPublic: true });
+    // @ts-expect-error test type
+    f({ isPrivateOptional: true, isPublic: true });
   });
 
   //  it("should defer optinals when created indirectly", async () => {
