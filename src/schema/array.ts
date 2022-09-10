@@ -1,4 +1,4 @@
-import { Schema } from "./Schema";
+/*import { Schema } from "./Schema";
 import { Required, IsRequired, Type } from "./utilTypes";
 
 type ArrayType<T extends Schema<any, Required>> = T["__type"][];
@@ -29,3 +29,4 @@ export const array = <T extends Schema<any, Required>>(
 ): Array<T, Required> => {
   return new Array(items);
 };
+*/

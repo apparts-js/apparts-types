@@ -1,4 +1,4 @@
-import { Schema } from "./Schema";
+/*import { Schema } from "./Schema";
 import { Required, IsRequired, Type } from "./utilTypes";
 
 export class Value<T, R extends IsRequired> extends Schema<T, R> {
@@ -24,3 +24,4 @@ export const value = <T extends string | number | boolean>(
   type A = Readonly<typeof value>;
   return new Value<A, Required>(value);
 };
+*/

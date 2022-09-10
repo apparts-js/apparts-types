@@ -1,4 +1,4 @@
-import { Schema } from "./Schema";
+/*import { Schema } from "./Schema";
 import { Required, IsRequired, Type } from "./utilTypes";
 
 // https://dev.to/shakyshane/2-ways-to-create-a-union-from-an-array-in-typescript-1kd6
@@ -35,3 +35,4 @@ export const oneOf = <T extends Schema<any, Required>[]>(
 ): OneOf<T, Required> => {
   return new OneOf(alternatives);
 };
+*/

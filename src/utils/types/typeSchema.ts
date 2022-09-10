@@ -1,4 +1,4 @@
-// A schema that describes a type
+/*// A schema that describes a type
 import { rtype } from "./typeType";
 import {
   any,
@@ -159,3 +159,4 @@ typeSchemaOneOfArray.push(valueSchema);
 
 // should be the same as Type from schema/utilTypes:
 // export type TypeType = InferType<typeof typeSchema>;
+*/

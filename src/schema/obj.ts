@@ -1,35 +1,84 @@
 import { Schema } from "./Schema";
-import { Required, Optional, IsRequired, Type, ObjType } from "./utilTypes";
+import { Required, IsRequired, Type, ObjType } from "./utilTypes";
 
 interface Keys {
-  [T: string]: Schema<any, any>;
+  [T: string]: Schema<any, any, any, any>;
 }
 
 /* this seems to force TS to show the full type instead of all the wrapped generics */
 type _<T> = T extends object ? { [k in keyof T]: T[k] } : T;
 
-type OptionalKeys<T extends Keys> = {
-  [Property in keyof T]: Optional extends T[Property]["__required"]
-    ? Property
-    : never;
+type Flags = "__public" | "__required";
+
+type MakeKeys<T extends Keys> = {
+  [Key in keyof T]: T[Key] extends never ? never : Key;
 }[keyof T];
 
-type RequiredKeys<T extends Keys> = Exclude<keyof T, OptionalKeys<T>>;
-type ObjKeyType<T extends Keys> = _<
+type WithFlag<T extends Keys, Flag extends Flags> = {
+  [Key in keyof T]: false extends T[Key][Flag] ? never : T[Key];
+};
+type WOFlag<T extends Keys, Flag extends Flags> = {
+  [Key in keyof T]: false extends T[Key][Flag] ? T[Key] : never;
+};
+
+/*type ObjKeyType<T extends Keys> = _<
   {
-    [Property in OptionalKeys<T> as T[Property] extends never
+    // optional keys
+    [Key in MakeKeys<WOFlag<T, "__required">> as T[Key] extends never
       ? never
-      : Property]?: T[Property]["__type"];
+      : Key]?: T[Key]["__type"];
   } & {
-    [Property in RequiredKeys<T> as T[Property] extends never
+    // required keys
+    [Key in MakeKeys<WithFlag<T, "__required">> as T[Key] extends never
       ? never
-      : Property]: T[Property]["__type"];
+      : Key]: T[Key]["__type"];
+  }
+>;*/
+
+type CustomTypes = "__type" | "__publicType";
+type ObjKeyTypeWithFlags<
+  T extends Keys,
+  CustomType extends CustomTypes,
+  FlagList extends Flags
+> = _<
+  {
+    // optional keys
+    [Key in MakeKeys<
+      WOFlag<WithFlag<T, FlagList>, "__required">
+    > as T[Key] extends never ? never : Key]?: T[Key][CustomType];
+  } & {
+    // required keys
+    [Key in MakeKeys<
+      WithFlag<WithFlag<T, FlagList>, "__required">
+    > as T[Key] extends never ? never : Key]-?: T[Key][CustomType];
   }
 >;
 
-export class Obj<T extends Keys, R extends IsRequired> extends Schema<
-  ObjKeyType<T>,
-  R
+//type ObjKeyCustomType<
+//  T extends Keys,
+//  CustomType extends "__type" | "__publicType"
+//> = _<
+//  {
+//    [Property in OptionalKeys<T> as T[Property] extends never
+//      ? never
+//      : Property]?: T[Property][CustomType];
+//  } & {
+//    [Property in RequiredKeys<T> as T[Property] extends never
+//      ? never
+//      : Property]: T[Property][CustomType];
+//  }
+//>;
+
+export class Obj<
+  T extends Keys,
+  PublicType extends Keys,
+  R extends IsRequired,
+  P extends boolean
+> extends Schema<
+  ObjKeyTypeWithFlags<PublicType, "__publicType", never>,
+  ObjKeyTypeWithFlags<PublicType, "__publicType", "__public">,
+  R,
+  P
 > {
   constructor(keys: T, type?: Type) {
     super();
@@ -47,13 +96,21 @@ export class Obj<T extends Keys, R extends IsRequired> extends Schema<
     }
     this.keys = keys;
   }
-  cloneWithType<R extends IsRequired>(type: Type) {
-    return new Obj<T, R>(this.keys, type);
+  cloneWithType<R extends IsRequired, P extends boolean>(type: Type) {
+    return new Obj<T, PublicType, R, P>(this.keys, type);
   }
 
   protected type: Type;
-  readonly __type: ObjKeyType<T>;
+  readonly __type: ObjKeyTypeWithFlags<PublicType, "__publicType", never>;
+  readonly __publicType: ObjKeyTypeWithFlags<
+    PublicType,
+    "__publicType",
+    "__public"
+  >;
+
   readonly __required: R;
+  readonly __public: P;
+
   private keys: T;
 
   getModelType() {
@@ -61,14 +118,19 @@ export class Obj<T extends Keys, R extends IsRequired> extends Schema<
   }
 }
 
-type ObjValueType<T extends Schema<any, Required>> = {
+export const obj = <T extends Keys>(keys: T): Obj<T, T, Required, false> => {
+  return new Obj(keys);
+};
+
+/*type ObjValueType<T extends Schema<any, any, Required, any>> = {
   [key: string]: T["__type"];
 };
 
 export class ObjValues<
-  T extends Schema<any, Required>,
-  R extends IsRequired
-> extends Schema<ObjValueType<T>, R> {
+  T extends Schema<any, Required, any>,
+  R extends IsRequired,
+  P extends boolean
+> extends Schema<ObjValueType<T>, R, P> {
   constructor(values: T, type?: Type) {
     super();
     if (!type) {
@@ -81,8 +143,8 @@ export class ObjValues<
     }
     this.values = values;
   }
-  cloneWithType<R extends IsRequired>(type: Type) {
-    return new ObjValues<T, R>(this.values, type);
+  cloneWithType<R extends IsRequired, P extends boolean>(type: Type) {
+    return new ObjValues<T, R, P>(this.values, type);
   }
   protected type: Type;
   readonly __type: ObjValueType<T>;
@@ -90,12 +152,10 @@ export class ObjValues<
   private values: T;
 }
 
-export const obj = <T extends Keys>(keys: T): Obj<T, Required> => {
-  return new Obj(keys);
-};
 
-export const objValues = <T extends Schema<any, Required>>(
+export const objValues = <T extends Schema<any, Required, any>>(
   values: T
-): ObjValues<T, Required> => {
+): ObjValues<T, Required, any> => {
   return new ObjValues(values);
 };
+*/

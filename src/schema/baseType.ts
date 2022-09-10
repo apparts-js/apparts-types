@@ -1,20 +1,26 @@
 import { Schema } from "./Schema";
 import { Required, IsRequired, Type, HasType } from "./utilTypes";
 
-export class BaseType<T, R extends IsRequired> extends Schema<T, R> {
+export class BaseType<
+  T,
+  PublicType,
+  R extends IsRequired,
+  P extends boolean
+> extends Schema<T, PublicType, R, P> {
   constructor(type: Type) {
     super();
     this.type = type;
   }
   type: Type;
   readonly __type: T;
+  readonly __publicType: PublicType;
   readonly __required: R;
 
-  cloneWithType<R extends IsRequired>(type: Type) {
-    return new BaseType<T, R>(type);
+  cloneWithType<R extends IsRequired, P extends boolean>(type: Type) {
+    return new BaseType<T, PublicType, R, P>(type);
   }
 }
-
+/*
 export class Int<R extends IsRequired> extends BaseType<number, R> {
   semantic(type: "time" | "daytime" | "date" | "id") {
     (this.type as HasType).type = type;
@@ -36,13 +42,14 @@ export const float = (): BaseType<number, Required> => {
     type: "float",
   });
 };
-
-export const boolean = (): BaseType<boolean, Required> => {
+*/
+export const boolean = (): BaseType<boolean, boolean, Required, false> => {
   return new BaseType({
     type: "boolean",
   });
 };
 
+/*
 export class Strring<R extends IsRequired> extends BaseType<string, R> {
   semantic(type: "password" | "id") {
     (this.type as HasType).type = type;
@@ -94,3 +101,4 @@ export const any = (): BaseType<any, Required> => {
     type: "/",
   });
 };
+*/

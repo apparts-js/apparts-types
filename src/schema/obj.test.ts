@@ -1,4 +1,9 @@
-import { boolean, obj, objValues, InferType } from "./index";
+import {
+  boolean,
+  obj /*, objValues*/,
+  InferType,
+  InferPublicType,
+} from "./index";
 
 describe("obj type", () => {
   it("should defer optional correctly", async () => {
@@ -15,8 +20,27 @@ describe("obj type", () => {
     f({ maybe: true });
   });
 
-  it("should defer optinals when created indirectly", async () => {
-    /*
+  it("should defer public correctly", async () => {
+    const hasPublic = obj({
+      isPublic: boolean().public(),
+      isPrivate: boolean(),
+      isPublicOptional: boolean().public().optional(),
+      isPrivateOptional: boolean().optional(),
+    });
+
+    type HasPublic = InferPublicType<typeof hasPublic>;
+    const f = (a: HasPublic) => a;
+
+    f({ isPublic: true, isPublicOptional: true });
+    f({ isPublic: true });
+    // @ts-expect-error test type
+    f({ isPrivate: true });
+    // @ts-expect-error test type
+    f({ isPrivate: true, isPublic: true });
+  });
+
+  //  it("should defer optinals when created indirectly", async () => {
+  /*
       This test is here because in development there was a WTF moment,
       when optional-inferred types were correct when the type was
       created indirectly (keys where assigned to there own variable
@@ -27,7 +51,7 @@ describe("obj type", () => {
       test is here.
     */
 
-    const keys = {
+  /*    const keys = {
       just: boolean(),
       maybe: boolean().optional(),
     };
@@ -69,5 +93,5 @@ describe("objValues type", () => {
     f({ just: true });
     // @ts-expect-error test type
     f({ number: 43 });
-  });
+  });*/
 });
