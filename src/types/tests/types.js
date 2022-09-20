@@ -190,6 +190,28 @@ export const email = (checkType) => {
   expect(checkType(type, "abc@base.kitchen")).toBe(true);
 };
 
+export const phoneISD = (checkType) => {
+  const type = { type: "phoneISD" };
+  expect(checkType(type, 4)).toBe(false);
+  expect(checkType(type, 4.4)).toBe(false);
+  expect(checkType(type, [])).toBe(false);
+  expect(checkType(type, ["a", 3])).toBe(false);
+  expect(checkType(type, { an: "object" })).toBe(false);
+  expect(checkType(type, "its a string")).toBe(false);
+  expect(checkType(type, "7ce767a4-ec6e-4ff5-b163-f501165eaf83")).toBe(false);
+  expect(checkType(type, "")).toBe(false);
+  expect(checkType(type, "3")).toBe(false);
+  expect(checkType(type, true)).toBe(false);
+  expect(checkType(type, false)).toBe(false);
+  expect(checkType(type, null)).toBe(false);
+  expect(checkType(type, "ABCDEF1234567890")).toBe(false);
+  expect(checkType(type, "dGVzdA==")).toBe(false);
+  expect(checkType(type, "abc@defgh")).toBe(false);
+  expect(checkType(type, "+49 01573 193 84-2")).toBe(true);
+  expect(checkType(type, "+49 01573 193 abc84-2")).toBe(false);
+  expect(checkType(type, "01573 193 84-2")).toBe(false);
+};
+
 export const array = (checkType) => {
   const type = { type: "array", items: { type: "email" } };
   expect(checkType(type, 4)).toBe(false);

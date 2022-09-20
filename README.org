@@ -44,6 +44,7 @@ as they can also be used to *infer TypeScript types.*
 - ~bool~
 - ~string~
 - ~email~
+- ~phoneISD~ (phone number with country code prefix)
 - ~password~ (alias for ~string~)
 - ~time~
 - ~daytime~
@@ -62,6 +63,7 @@ const hexSchema = schema.hex();
 const uuidv4Schema = schema.uuidv4();
 const base64Schema = schema.base64();
 const emailSchema = schema.email();
+const phoneISDSchema = schema.phoneISD();
 const nillSchema = schema.nill(); // { type: "null" }
 const anySchema = schema.any(); // { type: "/" }
 #+END_SRC

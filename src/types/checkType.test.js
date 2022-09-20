@@ -6,6 +6,7 @@ import {
   time,
   array,
   email,
+  phoneISD,
   string,
   bool,
   base64,
@@ -65,6 +66,10 @@ describe("checkType should accept valid input", () => {
 
   it("should correctly classify email", async () => {
     email(checkType);
+  });
+
+  it("should correctly classify phoneISD", async () => {
+    phoneISD(checkType);
   });
 
   it("should correctly classify array", async () => {
