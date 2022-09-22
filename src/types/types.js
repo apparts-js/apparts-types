@@ -1,7 +1,3 @@
-"use strict";
-
-const config = require("@apparts/config").get("types-config");
-
 const btrue = function (value) {
   return /^((?:true)|1)$/i.test(value);
 };
@@ -40,16 +36,6 @@ const types = {
         x
       ),
   },
-  bool: {
-    check: (x) => typeof x === "boolean",
-    conv: (x) => {
-      const t = btrue(x);
-      if (t || bfalse(x)) {
-        return t;
-      }
-      throw "Not a boolean";
-    },
-  },
   boolean: {
     check: (x) => typeof x === "boolean",
     conv: (x) => {
@@ -84,7 +70,6 @@ const types = {
       }
       return conved;
     },
-    check: (x) => Array.isArray(x),
   },
   object: {
     conv: (x) => {
@@ -94,7 +79,6 @@ const types = {
       }
       return conved;
     },
-    check: (x) => typeof x === "object" && x !== null && !Array.isArray(x),
   },
   oneOf: {
     conv: (x) => {
@@ -104,53 +88,6 @@ const types = {
         return x;
       }
     },
-  },
-  array_int: {
-    conv: (x) => {
-      const conved = JSON.parse(x);
-      if (!types.array_int.check(conved)) {
-        throw "Not an array_int";
-      }
-      return conved;
-    },
-    check: (x) => {
-      if (!Array.isArray(x)) {
-        return false;
-      }
-      return x.reduce((a, v) => a && types.int.check(v), true);
-    },
-  },
-  array_id: {
-    conv: (x) => {
-      const conved = JSON.parse(x);
-      if (!types.array_id.check(conved)) {
-        throw "Not an array_id";
-      }
-      return conved;
-    },
-    check: (x) => {
-      if (!Array.isArray(x)) {
-        return false;
-      }
-      return x.reduce((a, v) => a && types.id.check(v), true);
-    },
-  },
-  password: { check: (x) => typeof x === "string" },
-  date: {
-    check: (x) => types.int.check(x),
-    conv: (x) => types.int.conv(x),
-  },
-  time: {
-    check: (x) => types.int.check(x),
-    conv: (x) => types.int.conv(x),
-  },
-  daytime: {
-    check: (x) => types.int.check(x),
-    conv: (x) => types.int.conv(x),
-  },
-  array_time: {
-    check: (x) => types.array_int.check(x),
-    conv: (x) => types.array_int.conv(x),
   },
   uuidv4: {
     check: (x) =>
@@ -162,23 +99,5 @@ const types = {
     check: (x) => x === null,
   },
 };
-
-switch (config.idType) {
-  case "string":
-    types.id = { check: (x) => types.string.check(x) };
-    break;
-  case "UUIDv4":
-    types.id = { check: (x) => types.uuidv4.check(x) };
-    break;
-  case undefined:
-  case "int":
-    types.id = {
-      check: (x) => types.int.check(x),
-      conv: (x) => types.int.conv(x),
-    };
-    break;
-  default:
-    types.id = { check: (x) => new RegExp(config.idType).test(x) };
-}
 
 export { types };

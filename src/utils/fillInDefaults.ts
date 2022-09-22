@@ -49,7 +49,7 @@ export const fillInDefaults = (
     return {};
   }
 
-  if (type.type === "boolean" || type.type === "bool") {
+  if (type.type === "boolean") {
     return false;
   }
 

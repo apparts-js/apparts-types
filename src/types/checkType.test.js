@@ -3,7 +3,6 @@ const checkType = (a, b) => _checkType(b, a);
 
 import {
   object,
-  time,
   array,
   email,
   phoneISD,
@@ -31,10 +30,6 @@ describe("checkType should accept valid input", () => {
   it("should correctly classify int", async () => {
     int(checkType);
   });
-  it("should correctly classify id", async () => {
-    int(checkType, "id");
-  });
-
   it("should correctly classify uuid", async () => {
     uuidv4(checkType);
   });
@@ -51,19 +46,12 @@ describe("checkType should accept valid input", () => {
     base64(checkType);
   });
 
-  it("should correctly classify bool", async () => {
-    bool(checkType, "bool");
-  });
   it("should correctly classify boolean", async () => {
-    bool(checkType, "boolean");
+    bool(checkType);
   });
   it("should correctly classify string", async () => {
     string(checkType);
   });
-  it("should correctly classify password", async () => {
-    string(checkType, "password");
-  });
-
   it("should correctly classify email", async () => {
     email(checkType);
   });
@@ -74,10 +62,6 @@ describe("checkType should accept valid input", () => {
 
   it("should correctly classify array", async () => {
     array(checkType);
-  });
-
-  it("should correctly classify time", async () => {
-    time(checkType);
   });
 
   it("should correctly classify object", async () => {

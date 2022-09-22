@@ -60,7 +60,7 @@ export const recursiveCheck = (
     }
     return { key, shouldType: type, isValue: response };
   }
-  if (type.type === "array" && checkTypes.array.check(response)) {
+  if (type.type === "array" && Array.isArray(response)) {
     const matches = (response as unknown[]).reduce(
       (a: true | Issue, b, i) =>
         a === true ? recursiveCheck(type.items, b, key + `[${i}]`) : a,
@@ -123,7 +123,9 @@ export const recursiveCheck = (
   }
   if (type.type) {
     const matches =
-      checkTypes[type.type] && checkTypes[type.type].check(response);
+      checkTypes[type.type] &&
+      checkTypes[type.type].check &&
+      checkTypes[type.type].check(response);
 
     if (matches === true) {
       return runCheck(type, response, key);

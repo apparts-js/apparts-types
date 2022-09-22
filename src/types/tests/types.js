@@ -30,8 +30,8 @@ export const any = (checkType) => {
   expect(checkType(type, 4.4)).toBe(false);
 };
 
-export const int = (checkType, p = "id") => {
-  const type = { type: p };
+export const int = (checkType) => {
+  const type = { type: "int" };
   expect(checkType(type, 4.4)).toBe(false);
   expect(checkType(type, [])).toBe(false);
   expect(checkType(type, ["a", 3])).toBe(false);
@@ -138,8 +138,8 @@ export const base64 = (checkType) => {
   expect(checkType(type, "dGVzdA==")).toBe(true);
 };
 
-export const bool = (checkType, p) => {
-  const type = { type: p };
+export const bool = (checkType) => {
+  const type = { type: "boolean" };
   expect(checkType(type, 4)).toBe(false);
   expect(checkType(type, 4.4)).toBe(false);
   expect(checkType(type, [])).toBe(false);
@@ -243,24 +243,6 @@ export const array = (checkType) => {
   expect(checkType(type, ["a", 3, true, false, null, undefined, 3.3])).toBe(
     false
   );
-  expect(checkType(type, { an: "object" })).toBe(false);
-  expect(checkType(type, "its a string")).toBe(false);
-  expect(checkType(type, "7ce767a4-ec6e-4ff5-b163-f501165eaf83")).toBe(false);
-  expect(checkType(type, "")).toBe(false);
-  expect(checkType(type, "3")).toBe(false);
-  expect(checkType(type, true)).toBe(false);
-  expect(checkType(type, false)).toBe(false);
-  expect(checkType(type, null)).toBe(false);
-  expect(checkType(type, "ABCDEF1234567890")).toBe(false);
-  expect(checkType(type, "dGVzdA==")).toBe(false);
-};
-
-export const time = (checkType) => {
-  const type = { type: "time" };
-  expect(checkType(type, 4)).toBe(true);
-  expect(checkType(type, 4.4)).toBe(false);
-  expect(checkType(type, [])).toBe(false);
-  expect(checkType(type, ["a", 3])).toBe(false);
   expect(checkType(type, { an: "object" })).toBe(false);
   expect(checkType(type, "its a string")).toBe(false);
   expect(checkType(type, "7ce767a4-ec6e-4ff5-b163-f501165eaf83")).toBe(false);

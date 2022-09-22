@@ -1,5 +1,5 @@
 import { Schema } from "./Schema";
-import { Required, FlagsType, Type, HasType } from "./utilTypes";
+import { Required, FlagsType, Type } from "./utilTypes";
 
 export class BaseType<Flags extends FlagsType, T> extends Schema<Flags, T> {
   constructor(type: Type) {
@@ -15,18 +15,8 @@ export class BaseType<Flags extends FlagsType, T> extends Schema<Flags, T> {
   }
 }
 
-export class Int<Flags extends FlagsType> extends BaseType<Flags, number> {
-  semantic(type: "time" | "daytime" | "date" | "id") {
-    (this.type as HasType).type = type;
-    return this;
-  }
-  cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new Int<Flags>(type);
-  }
-}
-
-export const int = (): Int<Required> => {
-  return new Int({
+export const int = (): BaseType<Required, number> => {
+  return new BaseType({
     type: "int",
   });
 };
@@ -43,18 +33,8 @@ export const boolean = (): BaseType<Required, boolean> => {
   });
 };
 
-export class Strring<Flags extends FlagsType> extends BaseType<Flags, string> {
-  semantic(type: "password" | "id") {
-    (this.type as HasType).type = type;
-    return this;
-  }
-  cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new Strring<Flags>(type);
-  }
-}
-
-export const string = (): Strring<Required> => {
-  return new Strring({
+export const string = (): BaseType<Required, string> => {
+  return new BaseType({
     type: "string",
   });
 };

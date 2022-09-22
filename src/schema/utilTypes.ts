@@ -6,7 +6,6 @@ export type BaseTypeName =
   | "daytime"
   | "date"
   | "float"
-  | "bool"
   | "boolean"
   | "string"
   | "password"
@@ -57,6 +56,7 @@ export type Type = (
   check?: (value: unknown) => boolean | string;
   mapped?: string;
   readOnly?: boolean;
+  semantic?: string;
 };
 
 // Not for usage, just for making sure, that Flags is not nothing

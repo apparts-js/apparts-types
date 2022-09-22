@@ -67,6 +67,10 @@ export abstract class Schema<
     return this.cloneWithType<Flags>({ ...this.type, readOnly: true });
   }
 
+  semantic(semantic: string) {
+    return this.cloneWithType<Flags>({ ...this.type, semantic });
+  }
+
   readonly __type: SchemaType;
   readonly __publicType: PublicType;
   readonly __notDerivedType: NotDerivedType;

@@ -5,17 +5,6 @@
 This package provides functions for checking correctness of values
 against certain types.
 
-* Configuration
-
-Under the configuration name =types-config= the following options exist:
-- ~idType {string}~ :: Can be one of
-  - ~string~
-  - ~UUIDv4~
-  - ~int~
-  - A regular expression
-
-More information on how to set this: [[https://github.com/phuhl/apparts-config][@apparts/config]].
-
 * Types
 
 A type is defined by an object. The object must either contain a key
@@ -34,21 +23,17 @@ as they can also be used to *infer TypeScript types.*
 
 ** Atomic types:
 
-- ~id~ (as configured)
-- ~uuidv4~
 - ~/~ (catch all)
-- =int=
+- ~base64~
+- ~boolean~
+- ~email~
 - ~float~
 - ~hex~
-- ~base64~
-- ~bool~
-- ~string~
-- ~email~
-- ~phoneISD~ (phone number with country code prefix)
-- ~password~ (alias for ~string~)
-- ~time~
-- ~daytime~
+- ~int~
 - ~null~
+- ~phoneISD~ (phone number with country code prefix)
+- ~string~
+- ~uuidv4~
 
 The type definition for each of the atomic types looks like: ={ type: <atomic type> }=.
 
@@ -73,13 +58,13 @@ types. They are created like this:
 
 #+BEGIN_SRC js
 // Creating ids depends on how your Ids look like, either a string or an int
-const idIntSchema = schema.int().semantic("id"); // { type: "id" }
-const idStrSchema = schema.string().semantic("id"); // { type: "id" }
+const idIntSchema = schema.int().semantic("id"); // { type: "int", semantic: "id" }
+const idStrSchema = schema.string().semantic("id"); // { type: "string", semantic: "id" }
 
-const passwordSchema = schema.string().semantic("password"); // { type: "password" }
-const timeSchema = schema.int().semantic("date"); // { type: "date" }
-const timeSchema = schema.int().semantic("time"); // { type: "time" }
-const timeSchema = schema.int().semantic("daytime"); // { type: "daytime" }
+const passwordSchema = schema.string().semantic("password"); // { type: "string", semantic: "password" }
+const timeSchema = schema.int().semantic("date"); // { type: "int", semantic: "date" }
+const timeSchema = schema.int().semantic("time"); // { type: "int", semantic: "time" }
+const timeSchema = schema.int().semantic("daytime"); // { type: "int", semantic: "daytime" }
 #+END_SRC
 
 
