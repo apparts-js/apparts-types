@@ -22,6 +22,12 @@ export const any = (checkType) => {
     true
   );
   expect(checkType({ type: "/" }, "3")).toBe(true);
+
+  // with custom check
+  const type = { type: "/", check: (x) => x.length && x.length === 8 };
+  expect(checkType(type, "dGVzdA=")).toBe(false);
+  expect(checkType(type, "dGVzdA==")).toBe(true);
+  expect(checkType(type, 4.4)).toBe(false);
 };
 
 export const int = (checkType, p = "id") => {
@@ -42,6 +48,13 @@ export const int = (checkType, p = "id") => {
   expect(checkType(type, null)).toBe(false);
   expect(checkType(type, "ABCDEF1234567890")).toBe(false);
   expect(checkType(type, "dGVzdA==")).toBe(false);
+
+  // with custom check
+  type.check = (x) => x > 8;
+  expect(checkType(type, "dGVzdA=")).toBe(false);
+  expect(checkType(type, 4.4)).toBe(false);
+  expect(checkType(type, 4)).toBe(false);
+  expect(checkType(type, 10)).toBe(true);
 };
 
 export const uuidv4 = (checkType) => {
@@ -163,6 +176,12 @@ export const string = (checkType, p = "string") => {
   expect(checkType(type, "3")).toBe(true);
   expect(checkType(type, "ABCDEF1234567890")).toBe(true);
   expect(checkType(type, "dGVzdA==")).toBe(true);
+
+  // with custom check
+  type.check = (x) => x.length === 8;
+  expect(checkType(type, "dGVzdA=")).toBe(false);
+  expect(checkType(type, "dGVzdA==")).toBe(true);
+  expect(checkType(type, 4.4)).toBe(false);
 };
 
 export const email = (checkType) => {

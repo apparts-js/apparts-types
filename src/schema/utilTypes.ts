@@ -54,6 +54,7 @@ export type Type = (
   key?: boolean;
   derived?: (...ps: any) => any;
   default?: any | ((...ps: any) => any);
+  check?: (value: unknown) => boolean | string;
   mapped?: string;
   readOnly?: boolean;
 };

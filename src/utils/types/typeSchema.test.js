@@ -24,7 +24,7 @@ describe("typeSchema", () => {
         },
         typeSchema
       )
-    ).toBeTruthy();
+    ).toBe(true);
 
     expect(
       checkSchema(
@@ -38,7 +38,7 @@ describe("typeSchema", () => {
         },
         typeSchema
       )
-    ).toBeFalsy();
+    ).toBe(false);
   });
 
   it("should explain check type", async () => {
