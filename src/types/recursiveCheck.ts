@@ -13,6 +13,22 @@ type Issue = {
   key: string;
   shouldType: Type;
   isValue: unknown;
+  reason?: string;
+};
+
+const runCheck = (type: Type, response: unknown, key: string): true | Issue => {
+  if (type.check) {
+    const result = type.check(response);
+    if (result !== true) {
+      return {
+        key,
+        shouldType: type,
+        isValue: response,
+        reason: result || "not accepted by check function",
+      };
+    }
+  }
+  return true;
 };
 
 export const recursiveCheck = (
@@ -27,24 +43,33 @@ export const recursiveCheck = (
   if ("value" in type) {
     const matches = JSON.stringify(type.value) === JSON.stringify(response);
     if (matches === true) {
-      return true;
+      return runCheck(type, response, key);
     }
     return { key, shouldType: type, isValue: response };
   }
 
   if (type.type === "oneOf" && Array.isArray(type.alternatives)) {
-    return type.alternatives.reduce(
-      (a: true | Issue, b) =>
-        a === true ? a : recursiveCheck(b, response, key),
+    const matches = type.alternatives.reduce(
+      (a: true | Issue, b) => {
+        return a === true ? a : recursiveCheck(b, response, key);
+      },
       { key, shouldType: type, isValue: response }
     );
+    if (matches === true) {
+      return runCheck(type, response, key);
+    }
+    return { key, shouldType: type, isValue: response };
   }
   if (type.type === "array" && checkTypes.array.check(response)) {
-    return (response as unknown[]).reduce(
+    const matches = (response as unknown[]).reduce(
       (a: true | Issue, b, i) =>
         a === true ? recursiveCheck(type.items, b, key + `[${i}]`) : a,
       true
     );
+    if (matches === true) {
+      return runCheck(type, response, key);
+    }
+    return matches;
   }
   if (type.type === "object") {
     const responseIsObject =
@@ -63,12 +88,9 @@ export const recursiveCheck = (
     }
 
     if (hasKeys) {
-      const notOptionalAndNull = (key) =>
-        !(response[key] === null && type.keys[key] && type.keys[key].optional);
-
       const allKeysToCheck = unique([
         ...Object.keys(response),
-        ...Object.keys(type.keys).filter(notOptionalAndNull),
+        ...Object.keys(type.keys).filter((key) => !type.keys[key].optional),
       ]);
 
       const matches = allKeysToCheck.reduce(
@@ -82,23 +104,29 @@ export const recursiveCheck = (
             : a,
         true
       );
-      if (matches !== true) {
-        return matches;
+      if (matches === true) {
+        return runCheck(type, response, key);
       }
+      return matches;
     }
     if (hasValues) {
-      return Object.keys(response).reduce(
+      const matches = Object.keys(response).reduce(
         (a: true | Issue, b) =>
           a === true ? recursiveCheck(type.values, response[b]) : a,
         true
       );
+      if (matches === true) {
+        return runCheck(type, response, key);
+      }
+      return matches;
     }
   }
   if (type.type) {
     const matches =
       checkTypes[type.type] && checkTypes[type.type].check(response);
-    if (matches) {
-      return true;
+
+    if (matches === true) {
+      return runCheck(type, response, key);
     }
   }
   return { key, shouldType: type, isValue: response };

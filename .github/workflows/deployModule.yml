@@ -2,7 +2,7 @@ name: Deploy to npm
 
 on:
   push:
-    branches: ["master", "v6"]
+    branches: [master, v6, v7, v8, v9, v10]
 
 jobs:
   build:

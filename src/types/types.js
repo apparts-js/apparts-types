@@ -71,6 +71,11 @@ const types = {
         x
       ),
   },
+  // https://en.wikipedia.org/wiki/List_of_country_calling_codes
+  // https://stackoverflow.com/questions/5066329/regex-for-valid-international-mobile-phone-number
+  phoneISD: {
+    check: (x) => /^\+[1-9]{1}[0-9\s-]{3,20}$/.test(x),
+  },
   array: {
     conv: (x) => {
       const conved = JSON.parse(x);

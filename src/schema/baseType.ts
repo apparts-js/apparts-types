@@ -83,6 +83,12 @@ export const email = (): BaseType<Required, string> => {
   });
 };
 
+export const phoneISD = (): BaseType<Required, string> => {
+  return new BaseType({
+    type: "phoneISD",
+  });
+};
+
 export const nill = (): BaseType<Required, null> => {
   return new BaseType({
     type: "null",

@@ -22,6 +22,12 @@ export const any = (checkType) => {
     true
   );
   expect(checkType({ type: "/" }, "3")).toBe(true);
+
+  // with custom check
+  const type = { type: "/", check: (x) => x.length && x.length === 8 };
+  expect(checkType(type, "dGVzdA=")).toBe(false);
+  expect(checkType(type, "dGVzdA==")).toBe(true);
+  expect(checkType(type, 4.4)).toBe(false);
 };
 
 export const int = (checkType, p = "id") => {
@@ -42,6 +48,13 @@ export const int = (checkType, p = "id") => {
   expect(checkType(type, null)).toBe(false);
   expect(checkType(type, "ABCDEF1234567890")).toBe(false);
   expect(checkType(type, "dGVzdA==")).toBe(false);
+
+  // with custom check
+  type.check = (x) => x > 8;
+  expect(checkType(type, "dGVzdA=")).toBe(false);
+  expect(checkType(type, 4.4)).toBe(false);
+  expect(checkType(type, 4)).toBe(false);
+  expect(checkType(type, 10)).toBe(true);
 };
 
 export const uuidv4 = (checkType) => {
@@ -163,6 +176,12 @@ export const string = (checkType, p = "string") => {
   expect(checkType(type, "3")).toBe(true);
   expect(checkType(type, "ABCDEF1234567890")).toBe(true);
   expect(checkType(type, "dGVzdA==")).toBe(true);
+
+  // with custom check
+  type.check = (x) => x.length === 8;
+  expect(checkType(type, "dGVzdA=")).toBe(false);
+  expect(checkType(type, "dGVzdA==")).toBe(true);
+  expect(checkType(type, 4.4)).toBe(false);
 };
 
 export const email = (checkType) => {
@@ -188,6 +207,28 @@ export const email = (checkType) => {
   expect(checkType(type, "abc@.gh")).toBe(false);
   expect(checkType(type, "abc@def.gh")).toBe(true);
   expect(checkType(type, "abc@base.kitchen")).toBe(true);
+};
+
+export const phoneISD = (checkType) => {
+  const type = { type: "phoneISD" };
+  expect(checkType(type, 4)).toBe(false);
+  expect(checkType(type, 4.4)).toBe(false);
+  expect(checkType(type, [])).toBe(false);
+  expect(checkType(type, ["a", 3])).toBe(false);
+  expect(checkType(type, { an: "object" })).toBe(false);
+  expect(checkType(type, "its a string")).toBe(false);
+  expect(checkType(type, "7ce767a4-ec6e-4ff5-b163-f501165eaf83")).toBe(false);
+  expect(checkType(type, "")).toBe(false);
+  expect(checkType(type, "3")).toBe(false);
+  expect(checkType(type, true)).toBe(false);
+  expect(checkType(type, false)).toBe(false);
+  expect(checkType(type, null)).toBe(false);
+  expect(checkType(type, "ABCDEF1234567890")).toBe(false);
+  expect(checkType(type, "dGVzdA==")).toBe(false);
+  expect(checkType(type, "abc@defgh")).toBe(false);
+  expect(checkType(type, "+49 01573 193 84-2")).toBe(true);
+  expect(checkType(type, "+49 01573 193 abc84-2")).toBe(false);
+  expect(checkType(type, "01573 193 84-2")).toBe(false);
 };
 
 export const array = (checkType) => {
