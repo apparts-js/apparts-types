@@ -29,7 +29,7 @@ export type BaseTypeName =
   | "hex"
   | "base64";
 
-export type BaseType = {
+export type SimpleType = {
   type: BaseTypeName;
 } & TypeParameters;
 
@@ -55,7 +55,12 @@ export type OneOfType = {
   alternatives: Type[];
 } & TypeParameters;
 
-export type HasType = BaseType | ObjType | ObjValueType | ArrayType | OneOfType;
+export type HasType =
+  | SimpleType
+  | ObjType
+  | ObjValueType
+  | ArrayType
+  | OneOfType;
 
 export type ValueType = {
   value: any;
