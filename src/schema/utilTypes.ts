@@ -1,3 +1,18 @@
+type TypeParameters = {
+  optional?: true;
+  description?: string;
+  title?: string;
+  public?: boolean;
+  auto?: boolean;
+  key?: boolean;
+  derived?: (...ps: any) => any;
+  default?: any | ((...ps: any) => any);
+  check?: (value: unknown) => boolean | string;
+  mapped?: string;
+  readOnly?: boolean;
+  semantic?: string;
+};
+
 export type BaseTypeName =
   | "id"
   | "uuidv4"
@@ -16,48 +31,39 @@ export type BaseTypeName =
   | "hex"
   | "base64";
 
+export type BaseType = {
+  type: BaseTypeName;
+} & TypeParameters;
+
 export type ObjType = {
   type: "object";
   keys: {
     [T: string]: Type;
   };
-};
-export type HasType =
-  | {
-      type: BaseTypeName;
-    }
-  | ObjType
-  | {
-      type: "object";
-      values: Type;
-    }
-  | {
-      type: "array";
-      items: Type;
-    }
-  | {
-      type: "oneOf";
-      alternatives: Type[];
-    };
-export type Type = (
-  | HasType
-  | {
-      value: any;
-    }
-) & {
-  optional?: true;
-  description?: string;
-  title?: string;
-  public?: boolean;
-  auto?: boolean;
-  key?: boolean;
-  derived?: (...ps: any) => any;
-  default?: any | ((...ps: any) => any);
-  check?: (value: unknown) => boolean | string;
-  mapped?: string;
-  readOnly?: boolean;
-  semantic?: string;
-};
+} & TypeParameters;
+
+export type ObjValueType = {
+  type: "object";
+  values: Type;
+} & TypeParameters;
+
+export type ArrayType = {
+  type: "array";
+  items: Type;
+} & TypeParameters;
+
+export type OneOfType = {
+  type: "oneOf";
+  alternatives: Type[];
+} & TypeParameters;
+
+export type HasType = BaseType | ObjType | ObjValueType | ArrayType | OneOfType;
+
+export type ValueType = {
+  value: any;
+} & TypeParameters;
+
+export type Type = HasType | ValueType;
 
 // Not for usage, just for making sure, that Flags is not nothing
 export type _Optional = "__optional";
