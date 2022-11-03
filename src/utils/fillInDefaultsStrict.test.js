@@ -49,11 +49,17 @@ describe("obj", () => {
           keys: {
             a: { type: "string", default: "test" },
             b: { type: "string", default: "test1" },
+            c: {
+              type: "object",
+              keys: {
+                d: { type: "string", default: "innerdef" },
+              },
+            },
           },
         },
-        { a: "here" }
+        { a: "here", c: {} }
       )
-    ).toStrictEqual({ a: "here", b: "test1" });
+    ).toStrictEqual({ a: "here", b: "test1", c: { d: "innerdef" } });
   });
 
   it("should not fill in empty valueObj", async () => {
