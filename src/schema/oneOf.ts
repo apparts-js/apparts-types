@@ -4,7 +4,7 @@ import { FlagsType, CustomTypes, Required, Type } from "./utilTypes";
 // https://dev.to/shakyshane/2-ways-to-create-a-union-from-an-array-in-typescript-1kd6
 type Schemas = Array<Schema<Required, any>>;
 
-export type OneOfType<T extends Schemas, CustomType extends CustomTypes> = {
+export type InferOneOf<T extends Schemas, CustomType extends CustomTypes> = {
   [key in keyof T]: T[key] extends Schema<Required, any>
     ? T[key][CustomType]
     : never;
@@ -17,9 +17,9 @@ export class OneOf<
   NotDerivedType extends Schema<Required, any>[] = T
 > extends Schema<
   Flags,
-  OneOfType<T, "__type">,
-  OneOfType<T, "__publicType">,
-  OneOfType<T, "__notDerivedType">
+  InferOneOf<T, "__type">,
+  InferOneOf<T, "__publicType">,
+  InferOneOf<T, "__notDerivedType">
 > {
   constructor(alternatives: T, type?: Type) {
     super();
@@ -30,9 +30,9 @@ export class OneOf<
   }
   type: Type;
 
-  readonly __type: OneOfType<T, "__type">;
-  readonly __publicType: OneOfType<T, "__publicType">;
-  readonly __notDerivedType: OneOfType<T, "__notDerivedType">;
+  readonly __type: InferOneOf<T, "__type">;
+  readonly __publicType: InferOneOf<T, "__publicType">;
+  readonly __notDerivedType: InferOneOf<T, "__notDerivedType">;
 
   cloneWithType<Flags extends FlagsType>(type: Type) {
     return new OneOf<Flags, T, PublicType, NotDerivedType>(this.items, type);
