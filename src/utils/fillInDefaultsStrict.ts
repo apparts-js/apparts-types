@@ -36,7 +36,7 @@ export const fillInDefaultsStrict = (
     const values = { ...subject };
     for (const key in type.keys) {
       const keyType = type.keys[key];
-      if (!keyType.optional) {
+      if (key in values || "default" in keyType) {
         values[key] = fillInDefaultsStrict(
           keyType,
           subject?.[key],
