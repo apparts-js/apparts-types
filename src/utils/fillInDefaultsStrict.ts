@@ -35,11 +35,14 @@ export const fillInDefaultsStrict = (
     }
     const values = { ...subject };
     for (const key in type.keys) {
-      values[key] = fillInDefaultsStrict(
-        type.keys[key],
-        subject?.[key],
-        defaultFnParam
-      );
+      const keyType = type.keys[key];
+      if (!keyType.optional) {
+        values[key] = fillInDefaultsStrict(
+          keyType,
+          subject?.[key],
+          defaultFnParam
+        );
+      }
     }
     return values;
   }

@@ -92,6 +92,25 @@ describe("obj", () => {
       )
     ).toStrictEqual([]);
   });
+
+  it("should not set optional value wo default", async () => {
+    const result = fillInDefaultsStrict(
+      {
+        type: "object",
+        keys: {
+          opt: {
+            type: "string",
+            optional: true,
+          },
+          req: { type: "string", default: "bla" },
+        },
+      },
+      {}
+    );
+
+    expect(result).toStrictEqual({ req: "bla" });
+    expect("opt" in result).toBe(false);
+  });
 });
 
 describe("array", () => {
