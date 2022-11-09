@@ -30,7 +30,7 @@ export const fillInDefaults = (
     for (const key in type.keys) {
       values[key] = fillInDefaults(
         type.keys[key],
-        subject?.[key],
+        values?.[key],
         defaultFnParam
       );
     }
