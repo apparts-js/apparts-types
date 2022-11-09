@@ -7,7 +7,9 @@ export class BaseType<T, R extends IsRequired> extends Schema<T, R> {
     this.type = type;
   }
   type: Type;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __type: T;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __required: R;
 
   cloneWithType<R extends IsRequired>(type: Type) {

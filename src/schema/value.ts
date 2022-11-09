@@ -10,7 +10,9 @@ export class Value<T, R extends IsRequired> extends Schema<T, R> {
     this.value = value;
   }
   type: Type;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __type: T;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __required: R;
   private value: T;
 

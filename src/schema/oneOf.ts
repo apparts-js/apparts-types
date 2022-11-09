@@ -15,20 +15,23 @@ export class OneOf<
 > extends Schema<OneOfType<T>, R> {
   constructor(alternatives: T, type?: Type) {
     super();
+    this.alternatives = alternatives;
     this.type = type || {
       type: "oneOf",
       alternatives: alternatives.map((alt) => alt.getType()),
     };
   }
   type: Type;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __type: OneOfType<T>;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __required: R;
 
   cloneWithType<R extends IsRequired>(type: Type) {
-    return new OneOf<T, R>(this.items, type);
+    return new OneOf<T, R>(this.alternatives, type);
   }
 
-  private items: T;
+  private alternatives: T;
 }
 export const oneOf = <T extends Schema<any, Required>[]>(
   alternatives: T

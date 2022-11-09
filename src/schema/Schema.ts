@@ -46,8 +46,11 @@ export abstract class Schema<SchemaType, R extends IsRequired> {
     return this.cloneWithType<R>({ ...this.type, readOnly: true });
   }
 
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __type: SchemaType;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __required: R;
+  // @ts-expect-error Is assigned in subclass constructors
   protected type: Type;
 
   getType() {

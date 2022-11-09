@@ -9,13 +9,16 @@ export class Array<
 > extends Schema<ArrayType<T>, R> {
   constructor(items: T, type?: Type) {
     super();
+    this.items = items;
     this.type = type || {
       type: "array",
       items: items.getType(),
     };
   }
   type: Type;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __type: ArrayType<T>;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __required: R;
 
   cloneWithType<R extends IsRequired>(type: Type) {

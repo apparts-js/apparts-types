@@ -92,7 +92,7 @@ type TypeSchemaType = OneOf<
 
 const description = string().optional();
 
-const typeSchemaOneOfArray = [];
+const typeSchemaOneOfArray: Schema<any, any>[] = [];
 export const typeSchema: TypeSchemaType = new OneOf(
   typeSchemaOneOfArray,
   rtype

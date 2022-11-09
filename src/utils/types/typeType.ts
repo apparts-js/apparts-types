@@ -1,8 +1,10 @@
+import { Type, ObjType } from "../../schema";
+
 const description = { type: "string", optional: true };
 
 const rtype = {
   type: "oneOf" as const,
-  alternatives: [],
+  alternatives: [] as ObjType[],
 };
 
 const oneOf = {
@@ -26,7 +28,7 @@ const objectKeys = {
       type: "object" as const,
       values: {
         type: "oneOf" as const,
-        alternatives: [],
+        alternatives: [] as Type[],
       },
     },
   },
@@ -87,12 +89,12 @@ const valuedType = {
 };
 
 rtype.alternatives = [
-  oneOf,
-  objectKeys,
-  objectValues,
-  array,
-  directType,
-  valuedType,
+  oneOf as ObjType,
+  objectKeys as ObjType,
+  objectValues as ObjType,
+  array as ObjType,
+  directType as ObjType,
+  valuedType as ObjType,
 ];
 
 objectKeys.keys.keys.values.alternatives = rtype.alternatives.map((t) => ({

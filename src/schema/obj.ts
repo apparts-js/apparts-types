@@ -52,7 +52,9 @@ export class Obj<T extends Keys, R extends IsRequired> extends Schema<
   }
 
   protected type: Type;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __type: ObjKeyType<T>;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __required: R;
   private keys: T;
 
@@ -85,7 +87,9 @@ export class ObjValues<
     return new ObjValues<T, R>(this.values, type);
   }
   protected type: Type;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __type: ObjValueType<T>;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __required: R;
   private values: T;
 }
