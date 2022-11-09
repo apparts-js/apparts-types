@@ -23,6 +23,7 @@ export class OneOf<
 > {
   constructor(alternatives: T, type?: Type) {
     super();
+    this.alternatives = alternatives;
     this.type = type || {
       type: "oneOf",
       alternatives: alternatives.map((alt) => alt.getType()),
@@ -30,15 +31,21 @@ export class OneOf<
   }
   type: Type;
 
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __type: InferOneOf<T, "__type">;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __publicType: InferOneOf<T, "__publicType">;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __notDerivedType: InferOneOf<T, "__notDerivedType">;
 
   cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new OneOf<Flags, T, PublicType, NotDerivedType>(this.items, type);
+    return new OneOf<Flags, T, PublicType, NotDerivedType>(
+      this.alternatives,
+      type
+    );
   }
 
-  private items: T;
+  private alternatives: T;
 }
 export const oneOf = <T extends Schema<Required, any>[]>(
   alternatives: T

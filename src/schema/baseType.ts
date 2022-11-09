@@ -7,7 +7,9 @@ export class BaseType<Flags extends FlagsType, T> extends Schema<Flags, T> {
     this.type = type;
   }
   type: Type;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __type: T;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __flags: Flags;
 
   cloneWithType<Flags extends FlagsType>(type: Type) {

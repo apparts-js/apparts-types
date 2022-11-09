@@ -11,7 +11,7 @@ const unique = (list: string[]) => {
 
 type Issue = {
   key: string;
-  shouldType: Type;
+  shouldType: Type | undefined;
   isValue: unknown;
   reason?: string;
 };

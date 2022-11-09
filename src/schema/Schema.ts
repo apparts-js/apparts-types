@@ -71,11 +71,16 @@ export abstract class Schema<
     return this.cloneWithType<Flags>({ ...this.type, semantic });
   }
 
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __type: SchemaType;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __publicType: PublicType;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __notDerivedType: NotDerivedType;
 
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __flags: Flags;
+  // @ts-expect-error This value is set in constructor of derived classes
   protected type: Type;
 
   getType() {

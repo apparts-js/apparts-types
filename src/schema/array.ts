@@ -19,6 +19,7 @@ export class Array<
 > {
   constructor(items: T, type?: Type) {
     super();
+    this.items = items;
     this.type = type || {
       type: "array",
       items: items.getType(),
@@ -26,8 +27,11 @@ export class Array<
   }
   type: Type;
 
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __type: ArrayType<T, "__type">;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __publicType: ArrayType<T, "__publicType">;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __notDerivedType: ArrayType<T, "__notDerivedType">;
 
   cloneWithType<Flags extends FlagsType>(type: Type) {

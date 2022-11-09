@@ -10,6 +10,7 @@ export class Value<Flags extends FlagsType, T> extends Schema<Flags, T> {
     this.value = value;
   }
   type: Type;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __type: T;
   private value: T;
 

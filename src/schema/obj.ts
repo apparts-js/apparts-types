@@ -78,12 +78,15 @@ export class Obj<
   }
 
   protected type: Type;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __type: ObjKeyTypeWithFlags<T, "__type", never>;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __publicType: ObjKeyTypeWithFlags<
     PublicType,
     "__publicType",
     Public
   >;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __notDerivedType: ObjKeyTypeWithFlags<
     NotDerivedType,
     "__notDerivedType",
@@ -91,6 +94,7 @@ export class Obj<
     Derived
   >;
 
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __Flags: Flags;
 
   private keys: T;
@@ -128,6 +132,7 @@ export class ObjValues<
     return new ObjValues<Flags, T>(this.values, type);
   }
   protected type: Type;
+  // @ts-expect-error This value is just here to make the type accessible
   readonly __type: ObjValueType<T>;
   private values: T;
 }
