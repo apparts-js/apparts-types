@@ -18,57 +18,34 @@ export abstract class Schema<
     type: Type
   ): Schema<Flags, SchemaType, PublicType, NotDerivedType>;
 
-  optional() {
-    return this.cloneWithType<Exclude<Flags, Required> | _Optional>({
-      ...this.type,
-      optional: true,
-    });
-  }
+  abstract clone(type: Type): this;
 
   description(description: string) {
-    return this.cloneWithType<Flags>({ ...this.type, description });
+    return this.clone({ ...this.type, description });
   }
 
   title(title: string) {
-    return this.cloneWithType<Flags>({ ...this.type, title });
-  }
-
-  default(defaultF: SchemaType | (() => SchemaType)) {
-    return this.cloneWithType<Flags | Required>({
-      ...this.type,
-      default: defaultF,
-    });
-  }
-
-  public() {
-    return this.cloneWithType<Flags | Public>({
-      ...this.type,
-      public: true,
-    });
+    return this.clone({ ...this.type, title });
   }
 
   auto() {
-    return this.cloneWithType<Flags>({ ...this.type, auto: true });
+    return this.clone({ ...this.type, auto: true });
   }
 
   key() {
-    return this.cloneWithType<Flags>({ ...this.type, key: true });
-  }
-
-  derived(derived: (...ps: any) => SchemaType | Promise<SchemaType>) {
-    return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
+    return this.clone({ ...this.type, key: true });
   }
 
   mapped(mapped: string) {
-    return this.cloneWithType<Flags>({ ...this.type, mapped });
+    return this.clone({ ...this.type, mapped });
   }
 
   readOnly() {
-    return this.cloneWithType<Flags>({ ...this.type, readOnly: true });
+    return this.clone({ ...this.type, readOnly: true });
   }
 
   semantic(semantic: string) {
-    return this.cloneWithType<Flags>({ ...this.type, semantic });
+    return this.clone({ ...this.type, semantic });
   }
 
   // @ts-expect-error This value is just here to make the type accessible
@@ -79,7 +56,7 @@ export abstract class Schema<
   readonly __notDerivedType: NotDerivedType;
 
   // @ts-expect-error This value is just here to make the type accessible
-  readonly __flags: Flags;
+  __flags: Flags;
   // @ts-expect-error This value is set in constructor of derived classes
   protected type: Type;
 

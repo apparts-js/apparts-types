@@ -1,5 +1,13 @@
 import { Schema } from "./Schema";
-import { FlagsType, CustomTypes, Required, Type } from "./utilTypes";
+import {
+  FlagsType,
+  CustomTypes,
+  Required,
+  Type,
+  Derived,
+  Public,
+  _Optional,
+} from "./utilTypes";
 
 // https://dev.to/shakyshane/2-ways-to-create-a-union-from-an-array-in-typescript-1kd6
 type Schemas = Array<Schema<Required, any>>;
@@ -44,8 +52,58 @@ export class OneOf<
       type
     );
   }
+  clone(type: Type) {
+    return new OneOf<Flags, T, PublicType, NotDerivedType>(
+      this.alternatives,
+      type
+    ) as this;
+  }
 
+  optional() {
+    return this.cloneWithType<Exclude<Flags, Required> | _Optional>({
+      ...this.type,
+      optional: true,
+    });
+  }
+
+  required() {
+    const {
+      /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+      optional: _,
+      ...newType
+    } = this.type;
+    return this.cloneWithType<Exclude<Flags, _Optional> | Required>(newType);
+  }
+
+  default(defaultF: T | (() => T)) {
+    return this.cloneWithType<Flags | Required>({
+      ...this.type,
+      default: defaultF,
+    });
+  }
+
+  public() {
+    return this.cloneWithType<Flags | Public>({
+      ...this.type,
+      public: true,
+    });
+  }
+
+  private() {
+    return this.cloneWithType<Exclude<Flags, Public>>({
+      ...this.type,
+      public: false,
+    });
+  }
+
+  derived(derived: (...ps: any) => T | Promise<T>) {
+    return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
+  }
   private alternatives: T;
+
+  getAlternatives() {
+    return this.alternatives;
+  }
 }
 export const oneOf = <T extends Schema<Required, any>[]>(
   alternatives: T

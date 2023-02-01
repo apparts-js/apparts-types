@@ -14,6 +14,7 @@ import {
   oneOf,
   value,
   InferType,
+  InferPublicType,
 } from "./index";
 
 describe("ts type", () => {
@@ -49,10 +50,34 @@ describe("ts type", () => {
         })
       ).optional(),
     });
+
+    const teststrtrs = array(
+      obj({
+        aKey: int(),
+        aOneOf: oneOf([int(), value("hi")]),
+      })
+    ).optional();
+    // PROBLEM: The optional returns a Schema, not an Array
+    // class. Hence, getItems no worky worky.
+    const teststrtrs1 = teststrtrs.getItems();
+
+    const otherSchema = obj({
+      ...testSchema.getKeys(),
+      id: testSchema.getKeys().id.private(),
+      pw: testSchema.getKeys().pw.optional().public(),
+    });
+    testSchema.getKeys().anArray.getItems();
+    type TTTTT = InferPublicType<typeof otherSchema>;
+
+    /*    const otherSchema1 = obj({
+      ...otherSchema.getKeysAsPrivate(),
+      pw: testSchema.getKeys().pw.optional().public(),
+    });
+    type TTTTT1 = InferType<typeof otherSchema1>;*/
+
     type Test = InferType<typeof testSchema>;
     const t: Test = {
       id: 3,
-
       pw: "aobst",
       created: 1293,
       createdTime: 1293,
