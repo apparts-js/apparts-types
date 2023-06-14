@@ -51,30 +51,6 @@ describe("ts type", () => {
       ).optional(),
     });
 
-    const anArrayObjKeys = testSchema.getKeys().anArray.getItems().getKeys();
-    anArrayObjKeys.aKey;
-    anArrayObjKeys.aOneOf;
-    // @ts-expect-error test type
-    anArrayObjKeys.doesNotExist;
-
-    const schemaWithOverwrittenPublic = obj({
-      ...testSchema.getKeys(),
-      id: testSchema.getKeys().id.private(),
-      pw: testSchema.getKeys().pw.optional().public(),
-    });
-
-    type TypeWithOverwrittenPublic = InferPublicType<
-      typeof schemaWithOverwrittenPublic
-    >;
-
-    const f = (a: TypeWithOverwrittenPublic) => a;
-    f({ created: 123 });
-    f({ pw: "pw", created: 123 });
-    // @ts-expect-error test type
-    f({ pw: "pw" });
-    // @ts-expect-error test type
-    f({ id: 123 });
-
     /*    const otherSchema1 = obj({
       ...otherSchema.getKeysAsPrivate(),
       pw: testSchema.getKeys().pw.optional().public(),
@@ -234,5 +210,53 @@ describe("ts type", () => {
     expect(testBool.getType()).toStrictEqual({
       type: "boolean",
     });
+  });
+
+  it("should return sub schema elements", async () => {
+    const testSchema = obj({
+      anArray: array(
+        obj({
+          aKey: int(),
+          aOneOf: oneOf([int(), value("hi")]),
+        })
+      ).optional(),
+    });
+
+    const anArrayObjKeys = testSchema.getKeys().anArray.getItems().getKeys();
+    anArrayObjKeys.aKey;
+    anArrayObjKeys.aOneOf;
+    // @ts-expect-error test type
+    anArrayObjKeys.doesNotExist;
+    expect(anArrayObjKeys.aOneOf.getAlternatives()[0].getType()).toMatchObject({
+      type: "int",
+    });
+  });
+
+  it("should overwrite flags", async () => {
+    const testSchema = obj({
+      id: int().auto().key().public(),
+      pw: string().semantic("password"),
+      created: int().semantic("time").public(),
+    });
+
+    const schemaWithOverwrittenPublic = obj({
+      ...testSchema.getKeys(),
+      id: testSchema.getKeys().id.private(),
+      pw: testSchema.getKeys().pw.optional().public(),
+    });
+
+    type TypeWithOverwrittenPublic = InferPublicType<
+      typeof schemaWithOverwrittenPublic
+    >;
+
+    const f = (a: TypeWithOverwrittenPublic) => a;
+    f({ created: 123 });
+    f({ pw: "pw", created: 123 });
+    // @ts-expect-error test type
+    f({ pw: "pw" });
+    // @ts-expect-error test type
+    f({ id: 123 });
+
+    expect(true);
   });
 });
