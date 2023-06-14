@@ -223,7 +223,7 @@ export class ObjValues<
     return this.cloneWithType<Exclude<Flags, _Optional> | Required>(newType);
   }
 
-  default(defaultF: T | (() => T)) {
+  default(defaultF: ObjValueType<T> | (() => ObjValueType<T>)) {
     return this.cloneWithType<Flags | Required>({
       ...this.type,
       default: defaultF,
@@ -244,7 +244,7 @@ export class ObjValues<
     });
   }
 
-  derived(derived: (...ps: any) => T | Promise<T>) {
+  derived(derived: (...ps: any) => ObjValueType<T> | Promise<ObjValueType<T>>) {
     return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
   }
 }
