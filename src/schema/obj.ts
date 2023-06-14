@@ -135,7 +135,11 @@ export class Obj<
     return this.cloneWithType<Exclude<Flags, _Optional> | Required>(newType);
   }
 
-  default(defaultF: T | (() => T)) {
+  default(
+    defaultF:
+      | ObjKeyTypeWithFlags<T, "__type", never>
+      | (() => ObjKeyTypeWithFlags<T, "__type", never>)
+  ) {
     return this.cloneWithType<Flags | Required>({
       ...this.type,
       default: defaultF,
@@ -156,7 +160,13 @@ export class Obj<
     });
   }
 
-  derived(derived: (...ps: any) => T | Promise<T>) {
+  derived(
+    derived: (
+      ...ps: any
+    ) =>
+      | ObjKeyTypeWithFlags<T, "__type", never>
+      | Promise<ObjKeyTypeWithFlags<T, "__type", never>>
+  ) {
     return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
   }
 }
