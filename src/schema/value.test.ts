@@ -17,6 +17,28 @@ describe("value type", () => {
     f([]);
   });
 
+  it("should reject wrongly typed default values", async () => {
+    const baseSchema = value(3);
+
+    // As function
+    baseSchema.default(() => 3);
+
+    // As value
+    baseSchema.default(3);
+
+    // @ts-expect-error test type
+    baseSchema.default(4);
+  });
+
+  it("should reject wrongly typed derived values", async () => {
+    const baseSchema = value(3);
+
+    baseSchema.derived(() => 3);
+
+    // @ts-expect-error test type
+    baseSchema.derived(4);
+  });
+
   it("should correctly make optional/required", async () => {
     const valueSchema = value(3).optional();
     expect(valueSchema.getType().optional).toBe(true);
