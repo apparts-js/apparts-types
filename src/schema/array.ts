@@ -1,5 +1,13 @@
 import { Schema } from "./Schema";
-import { Required, CustomTypes, FlagsType, Type } from "./utilTypes";
+import {
+  Required,
+  _Optional,
+  CustomTypes,
+  FlagsType,
+  Type,
+  Public,
+  Derived,
+} from "./utilTypes";
 
 type ArrayType<
   T extends Schema<any, Required>,
@@ -34,11 +42,67 @@ export class Array<
   // @ts-expect-error This value is just here to make the type accessible
   readonly __notDerivedType: ArrayType<T, "__notDerivedType">;
 
+  private items: T;
+
+  getItems() {
+    return this.items;
+  }
+
   cloneWithType<Flags extends FlagsType>(type: Type) {
     return new Array<Flags, T, PublicType, NotDerivedType>(this.items, type);
   }
 
-  private items: T;
+  clone(type: Type) {
+    return new Array<Flags, T, PublicType, NotDerivedType>(
+      this.items,
+      type
+    ) as this;
+  }
+
+  optional() {
+    return this.cloneWithType<Exclude<Flags, Required> | _Optional>({
+      ...this.type,
+      optional: true,
+    });
+  }
+
+  required() {
+    const {
+      /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+      optional: _,
+      ...newType
+    } = this.type;
+    return this.cloneWithType<Exclude<Flags, _Optional> | Required>(newType);
+  }
+
+  default(defaultF: ArrayType<T, "__type"> | (() => ArrayType<T, "__type">)) {
+    return this.cloneWithType<Flags | Required>({
+      ...this.type,
+      default: defaultF,
+    });
+  }
+
+  public() {
+    return this.cloneWithType<Flags | Public>({
+      ...this.type,
+      public: true,
+    });
+  }
+
+  private() {
+    return this.cloneWithType<Exclude<Flags, Public>>({
+      ...this.type,
+      public: false,
+    });
+  }
+
+  derived(
+    derived: (
+      ...ps: any
+    ) => ArrayType<T, "__type"> | Promise<ArrayType<T, "__type">>
+  ) {
+    return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
+  }
 }
 export const array = <T extends Schema<Required, any>>(
   items: T

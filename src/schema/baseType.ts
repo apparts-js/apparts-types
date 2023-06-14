@@ -1,5 +1,12 @@
 import { Schema } from "./Schema";
-import { Required, FlagsType, Type } from "./utilTypes";
+import {
+  Required,
+  FlagsType,
+  Type,
+  Public,
+  Derived,
+  _Optional,
+} from "./utilTypes";
 
 export class BaseType<Flags extends FlagsType, T> extends Schema<Flags, T> {
   constructor(type: Type) {
@@ -14,6 +21,51 @@ export class BaseType<Flags extends FlagsType, T> extends Schema<Flags, T> {
 
   cloneWithType<Flags extends FlagsType>(type: Type) {
     return new BaseType<Flags, T>(type);
+  }
+
+  clone(type: Type) {
+    return new BaseType<Flags, T>(type) as this;
+  }
+
+  optional() {
+    return this.cloneWithType<Exclude<Flags, Required> | _Optional>({
+      ...this.type,
+      optional: true,
+    });
+  }
+
+  required() {
+    const {
+      /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+      optional: _,
+      ...newType
+    } = this.type;
+    return this.cloneWithType<Exclude<Flags, _Optional> | Required>(newType);
+  }
+
+  default(defaultF: T | (() => T)) {
+    return this.cloneWithType<Flags | Required>({
+      ...this.type,
+      default: defaultF,
+    });
+  }
+
+  public() {
+    return this.cloneWithType<Flags | Public>({
+      ...this.type,
+      public: true,
+    });
+  }
+
+  private() {
+    return this.cloneWithType<Exclude<Flags, Public>>({
+      ...this.type,
+      public: false,
+    });
+  }
+
+  derived(derived: (...ps: any) => T | Promise<T>) {
+    return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
   }
 }
 

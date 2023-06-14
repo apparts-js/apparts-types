@@ -14,6 +14,7 @@ import {
   oneOf,
   value,
   InferType,
+  InferPublicType,
 } from "./index";
 
 describe("ts type", () => {
@@ -23,7 +24,7 @@ describe("ts type", () => {
     const testSchema = obj({
       id: int().auto().key().public(),
       pw: string().semantic("password"),
-      created: int().semantic("time"),
+      created: int().semantic("time").public(),
       createdTime: int().semantic("daytime"),
       createdDate: int().semantic("date"),
       aString: string(),
@@ -49,10 +50,16 @@ describe("ts type", () => {
         })
       ).optional(),
     });
+
+    /*    const otherSchema1 = obj({
+      ...otherSchema.getKeysAsPrivate(),
+      pw: testSchema.getKeys().pw.optional().public(),
+    });
+    type TTTTT1 = InferType<typeof otherSchema1>;*/
+
     type Test = InferType<typeof testSchema>;
     const t: Test = {
       id: 3,
-
       pw: "aobst",
       created: 1293,
       createdTime: 1293,
@@ -97,7 +104,7 @@ describe("ts type", () => {
           key: true,
         },
         pw: { type: "string", semantic: "password" },
-        created: { type: "int", semantic: "time" },
+        created: { type: "int", semantic: "time", public: true },
         createdTime: { type: "int", semantic: "daytime" },
         createdDate: { type: "int", semantic: "date" },
         aString: { type: "string" },
@@ -174,6 +181,14 @@ describe("ts type", () => {
       isThree: 4,
     });
 
+    objSchema.derived(() => ({
+      isThree: 4,
+    }));
+    objSchema.derived(() => ({
+      isThree: 4,
+      isMaybeTrue: false,
+    }));
+
     // @ts-expect-error test type
     objSchema.derived(() => ({
       isMaybeTrue: false,
@@ -203,5 +218,66 @@ describe("ts type", () => {
     expect(testBool.getType()).toStrictEqual({
       type: "boolean",
     });
+  });
+
+  it("should return sub schema elements", async () => {
+    const testSchema = obj({
+      anArray: array(
+        obj({
+          aKey: int(),
+          aOneOf: oneOf([int(), value("hi")]),
+        })
+      ).optional(),
+    });
+
+    const anArrayObjKeys = testSchema.getKeys().anArray.getItems().getKeys();
+    anArrayObjKeys.aKey;
+    anArrayObjKeys.aOneOf;
+    // @ts-expect-error test type
+    anArrayObjKeys.doesNotExist;
+    expect(anArrayObjKeys.aOneOf.getAlternatives()[0].getType()).toMatchObject({
+      type: "int",
+    });
+  });
+
+  it("should overwrite flags", async () => {
+    const testSchema = obj({
+      id: int().auto().key().public(),
+      pw: string().semantic("password"),
+      created: int().semantic("time").public(),
+      itsOptional: int()
+        .public()
+        .optional()
+        .description("But later it will be required"),
+    });
+
+    const schemaWithOverwrittenPublic = obj({
+      ...testSchema.getKeys(),
+      id: testSchema.getKeys().id.private(),
+      pw: testSchema.getKeys().pw.optional().public(),
+      itsOptional: testSchema.getKeys().itsOptional.required(),
+    });
+
+    type TypeWithOverwrittenPublic = InferPublicType<
+      typeof schemaWithOverwrittenPublic
+    >;
+
+    const f = (a: TypeWithOverwrittenPublic) => a;
+    f({ created: 123, itsOptional: 123 });
+    f({ pw: "pw", created: 123, itsOptional: 2 });
+    // @ts-expect-error test type
+    f({ pw: "pw" });
+    // @ts-expect-error test type
+    f({ id: 123 });
+
+    expect(
+      schemaWithOverwrittenPublic.getKeys().itsOptional.getType().optional
+    ).not.toBe(true);
+    expect(schemaWithOverwrittenPublic.getKeys().id.getType().public).not.toBe(
+      true
+    );
+    expect(schemaWithOverwrittenPublic.getKeys().pw.getType().public).toBe(
+      true
+    );
   });
 });

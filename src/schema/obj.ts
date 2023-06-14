@@ -7,6 +7,7 @@ import {
   ObjType,
   Derived,
   CustomTypes,
+  _Optional,
 } from "./utilTypes";
 
 interface Keys {
@@ -77,6 +78,13 @@ export class Obj<
     return new Obj<Flags, T, PublicType, NotDerivedType>(this.keys, type);
   }
 
+  clone(type: Type) {
+    return new Obj<Flags, T, PublicType, NotDerivedType>(
+      this.keys,
+      type
+    ) as this;
+  }
+
   protected type: Type;
   // @ts-expect-error This value is just here to make the type accessible
   readonly __type: ObjKeyTypeWithFlags<T, "__type", never>;
@@ -101,6 +109,65 @@ export class Obj<
 
   getModelType() {
     return (this.type as ObjType).keys;
+  }
+
+  getType() {
+    return this.type as ObjType;
+  }
+
+  getKeys() {
+    return this.keys;
+  }
+
+  optional() {
+    return this.cloneWithType<Exclude<Flags, Required> | _Optional>({
+      ...this.type,
+      optional: true,
+    });
+  }
+
+  required() {
+    const {
+      /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+      optional: _,
+      ...newType
+    } = this.type;
+    return this.cloneWithType<Exclude<Flags, _Optional> | Required>(newType);
+  }
+
+  default(
+    defaultF:
+      | ObjKeyTypeWithFlags<T, "__type", never>
+      | (() => ObjKeyTypeWithFlags<T, "__type", never>)
+  ) {
+    return this.cloneWithType<Flags | Required>({
+      ...this.type,
+      default: defaultF,
+    });
+  }
+
+  public() {
+    return this.cloneWithType<Flags | Public>({
+      ...this.type,
+      public: true,
+    });
+  }
+
+  private() {
+    return this.cloneWithType<Exclude<Flags, Public>>({
+      ...this.type,
+      public: false,
+    });
+  }
+
+  derived(
+    derived: (
+      ...ps: any
+    ) =>
+      | ObjKeyTypeWithFlags<T, "__type", never>
+      | Promise<ObjKeyTypeWithFlags<T, "__type", never>>
+  ) {
+    return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
   }
 }
 
@@ -131,10 +198,55 @@ export class ObjValues<
   cloneWithType<Flags extends FlagsType>(type: Type) {
     return new ObjValues<Flags, T>(this.values, type);
   }
+  clone(type: Type) {
+    return new ObjValues<Flags, T>(this.values, type) as this;
+  }
+
   protected type: Type;
   // @ts-expect-error This value is just here to make the type accessible
   readonly __type: ObjValueType<T>;
   private values: T;
+
+  optional() {
+    return this.cloneWithType<Exclude<Flags, Required> | _Optional>({
+      ...this.type,
+      optional: true,
+    });
+  }
+
+  required() {
+    const {
+      /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+      optional: _,
+      ...newType
+    } = this.type;
+    return this.cloneWithType<Exclude<Flags, _Optional> | Required>(newType);
+  }
+
+  default(defaultF: ObjValueType<T> | (() => ObjValueType<T>)) {
+    return this.cloneWithType<Flags | Required>({
+      ...this.type,
+      default: defaultF,
+    });
+  }
+
+  public() {
+    return this.cloneWithType<Flags | Public>({
+      ...this.type,
+      public: true,
+    });
+  }
+
+  private() {
+    return this.cloneWithType<Exclude<Flags, Public>>({
+      ...this.type,
+      public: false,
+    });
+  }
+
+  derived(derived: (...ps: any) => ObjValueType<T> | Promise<ObjValueType<T>>) {
+    return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
+  }
 }
 
 export const objValues = <T extends Schema<Required, any>>(
