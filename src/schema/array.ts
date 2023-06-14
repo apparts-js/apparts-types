@@ -75,7 +75,7 @@ export class Array<
     return this.cloneWithType<Exclude<Flags, _Optional> | Required>(newType);
   }
 
-  default(defaultF: T | (() => T)) {
+  default(defaultF: ArrayType<T, "__type"> | (() => ArrayType<T, "__type">)) {
     return this.cloneWithType<Flags | Required>({
       ...this.type,
       default: defaultF,
@@ -96,7 +96,11 @@ export class Array<
     });
   }
 
-  derived(derived: (...ps: any) => T | Promise<T>) {
+  derived(
+    derived: (
+      ...ps: any
+    ) => ArrayType<T, "__type"> | Promise<ArrayType<T, "__type">>
+  ) {
     return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
   }
 }

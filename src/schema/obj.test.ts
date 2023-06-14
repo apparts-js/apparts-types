@@ -5,6 +5,7 @@ import {
   InferType,
   InferPublicType,
   InferNotDerivedType,
+  int,
 } from "./index";
 
 describe("obj type", () => {
@@ -99,6 +100,56 @@ describe("obj type", () => {
     f({ just: { key: true } });
     // @ts-expect-error test type
     f({});
+  });
+
+  it("should reject wrongly typed default values", async () => {
+    const objSchema = obj({
+      isMaybeTrue: boolean().optional(),
+      isThree: int(),
+    });
+
+    // As function
+    objSchema.default(() => ({
+      isMaybeTrue: false,
+      isThree: 4,
+    }));
+
+    // As value
+    objSchema.default({
+      isThree: 4,
+    });
+
+    // @ts-expect-error test type
+    objSchema.default({
+      isMaybeTrue: false,
+    });
+  });
+  it("should reject wrongly typed derived values", async () => {
+    const objSchema = obj({
+      isMaybeTrue: boolean().optional(),
+      isThree: int(),
+    });
+
+    objSchema.derived(() => ({
+      isThree: 4,
+    }));
+    objSchema.derived(() => ({
+      isThree: 4,
+      isMaybeTrue: false,
+    }));
+
+    // @ts-expect-error test type
+    objSchema.derived(() => ({
+      isMaybeTrue: false,
+    }));
+
+    objSchema.derived({
+      // @ts-expect-error test type
+      isThree: 3,
+    });
+
+    // @ts-expect-error test type
+    objSchema.derived(() => 3);
   });
 });
 

@@ -75,7 +75,7 @@ export class OneOf<
     return this.cloneWithType<Exclude<Flags, _Optional> | Required>(newType);
   }
 
-  default(defaultF: T | (() => T)) {
+  default(defaultF: InferOneOf<T, "__type"> | (() => InferOneOf<T, "__type">)) {
     return this.cloneWithType<Flags | Required>({
       ...this.type,
       default: defaultF,
@@ -96,7 +96,11 @@ export class OneOf<
     });
   }
 
-  derived(derived: (...ps: any) => T | Promise<T>) {
+  derived(
+    derived: (
+      ...ps: any
+    ) => InferOneOf<T, "__type"> | Promise<InferOneOf<T, "__type">>
+  ) {
     return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
   }
   private alternatives: T;

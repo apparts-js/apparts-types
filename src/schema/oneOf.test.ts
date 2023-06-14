@@ -32,4 +32,27 @@ describe("obj type", () => {
     // @ts-expect-error test type
     f(3);
   });
+
+  it("should reject wrongly typed default values", async () => {
+    const oneOfSchema = oneOf([boolean(), int()]);
+
+    // As function
+    oneOfSchema.default(() => true);
+
+    // As value
+    oneOfSchema.default(43);
+
+    // @ts-expect-error test type
+    oneOfSchema.default("string");
+  });
+
+  it("should reject wrongly typed derived values", async () => {
+    const oneOfSchema = oneOf([boolean(), int()]);
+
+    oneOfSchema.derived(() => true);
+    oneOfSchema.derived(() => 43);
+
+    // @ts-expect-error test type
+    oneOfSchema.derived("string");
+  });
 });

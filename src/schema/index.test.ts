@@ -181,6 +181,14 @@ describe("ts type", () => {
       isThree: 4,
     });
 
+    objSchema.derived(() => ({
+      isThree: 4,
+    }));
+    objSchema.derived(() => ({
+      isThree: 4,
+      isMaybeTrue: false,
+    }));
+
     // @ts-expect-error test type
     objSchema.derived(() => ({
       isMaybeTrue: false,
@@ -237,12 +245,17 @@ describe("ts type", () => {
       id: int().auto().key().public(),
       pw: string().semantic("password"),
       created: int().semantic("time").public(),
+      itsOptional: int()
+        .public()
+        .optional()
+        .description("But later it will be required"),
     });
 
     const schemaWithOverwrittenPublic = obj({
       ...testSchema.getKeys(),
       id: testSchema.getKeys().id.private(),
       pw: testSchema.getKeys().pw.optional().public(),
+      itsOptional: testSchema.getKeys().itsOptional.required(),
     });
 
     type TypeWithOverwrittenPublic = InferPublicType<
@@ -250,13 +263,21 @@ describe("ts type", () => {
     >;
 
     const f = (a: TypeWithOverwrittenPublic) => a;
-    f({ created: 123 });
-    f({ pw: "pw", created: 123 });
+    f({ created: 123, itsOptional: 123 });
+    f({ pw: "pw", created: 123, itsOptional: 2 });
     // @ts-expect-error test type
     f({ pw: "pw" });
     // @ts-expect-error test type
     f({ id: 123 });
 
-    expect(true);
+    expect(
+      schemaWithOverwrittenPublic.getKeys().itsOptional.getType().optional
+    ).not.toBe(true);
+    expect(schemaWithOverwrittenPublic.getKeys().id.getType().public).not.toBe(
+      true
+    );
+    expect(schemaWithOverwrittenPublic.getKeys().pw.getType().public).toBe(
+      true
+    );
   });
 });

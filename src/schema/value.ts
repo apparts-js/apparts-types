@@ -49,13 +49,6 @@ export class Value<Flags extends FlagsType, T> extends Schema<Flags, T> {
     return this.cloneWithType<Exclude<Flags, _Optional> | Required>(newType);
   }
 
-  default(defaultF: T | (() => T)) {
-    return this.cloneWithType<Flags | Required>({
-      ...this.type,
-      default: defaultF,
-    });
-  }
-
   public() {
     return this.cloneWithType<Flags | Public>({
       ...this.type,
@@ -68,10 +61,6 @@ export class Value<Flags extends FlagsType, T> extends Schema<Flags, T> {
       ...this.type,
       public: false,
     });
-  }
-
-  derived(derived: (...ps: any) => T | Promise<T>) {
-    return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
   }
 }
 export const value = <T extends string | number | boolean>(
