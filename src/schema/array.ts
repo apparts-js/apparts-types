@@ -7,6 +7,7 @@ import {
   Type,
   Public,
   Derived,
+  Auto,
 } from "./utilTypes";
 
 type ArrayType<
@@ -18,12 +19,14 @@ export class Array<
   Flags extends FlagsType,
   T extends Schema<Required, any>,
   PublicType extends Schema<Required, any> = T,
-  NotDerivedType extends Schema<Required, any> = T
+  NotDerivedType extends Schema<Required, any> = T,
+  AutoType extends Schema<Required, any> = T
 > extends Schema<
   Flags,
   ArrayType<T, "__type">,
   ArrayType<T, "__publicType">,
-  ArrayType<T, "__notDerivedType">
+  ArrayType<T, "__notDerivedType">,
+  ArrayType<T, "__autoType">
 > {
   constructor(items: T, type?: Type) {
     super();
@@ -41,6 +44,8 @@ export class Array<
   readonly __publicType: ArrayType<T, "__publicType">;
   // @ts-expect-error This value is just here to make the type accessible
   readonly __notDerivedType: ArrayType<T, "__notDerivedType">;
+  // @ts-expect-error This value is just here to make the type accessible
+  readonly __autoType: ArrayType<T, "__autoType">;
 
   private items: T;
 
@@ -49,11 +54,14 @@ export class Array<
   }
 
   cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new Array<Flags, T, PublicType, NotDerivedType>(this.items, type);
+    return new Array<Flags, T, PublicType, NotDerivedType, AutoType>(
+      this.items,
+      type
+    );
   }
 
   clone(type: Type) {
-    return new Array<Flags, T, PublicType, NotDerivedType>(
+    return new Array<Flags, T, PublicType, NotDerivedType, AutoType>(
       this.items,
       type
     ) as this;
@@ -102,6 +110,10 @@ export class Array<
     ) => ArrayType<T, "__type"> | Promise<ArrayType<T, "__type">>
   ) {
     return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
+  }
+
+  auto() {
+    return this.cloneWithType<Flags | Auto>({ ...this.type, auto: true });
   }
 }
 export const array = <T extends Schema<Required, any>>(

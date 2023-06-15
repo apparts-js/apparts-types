@@ -8,10 +8,11 @@ import {
   Derived,
   CustomTypes,
   _Optional,
+  Auto,
 } from "./utilTypes";
 
 interface Keys {
-  [T: string]: Schema<any, any, any>;
+  [T: string]: Schema<any, any, any, any, any>;
 }
 
 /* this seems to force TS to show the full type instead of all the wrapped generics */
@@ -51,12 +52,14 @@ export class Obj<
   Flags extends FlagsType,
   T extends Keys,
   PublicType extends Keys = T,
-  NotDerivedType extends Keys = T
+  NotDerivedType extends Keys = T,
+  AutoType extends Keys = T
 > extends Schema<
   Flags,
   ObjKeyTypeWithFlags<T, "__type", never>,
   ObjKeyTypeWithFlags<PublicType, "__publicType", Public>,
-  ObjKeyTypeWithFlags<NotDerivedType, "__notDerivedType", never, Derived>
+  ObjKeyTypeWithFlags<NotDerivedType, "__notDerivedType", never, Derived>,
+  ObjKeyTypeWithFlags<AutoType, "__autoType", Auto>
 > {
   constructor(keys: T, type?: Type) {
     super();
@@ -75,11 +78,14 @@ export class Obj<
     this.keys = keys;
   }
   cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new Obj<Flags, T, PublicType, NotDerivedType>(this.keys, type);
+    return new Obj<Flags, T, PublicType, NotDerivedType, AutoType>(
+      this.keys,
+      type
+    );
   }
 
   clone(type: Type) {
-    return new Obj<Flags, T, PublicType, NotDerivedType>(
+    return new Obj<Flags, T, PublicType, NotDerivedType, AutoType>(
       this.keys,
       type
     ) as this;
@@ -101,6 +107,8 @@ export class Obj<
     never,
     Derived
   >;
+  // @ts-expect-error This value is just here to make the type accessible
+  readonly __autoType: ObjKeyTypeWithFlags<AutoType, "__autoType", Auto>;
 
   // @ts-expect-error This value is just here to make the type accessible
   readonly __Flags: Flags;
@@ -169,88 +177,11 @@ export class Obj<
   ) {
     return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
   }
+  auto() {
+    return this.cloneWithType<Flags | Auto>({ ...this.type, auto: true });
+  }
 }
 
 export const obj = <T extends Keys>(keys: T): Obj<Required, T> => {
   return new Obj(keys);
-};
-
-type ObjValueType<T extends Schema<any, any, Required, any>> = {
-  [key: string]: T["__type"];
-};
-
-export class ObjValues<
-  Flags extends FlagsType,
-  T extends Schema<any, Required, any>
-> extends Schema<Flags, ObjValueType<T>> {
-  constructor(values: T, type?: Type) {
-    super();
-    if (!type) {
-      this.type = {
-        type: "object",
-        values: values.getType(),
-      };
-    } else {
-      this.type = type;
-    }
-    this.values = values;
-  }
-  cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new ObjValues<Flags, T>(this.values, type);
-  }
-  clone(type: Type) {
-    return new ObjValues<Flags, T>(this.values, type) as this;
-  }
-
-  protected type: Type;
-  // @ts-expect-error This value is just here to make the type accessible
-  readonly __type: ObjValueType<T>;
-  private values: T;
-
-  optional() {
-    return this.cloneWithType<Exclude<Flags, Required> | _Optional>({
-      ...this.type,
-      optional: true,
-    });
-  }
-
-  required() {
-    const {
-      /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-      optional: _,
-      ...newType
-    } = this.type;
-    return this.cloneWithType<Exclude<Flags, _Optional> | Required>(newType);
-  }
-
-  default(defaultF: ObjValueType<T> | (() => ObjValueType<T>)) {
-    return this.cloneWithType<Flags | Required>({
-      ...this.type,
-      default: defaultF,
-    });
-  }
-
-  public() {
-    return this.cloneWithType<Flags | Public>({
-      ...this.type,
-      public: true,
-    });
-  }
-
-  private() {
-    return this.cloneWithType<Exclude<Flags, Public>>({
-      ...this.type,
-      public: false,
-    });
-  }
-
-  derived(derived: (...ps: any) => ObjValueType<T> | Promise<ObjValueType<T>>) {
-    return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
-  }
-}
-
-export const objValues = <T extends Schema<Required, any>>(
-  values: T
-): ObjValues<Required, T> => {
-  return new ObjValues(values);
 };

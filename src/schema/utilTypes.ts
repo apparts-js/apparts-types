@@ -76,9 +76,11 @@ export type _Optional = "__optional";
 export type Required = "__required";
 export type Public = "__public";
 export type Derived = "__derived";
+export type Auto = "__auto";
 export type FlagsType =
   | Public
   | _Optional
+  | Auto
   | Required
   | Derived
   // __all is for enabling a default value on the WOFlag type in
@@ -87,4 +89,8 @@ export type FlagsType =
   // satisfies [FlagTypes] extends [FlagCombination].
   | "__all";
 
-export type CustomTypes = "__type" | "__publicType" | "__notDerivedType";
+export type CustomTypes =
+  | "__type"
+  | "__publicType"
+  | "__notDerivedType"
+  | "__autoType";

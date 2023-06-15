@@ -10,53 +10,50 @@ import {
   nill,
   any,
   obj,
+  objValues,
   array,
   oneOf,
   value,
   InferType,
   InferPublicType,
+  InferNotDerivedType,
 } from "./index";
+import { InferAutoType } from "./infer";
 
-describe("ts type", () => {
-  it("should match", () => {
-    const deriveIsTrue = () => true;
-    const isFour = () => 4;
-    const testSchema = obj({
-      id: int().auto().key().public(),
-      pw: string().semantic("password"),
-      created: int().semantic("time").public(),
-      createdTime: int().semantic("daytime"),
-      createdDate: int().semantic("date"),
-      aString: string(),
-      aFloat: float(),
-      aHex: hex(),
-      aBase64: base64(),
-      aEmail: email(),
-      aPhoneISD: phoneISD(),
-      aNill: nill(),
-      aAny: any(),
-      isTrue: boolean().derived(deriveIsTrue),
+describe("schema", () => {
+  const deriveIsTrue = () => true;
+  const isFour = () => 4;
+  const testSchema = obj({
+    id: int().auto().key().public(),
+    pw: string().semantic("password"),
+    created: int().semantic("time").public(),
+    createdTime: int().semantic("daytime"),
+    createdDate: int().semantic("date"),
+    aString: string(),
+    aFloat: float(),
+    aHex: hex(),
+    aBase64: base64(),
+    aEmail: email(),
+    aPhoneISD: phoneISD(),
+    aNill: nill(),
+    aAny: any(),
+    isTrue: boolean().derived(deriveIsTrue),
+    isMaybeTrue: boolean().optional(),
+    isMaybeThree: int().optional(),
+    anObj: obj({
       isMaybeTrue: boolean().optional(),
-      isMaybeThree: int().optional(),
-      anObj: obj({
-        isMaybeTrue: boolean().optional(),
-        isThree: int().default(3),
-        isFour: int().default(isFour),
-      }).optional(),
-      anArray: array(
-        obj({
-          aKey: int(),
-          aOneOf: oneOf([int(), value("hi")]),
-        })
-      ).optional(),
-    });
+      isThree: int().default(3),
+      isFour: int().default(isFour),
+    }).optional(),
+    anArray: array(
+      obj({
+        aKey: int(),
+        aOneOf: oneOf([int(), value("hi")]),
+      })
+    ).optional(),
+  });
 
-    /*    const otherSchema1 = obj({
-      ...otherSchema.getKeysAsPrivate(),
-      pw: testSchema.getKeys().pw.optional().public(),
-    });
-    type TTTTT1 = InferType<typeof otherSchema1>;*/
-
+  it("should accept value", () => {
     type Test = InferType<typeof testSchema>;
     const t: Test = {
       id: 3,
@@ -93,7 +90,9 @@ describe("ts type", () => {
     };
     // @ts-expect-error test type
     t.anArray[1].aOneOf = "test";
+  });
 
+  it("should match type", () => {
     expect(testSchema.getType()).toStrictEqual({
       type: "object",
       keys: {
@@ -144,65 +143,126 @@ describe("ts type", () => {
       },
     });
   });
+});
 
-  it("should reject wrongly typed derived values", async () => {
-    const objSchema = obj({
-      isMaybeTrue: boolean().optional(),
-      isThree: int(),
+describe("deep inference", () => {
+  it("should infer optional correctly through all complex types", () => {
+    // Nesting all available wrapper types within each
+    // other. Inferrence should still work.
+    const testSchema = obj({
+      anArray: array(
+        objValues(
+          oneOf([
+            obj({
+              isOptional: string().optional(),
+              isNonOptional: string().public(),
+            }),
+          ])
+        )
+      ),
     });
 
-    objSchema.derived(() => ({
-      isMaybeTrue: false,
-      isThree: 4,
-    }));
+    type Test = InferType<typeof testSchema>;
+    const f = (a: Test) => a;
 
+    f({ anArray: [{ any: { isOptional: "blu", isNonOptional: "bla" } }] });
+    f({ anArray: [{ any: { isNonOptional: "bla" } }] });
     // @ts-expect-error test type
-    objSchema.derived(() => ({
-      isMaybeTrue: false,
-    }));
-
-    // @ts-expect-error test type
-    objSchema.derived(() => 3);
+    f({ anArray: [{ any: {} }] });
   });
 
-  it("should reject wrongly typed default values", async () => {
-    const objSchema = obj({
-      isMaybeTrue: boolean().optional(),
-      isThree: int(),
+  it("should infer public correctly through all complex types", () => {
+    // Nesting all available wrapper types within each
+    // other. Inferrence should still work.
+    const testSchema = obj({
+      anArray: array(
+        objValues(
+          oneOf([
+            obj({
+              isPrivate: string(),
+              isPublic: string().public(),
+            }),
+          ])
+        )
+      ).public(),
     });
 
-    objSchema.default(() => ({
-      isMaybeTrue: false,
-      isThree: 4,
-    }));
+    type HasPublic = InferPublicType<typeof testSchema>;
+    const f = (a: HasPublic) => a;
 
-    objSchema.default({
-      isMaybeTrue: false,
-      isThree: 4,
-    });
-
-    objSchema.derived(() => ({
-      isThree: 4,
-    }));
-    objSchema.derived(() => ({
-      isThree: 4,
-      isMaybeTrue: false,
-    }));
-
+    f({ anArray: [{ any: { isPublic: "test" } }] });
     // @ts-expect-error test type
-    objSchema.derived(() => ({
-      isMaybeTrue: false,
-    }));
-
-    objSchema.derived({
-      // @ts-expect-error test type
-      isMaybeTrue: false,
-    });
-
-    // @ts-expect-error test type
-    objSchema.derived(() => 3);
+    f({ anArray: [{ any: {} }] });
   });
 
+  it("should infer derived correctly through all complex types", () => {
+    // Nesting all available wrapper types within each
+    // other. Inferrence should still work.
+    const testSchema = obj({
+      anArray: array(
+        objValues(
+          oneOf([
+            obj({
+              nonDerived: string(),
+              isDerived: string().derived(() => "a"),
+            }),
+          ])
+        )
+      ),
+    });
+
+    type HasNoDerived = InferNotDerivedType<typeof testSchema>;
+    const f = (a: HasNoDerived) => a;
+
+    f({ anArray: [{ any: { nonDerived: "" } }] });
+    f({
+      anArray: [
+        {
+          any: {
+            nonDerived: "",
+            // @ts-expect-error test type
+            isDerived: "test",
+          },
+        },
+      ],
+    });
+  });
+
+  it("should infer auto correctly through all complex types", () => {
+    // Nesting all available wrapper types within each
+    // other. Inferrence should still work.
+    const testSchema = obj({
+      anArray: array(
+        objValues(
+          oneOf([
+            obj({
+              isNonAuto: string(),
+              isAuto: string().auto(),
+            }),
+          ])
+        )
+      ).auto(),
+    });
+
+    type HasAuto = InferAutoType<typeof testSchema>;
+    const f = (a: HasAuto) => a;
+
+    f({ anArray: [{ any: { isAuto: "test" } }] });
+    f({
+      anArray: [
+        {
+          any: {
+            // @ts-expect-error test type
+            isNonAuto: "",
+            isAuto: "",
+          },
+        },
+      ],
+    });
+  });
+});
+
+describe("modification", () => {
   it("should create new instance on modification", async () => {
     const testBool = boolean();
     testBool.optional();
@@ -217,26 +277,6 @@ describe("ts type", () => {
 
     expect(testBool.getType()).toStrictEqual({
       type: "boolean",
-    });
-  });
-
-  it("should return sub schema elements", async () => {
-    const testSchema = obj({
-      anArray: array(
-        obj({
-          aKey: int(),
-          aOneOf: oneOf([int(), value("hi")]),
-        })
-      ).optional(),
-    });
-
-    const anArrayObjKeys = testSchema.getKeys().anArray.getItems().getKeys();
-    anArrayObjKeys.aKey;
-    anArrayObjKeys.aOneOf;
-    // @ts-expect-error test type
-    anArrayObjKeys.doesNotExist;
-    expect(anArrayObjKeys.aOneOf.getAlternatives()[0].getType()).toMatchObject({
-      type: "int",
     });
   });
 
@@ -279,5 +319,27 @@ describe("ts type", () => {
     expect(schemaWithOverwrittenPublic.getKeys().pw.getType().public).toBe(
       true
     );
+  });
+});
+
+describe("sub-schema arithmetic", () => {
+  it("should return sub schema elements", async () => {
+    const testSchema = obj({
+      anArray: array(
+        obj({
+          aKey: int(),
+          aOneOf: oneOf([int(), value("hi")]),
+        })
+      ).optional(),
+    });
+
+    const anArrayObjKeys = testSchema.getKeys().anArray.getItems().getKeys();
+    anArrayObjKeys.aKey;
+    anArrayObjKeys.aOneOf;
+    // @ts-expect-error test type
+    anArrayObjKeys.doesNotExist;
+    expect(anArrayObjKeys.aOneOf.getAlternatives()[0].getType()).toMatchObject({
+      type: "int",
+    });
   });
 });

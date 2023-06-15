@@ -1,4 +1,5 @@
 import { boolean, obj, InferType } from "./index";
+import { InferAutoType } from "./infer";
 
 describe("baseType type", () => {
   it("should infer type correctly", async () => {
@@ -57,5 +58,15 @@ describe("baseType type", () => {
     const baseTypeSchema = boolean().public();
     expect(baseTypeSchema.getType().public).toBe(true);
     expect(baseTypeSchema.private().getType().public).not.toBe(true);
+  });
+
+  it("should correctly make auto", async () => {
+    const baseTypeSchema = obj({ test: boolean().auto() });
+    expect(baseTypeSchema.getKeys().test.getType().auto).toBe(true);
+    type HasAutos = InferAutoType<typeof baseTypeSchema>;
+    const f = (a: HasAutos) => a;
+    f({ test: true });
+    // @ts-expect-error test type
+    f({});
   });
 });

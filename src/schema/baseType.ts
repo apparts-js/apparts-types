@@ -6,6 +6,7 @@ import {
   Public,
   Derived,
   _Optional,
+  Auto,
 } from "./utilTypes";
 
 export class BaseType<Flags extends FlagsType, T> extends Schema<Flags, T> {
@@ -66,6 +67,10 @@ export class BaseType<Flags extends FlagsType, T> extends Schema<Flags, T> {
 
   derived(derived: (...ps: any) => T | Promise<T>) {
     return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
+  }
+
+  auto() {
+    return this.cloneWithType<Flags | Auto>({ ...this.type, auto: true });
   }
 }
 

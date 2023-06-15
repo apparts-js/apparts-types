@@ -5,7 +5,8 @@ export abstract class Schema<
   Flags extends FlagsType,
   SchemaType,
   PublicType = SchemaType,
-  NotDerivedType = SchemaType
+  NotDerivedType = SchemaType,
+  AutoType = SchemaType
 > {
   // cloneWithType is defined in the non-abstract classes. It must not
   // be used in this abstract class as it would here only return a
@@ -15,7 +16,7 @@ export abstract class Schema<
   // can (and has to be) used.
   abstract cloneWithType<Flags extends FlagsType>(
     type: Type
-  ): Schema<Flags, SchemaType, PublicType, NotDerivedType>;
+  ): Schema<Flags, SchemaType, PublicType, NotDerivedType, AutoType>;
 
   // Clone can be used here as it returns the instance type
   // (this). This is possible as we do not need to change any flags.
@@ -33,10 +34,6 @@ export abstract class Schema<
 
   title(title: string) {
     return this.clone({ ...this.type, title });
-  }
-
-  auto() {
-    return this.clone({ ...this.type, auto: true });
   }
 
   key() {
@@ -61,6 +58,8 @@ export abstract class Schema<
   readonly __publicType: PublicType;
   // @ts-expect-error This value is just here to make the type accessible
   readonly __notDerivedType: NotDerivedType;
+  // @ts-expect-error This value is just here to make the type accessible
+  readonly __autoType: AutoType;
 
   // @ts-expect-error This value is just here to make the type accessible
   readonly __flags: Flags;
