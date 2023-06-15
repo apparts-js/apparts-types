@@ -189,4 +189,16 @@ describe("obj type", () => {
     expect(objSchema.getType().public).toBe(true);
     expect(objSchema.private().getType().public).not.toBe(true);
   });
+
+  it("should correctly make auto", async () => {
+    const baseTypeSchema = obj({
+      test: obj({ content: boolean().auto() }).auto(),
+    });
+    expect(baseTypeSchema.getKeys().test.getType().auto).toBe(true);
+    type HasAutos = InferAutoType<typeof baseTypeSchema>;
+    const f = (a: HasAutos) => a;
+    f({ test: { content: true } });
+    // @ts-expect-error test type
+    f({});
+  });
 });

@@ -1,4 +1,4 @@
-import { value, InferType, obj } from "./index";
+import { value, InferType, obj, InferAutoType } from "./index";
 
 describe("value type", () => {
   it("should infer type correctly", async () => {
@@ -62,5 +62,15 @@ describe("value type", () => {
     const valueSchema = value(3).public();
     expect(valueSchema.getType().public).toBe(true);
     expect(valueSchema.private().getType().public).not.toBe(true);
+  });
+
+  it("should correctly make auto", async () => {
+    const baseTypeSchema = obj({ test: value(3).auto() });
+    expect(baseTypeSchema.getKeys().test.getType().auto).toBe(true);
+    type HasAutos = InferAutoType<typeof baseTypeSchema>;
+    const f = (a: HasAutos) => a;
+    f({ test: 3 });
+    // @ts-expect-error test type
+    f({});
   });
 });

@@ -1,4 +1,4 @@
-import { boolean, array, InferType, obj } from "./index";
+import { boolean, array, InferType, obj, InferAutoType } from "./index";
 
 describe("array type", () => {
   it("should fail on optional items-type", async () => {
@@ -72,5 +72,15 @@ describe("array type", () => {
     const arraySchema = array(boolean()).public();
     expect(arraySchema.getType().public).toBe(true);
     expect(arraySchema.private().getType().public).not.toBe(true);
+  });
+
+  it("should correctly make auto", async () => {
+    const baseTypeSchema = obj({ test: array(boolean()).auto() });
+    expect(baseTypeSchema.getKeys().test.getType().auto).toBe(true);
+    type HasAutos = InferAutoType<typeof baseTypeSchema>;
+    const f = (a: HasAutos) => a;
+    f({ test: [true] });
+    // @ts-expect-error test type
+    f({});
   });
 });
