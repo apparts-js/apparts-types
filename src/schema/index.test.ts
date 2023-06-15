@@ -147,9 +147,9 @@ describe("ts type", () => {
     });
   });
 
-  it("should defer correctly through all complex types", () => {
-    const deriveIsTrue = () => true;
-    const isFour = () => 4;
+  it("should infer correctly through all complex types", () => {
+    // Nesting all available wrapper types within each
+    // other. Inferrence should still work.
     const testSchema = obj({
       anArray: array(
         objValues(
