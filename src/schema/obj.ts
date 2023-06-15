@@ -53,7 +53,7 @@ export class Obj<
   T extends Keys,
   PublicType extends Keys = T,
   NotDerivedType extends Keys = T,
-  AutoType extends Keys = never
+  AutoType extends Keys = T
 > extends Schema<
   Flags,
   ObjKeyTypeWithFlags<T, "__type", never>,
