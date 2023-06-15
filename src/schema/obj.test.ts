@@ -1,12 +1,12 @@
 import {
   boolean,
-  obj,
-  objValues,
-  InferType,
-  InferPublicType,
   InferNotDerivedType,
+  InferPublicType,
+  InferType,
   int,
+  obj,
 } from "./index";
+import { InferAutoType } from "./infer";
 
 describe("obj type", () => {
   it("should defer optional correctly", async () => {
@@ -100,6 +100,19 @@ describe("obj type", () => {
     f({ just: { key: true } });
     // @ts-expect-error test type
     f({});
+  });
+
+  it("should defer auto correctly", async () => {
+    const hasAutos = obj({
+      anAuto: boolean().auto(),
+      notAnAuto: boolean(),
+    });
+    type HasAutos = InferAutoType<typeof hasAutos>;
+    const f = (a: HasAutos) => a;
+
+    f({ anAuto: true });
+    // @ts-expect-error test type
+    f({ notAnAuto: true });
   });
 
   it("should reject wrongly typed default values", async () => {

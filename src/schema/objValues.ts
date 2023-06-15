@@ -1,5 +1,6 @@
 import { Schema } from "./Schema";
 import {
+  Auto,
   CustomTypes,
   Derived,
   FlagsType,
@@ -20,12 +21,14 @@ export class ObjValues<
   Flags extends FlagsType,
   T extends Schema<any, Required, any>,
   PublicType extends Schema<Required, any> = T,
-  NotDerivedType extends Schema<Required, any> = T
+  NotDerivedType extends Schema<Required, any> = T,
+  AutoType extends Schema<Required, any> = T
 > extends Schema<
   Flags,
   ObjValueType<T, "__type">,
   ObjValueType<T, "__publicType">,
-  ObjValueType<T, "__notDerivedType">
+  ObjValueType<T, "__notDerivedType">,
+  ObjValueType<T, "__autoType">
 > {
   constructor(values: T, type?: Type) {
     super();
@@ -40,13 +43,13 @@ export class ObjValues<
     this.values = values;
   }
   cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new ObjValues<Flags, T, PublicType, NotDerivedType>(
+    return new ObjValues<Flags, T, PublicType, NotDerivedType, AutoType>(
       this.values,
       type
     );
   }
   clone(type: Type) {
-    return new ObjValues<Flags, T, PublicType, NotDerivedType>(
+    return new ObjValues<Flags, T, PublicType, NotDerivedType, AutoType>(
       this.values,
       type
     ) as this;
@@ -59,6 +62,8 @@ export class ObjValues<
   readonly __publicType: ObjValueType<T, "__publicType">;
   // @ts-expect-error This value is just here to make the type accessible
   readonly __notDerivedType: ObjValueType<T, "__notDerivedType">;
+  // @ts-expect-error This value is just here to make the type accessible
+  readonly __autoType: ObjValueType<T, "__autoType">;
 
   private values: T;
 
@@ -107,6 +112,10 @@ export class ObjValues<
     ) => ObjValueType<T, "__type"> | Promise<ObjValueType<T, "__type">>
   ) {
     return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
+  }
+
+  auto() {
+    return this.cloneWithType<Flags | Auto>({ ...this.type, auto: true });
   }
 }
 
