@@ -1,4 +1,5 @@
 export * from "./obj";
+export * from "./objValues";
 export * from "./array";
 export * from "./oneOf";
 export * from "./value";

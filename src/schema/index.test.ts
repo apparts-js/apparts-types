@@ -10,11 +10,13 @@ import {
   nill,
   any,
   obj,
+  objValues,
   array,
   oneOf,
   value,
   InferType,
   InferPublicType,
+  InferNotDerivedType,
 } from "./index";
 
 describe("ts type", () => {
@@ -142,6 +144,54 @@ describe("ts type", () => {
           },
         },
       },
+    });
+  });
+
+  it("should defer correctly through all complex types", () => {
+    const deriveIsTrue = () => true;
+    const isFour = () => 4;
+    const testSchema = obj({
+      anArray: array(
+        objValues(
+          oneOf([
+            obj({
+              isOptional: string().optional(),
+              isPublic: string().public(),
+              isDerived: string().derived(() => "a"),
+            }),
+          ])
+        )
+      ).public(),
+    });
+
+    type Test = InferType<typeof testSchema>;
+    const f = (a: Test) => a;
+
+    f({ anArray: [{ any: { isPublic: "test", isDerived: "bla" } }] });
+    // @ts-expect-error test type
+    f({ anArray: [{ any: { isPublic: "test" } }] });
+
+    type HasPublic = InferPublicType<typeof testSchema>;
+    const g = (a: HasPublic) => a;
+
+    g({ anArray: [{ any: { isPublic: "test" } }] });
+    // @ts-expect-error test type
+    g({ anArray: [{ any: {} }] });
+
+    type HasNoDerived = InferNotDerivedType<typeof testSchema>;
+    const h = (a: HasNoDerived) => a;
+
+    h({ anArray: [{ any: { isPublic: "" } }] });
+    h({
+      anArray: [
+        {
+          any: {
+            isPublic: "",
+            // @ts-expect-error test type
+            isDerived: "test",
+          },
+        },
+      ],
     });
   });
 
