@@ -8,10 +8,11 @@ import {
   Public,
   _Optional,
   Auto,
+  HasDefault,
 } from "./utilTypes";
 
 // https://dev.to/shakyshane/2-ways-to-create-a-union-from-an-array-in-typescript-1kd6
-type Schemas = Array<Schema<Required, any, any, any, any>>;
+type Schemas = Array<Schema<Required, any, any, any, any, any>>;
 
 export type InferOneOf<T extends Schemas, CustomType extends CustomTypes> = {
   [key in keyof T]: T[key] extends Schema<Required, any>
@@ -24,13 +25,15 @@ export class OneOf<
   T extends Schema<any, Required>[],
   PublicType extends Schema<Required, any>[] = T,
   NotDerivedType extends Schema<Required, any>[] = T,
-  AutoType extends Schema<Required, any>[] = T
+  AutoType extends Schema<Required, any>[] = T,
+  DefaultType extends Schema<Required, any>[] = T
 > extends Schema<
   Flags,
   InferOneOf<T, "__type">,
   InferOneOf<T, "__publicType">,
   InferOneOf<T, "__notDerivedType">,
-  InferOneOf<T, "__autoType">
+  InferOneOf<T, "__autoType">,
+  InferOneOf<T, "__defaultType">
 > {
   constructor(alternatives: T, type?: Type) {
     super();
@@ -50,12 +53,18 @@ export class OneOf<
   readonly __notDerivedType: InferOneOf<T, "__notDerivedType">;
   // @ts-expect-error This value is just here to make the type accessible
   readonly __autoType: InferOneOf<T, "__autoType">;
+  // @ts-expect-error This value is just here to make the type accessible
+  readonly __defaultType: InferOneOf<T, "__defaultType">;
 
   cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new OneOf<Flags, T, PublicType, NotDerivedType, AutoType>(
-      this.alternatives,
-      type
-    );
+    return new OneOf<
+      Flags,
+      T,
+      PublicType,
+      NotDerivedType,
+      AutoType,
+      DefaultType
+    >(this.alternatives, type);
   }
   clone(type: Type) {
     return this.cloneWithType<Flags>(type) as this;
@@ -78,7 +87,7 @@ export class OneOf<
   }
 
   default(defaultF: InferOneOf<T, "__type"> | (() => InferOneOf<T, "__type">)) {
-    return this.cloneWithType<Flags | Required>({
+    return this.cloneWithType<Flags | Required | HasDefault>({
       ...this.type,
       default: defaultF,
     });

@@ -1,4 +1,11 @@
-import { boolean, array, InferType, obj, InferAutoType } from "./index";
+import {
+  boolean,
+  array,
+  InferType,
+  obj,
+  InferAutoType,
+  InferHasDefaultType,
+} from "./index";
 
 describe("array type", () => {
   it("should fail on optional items-type", async () => {
@@ -79,6 +86,18 @@ describe("array type", () => {
     expect(baseTypeSchema.getKeys().test.getType().auto).toBe(true);
     type HasAutos = InferAutoType<typeof baseTypeSchema>;
     const f = (a: HasAutos) => a;
+    f({ test: [true] });
+    // @ts-expect-error test type
+    f({});
+  });
+
+  it("should correctly make hasDefault", async () => {
+    const baseTypeSchema = obj({ test: array(boolean()).default([true]) });
+    expect(baseTypeSchema.getKeys().test.getType().default).toStrictEqual([
+      true,
+    ]);
+    type HasDefaults = InferHasDefaultType<typeof baseTypeSchema>;
+    const f = (a: HasDefaults) => a;
     f({ test: [true] });
     // @ts-expect-error test type
     f({});

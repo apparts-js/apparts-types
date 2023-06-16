@@ -7,6 +7,7 @@ import {
   Derived,
   _Optional,
   Auto,
+  HasDefault,
 } from "./utilTypes";
 
 export class BaseType<Flags extends FlagsType, T> extends Schema<Flags, T> {
@@ -45,7 +46,7 @@ export class BaseType<Flags extends FlagsType, T> extends Schema<Flags, T> {
   }
 
   default(defaultF: T | (() => T)) {
-    return this.cloneWithType<Flags | Required>({
+    return this.cloneWithType<Flags | Required | HasDefault>({
       ...this.type,
       default: defaultF,
     });

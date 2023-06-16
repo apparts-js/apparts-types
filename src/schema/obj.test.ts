@@ -6,7 +6,7 @@ import {
   int,
   obj,
 } from "./index";
-import { InferAutoType } from "./infer";
+import { InferAutoType, InferHasDefaultType } from "./infer";
 
 describe("obj type", () => {
   it("should defer optional correctly", async () => {
@@ -115,6 +115,19 @@ describe("obj type", () => {
     f({ notAnAuto: true });
   });
 
+  it("should defer hasDefault correctly", async () => {
+    const hasDefaults = obj({
+      anDefault: boolean().default(true),
+      notAnDefault: boolean(),
+    });
+    type HasDefaults = InferHasDefaultType<typeof hasDefaults>;
+    const f = (a: HasDefaults) => a;
+
+    f({ anDefault: true });
+    // @ts-expect-error test type
+    f({ notAnDefault: true });
+  });
+
   it("should reject wrongly typed default values", async () => {
     const objSchema = obj({
       isMaybeTrue: boolean().optional(),
@@ -197,6 +210,22 @@ describe("obj type", () => {
     expect(baseTypeSchema.getKeys().test.getType().auto).toBe(true);
     type HasAutos = InferAutoType<typeof baseTypeSchema>;
     const f = (a: HasAutos) => a;
+    f({ test: { content: true } });
+    // @ts-expect-error test type
+    f({});
+  });
+
+  it("should correctly make hasDefault", async () => {
+    const baseTypeSchema = obj({
+      test: obj({ content: boolean().default(true) }).default({
+        content: true,
+      }),
+    });
+    expect(baseTypeSchema.getKeys().test.getType().default).toStrictEqual({
+      content: true,
+    });
+    type HasDefaults = InferHasDefaultType<typeof baseTypeSchema>;
+    const f = (a: HasDefaults) => a;
     f({ test: { content: true } });
     // @ts-expect-error test type
     f({});

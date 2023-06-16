@@ -9,10 +9,11 @@ import {
   CustomTypes,
   _Optional,
   Auto,
+  HasDefault,
 } from "./utilTypes";
 
 interface Keys {
-  [T: string]: Schema<any, any, any, any, any>;
+  [T: string]: Schema<any, any, any, any, any, any>;
 }
 
 /* this seems to force TS to show the full type instead of all the wrapped generics */
@@ -53,13 +54,15 @@ export class Obj<
   T extends Keys,
   PublicType extends Keys = T,
   NotDerivedType extends Keys = T,
-  AutoType extends Keys = T
+  AutoType extends Keys = T,
+  DefaultType extends Keys = T
 > extends Schema<
   Flags,
   ObjKeyTypeWithFlags<T, "__type", never>,
   ObjKeyTypeWithFlags<PublicType, "__publicType", Public>,
   ObjKeyTypeWithFlags<NotDerivedType, "__notDerivedType", never, Derived>,
-  ObjKeyTypeWithFlags<AutoType, "__autoType", Auto>
+  ObjKeyTypeWithFlags<AutoType, "__autoType", Auto>,
+  ObjKeyTypeWithFlags<DefaultType, "__defaultType", HasDefault>
 > {
   constructor(keys: T, type?: Type) {
     super();
@@ -78,7 +81,7 @@ export class Obj<
     this.keys = keys;
   }
   cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new Obj<Flags, T, PublicType, NotDerivedType, AutoType>(
+    return new Obj<Flags, T, PublicType, NotDerivedType, AutoType, DefaultType>(
       this.keys,
       type
     );
@@ -106,6 +109,12 @@ export class Obj<
   >;
   // @ts-expect-error This value is just here to make the type accessible
   readonly __autoType: ObjKeyTypeWithFlags<AutoType, "__autoType", Auto>;
+  // @ts-expect-error This value is just here to make the type accessible
+  readonly __defaultType: ObjKeyTypeWithFlags<
+    DefaultType,
+    "__defaultType",
+    HasDefault
+  >;
 
   // @ts-expect-error This value is just here to make the type accessible
   readonly __Flags: Flags;
@@ -145,7 +154,7 @@ export class Obj<
       | ObjKeyTypeWithFlags<T, "__type", never>
       | (() => ObjKeyTypeWithFlags<T, "__type", never>)
   ) {
-    return this.cloneWithType<Flags | Required>({
+    return this.cloneWithType<Flags | Required | HasDefault>({
       ...this.type,
       default: defaultF,
     });

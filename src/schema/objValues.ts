@@ -4,6 +4,7 @@ import {
   CustomTypes,
   Derived,
   FlagsType,
+  HasDefault,
   Public,
   Required,
   Type,
@@ -11,7 +12,7 @@ import {
 } from "./utilTypes";
 
 type ObjValueType<
-  T extends Schema<any, any, Required, any>,
+  T extends Schema<any, any, Required, any, any>,
   CustomType extends CustomTypes
 > = {
   [key: string]: T[CustomType];
@@ -22,13 +23,15 @@ export class ObjValues<
   T extends Schema<any, Required, any>,
   PublicType extends Schema<Required, any> = T,
   NotDerivedType extends Schema<Required, any> = T,
-  AutoType extends Schema<Required, any> = T
+  AutoType extends Schema<Required, any> = T,
+  DefaultType extends Schema<Required, any> = T
 > extends Schema<
   Flags,
   ObjValueType<T, "__type">,
   ObjValueType<T, "__publicType">,
   ObjValueType<T, "__notDerivedType">,
-  ObjValueType<T, "__autoType">
+  ObjValueType<T, "__autoType">,
+  ObjValueType<T, "__defaultType">
 > {
   constructor(values: T, type?: Type) {
     super();
@@ -43,10 +46,14 @@ export class ObjValues<
     this.values = values;
   }
   cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new ObjValues<Flags, T, PublicType, NotDerivedType, AutoType>(
-      this.values,
-      type
-    );
+    return new ObjValues<
+      Flags,
+      T,
+      PublicType,
+      NotDerivedType,
+      AutoType,
+      DefaultType
+    >(this.values, type);
   }
 
   clone(type: Type) {
@@ -62,6 +69,8 @@ export class ObjValues<
   readonly __notDerivedType: ObjValueType<T, "__notDerivedType">;
   // @ts-expect-error This value is just here to make the type accessible
   readonly __autoType: ObjValueType<T, "__autoType">;
+  // @ts-expect-error This value is just here to make the type accessible
+  readonly __defaultType: ObjValueType<T, "__defaultType">;
 
   private values: T;
 
@@ -84,7 +93,7 @@ export class ObjValues<
   default(
     defaultF: ObjValueType<T, "__type"> | (() => ObjValueType<T, "__type">)
   ) {
-    return this.cloneWithType<Flags | Required>({
+    return this.cloneWithType<Flags | Required | HasDefault>({
       ...this.type,
       default: defaultF,
     });

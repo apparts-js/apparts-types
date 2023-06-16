@@ -8,6 +8,7 @@ import {
   Public,
   Derived,
   Auto,
+  HasDefault,
 } from "./utilTypes";
 
 type ArrayType<
@@ -20,13 +21,15 @@ export class Array<
   T extends Schema<Required, any>,
   PublicType extends Schema<Required, any> = T,
   NotDerivedType extends Schema<Required, any> = T,
-  AutoType extends Schema<Required, any> = T
+  AutoType extends Schema<Required, any> = T,
+  DefaultType extends Schema<Required, any> = T
 > extends Schema<
   Flags,
   ArrayType<T, "__type">,
   ArrayType<T, "__publicType">,
   ArrayType<T, "__notDerivedType">,
-  ArrayType<T, "__autoType">
+  ArrayType<T, "__autoType">,
+  ArrayType<T, "__defaultType">
 > {
   constructor(items: T, type?: Type) {
     super();
@@ -46,6 +49,8 @@ export class Array<
   readonly __notDerivedType: ArrayType<T, "__notDerivedType">;
   // @ts-expect-error This value is just here to make the type accessible
   readonly __autoType: ArrayType<T, "__autoType">;
+  // @ts-expect-error This value is just here to make the type accessible
+  readonly __defaultType: ArrayType<T, "__defaultType">;
 
   private items: T;
 
@@ -54,10 +59,14 @@ export class Array<
   }
 
   cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new Array<Flags, T, PublicType, NotDerivedType, AutoType>(
-      this.items,
-      type
-    );
+    return new Array<
+      Flags,
+      T,
+      PublicType,
+      NotDerivedType,
+      AutoType,
+      DefaultType
+    >(this.items, type);
   }
 
   clone(type: Type) {
@@ -81,7 +90,7 @@ export class Array<
   }
 
   default(defaultF: ArrayType<T, "__type"> | (() => ArrayType<T, "__type">)) {
-    return this.cloneWithType<Flags | Required>({
+    return this.cloneWithType<Flags | Required | HasDefault>({
       ...this.type,
       default: defaultF,
     });
