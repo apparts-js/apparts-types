@@ -1,4 +1,4 @@
-import { Schema } from "./Schema";
+import { CloneWithFlagsReturn, Schema } from "./Schema";
 import {
   Required,
   FlagsType,
@@ -23,7 +23,10 @@ export class Value<Flags extends FlagsType, T> extends Schema<Flags, T> {
   private value: T;
 
   cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new Value<Flags, T>(this.value, type);
+    return new Value<Flags, T>(
+      this.value,
+      type
+    ) as unknown as CloneWithFlagsReturn<this, Flags>;
   }
 
   clone(type: Type) {
@@ -32,13 +35,6 @@ export class Value<Flags extends FlagsType, T> extends Schema<Flags, T> {
 
   getValue() {
     return this.value;
-  }
-
-  optional() {
-    return this.cloneWithType<Exclude<Flags, Required> | _Optional>({
-      ...this.type,
-      optional: true,
-    });
   }
 
   required() {

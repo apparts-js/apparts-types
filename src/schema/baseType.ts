@@ -1,4 +1,4 @@
-import { Schema } from "./Schema";
+import { CloneWithFlagsReturn, Schema } from "./Schema";
 import {
   Required,
   FlagsType,
@@ -21,18 +21,14 @@ export class BaseType<Flags extends FlagsType, T> extends Schema<Flags, T> {
   readonly __flags: Flags;
 
   cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new BaseType<Flags, T>(type);
+    return new BaseType<Flags, T>(type) as unknown as CloneWithFlagsReturn<
+      this,
+      Flags
+    >;
   }
 
   clone(type: Type) {
     return new BaseType<Flags, T>(type) as this;
-  }
-
-  optional() {
-    return this.cloneWithType<Exclude<Flags, Required> | _Optional>({
-      ...this.type,
-      optional: true,
-    });
   }
 
   required() {

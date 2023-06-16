@@ -1,4 +1,4 @@
-import { Schema } from "./Schema";
+import { CloneWithFlagsReturn, Schema } from "./Schema";
 import {
   Auto,
   CustomTypes,
@@ -46,7 +46,7 @@ export class ObjValues<
     return new ObjValues<Flags, T, PublicType, NotDerivedType, AutoType>(
       this.values,
       type
-    );
+    ) as unknown as CloneWithFlagsReturn<this, Flags>;
   }
   clone(type: Type) {
     return new ObjValues<Flags, T, PublicType, NotDerivedType, AutoType>(
@@ -66,13 +66,6 @@ export class ObjValues<
   readonly __autoType: ObjValueType<T, "__autoType">;
 
   private values: T;
-
-  optional() {
-    return this.cloneWithType<Exclude<Flags, Required> | _Optional>({
-      ...this.type,
-      optional: true,
-    });
-  }
 
   required() {
     const {

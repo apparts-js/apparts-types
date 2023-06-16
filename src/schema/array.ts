@@ -1,4 +1,4 @@
-import { Schema } from "./Schema";
+import { CloneWithFlagsReturn, Schema } from "./Schema";
 import {
   Required,
   _Optional,
@@ -57,7 +57,7 @@ export class Array<
     return new Array<Flags, T, PublicType, NotDerivedType, AutoType>(
       this.items,
       type
-    );
+    ) as unknown as CloneWithFlagsReturn<this, Flags>;
   }
 
   clone(type: Type) {
@@ -65,13 +65,6 @@ export class Array<
       this.items,
       type
     ) as this;
-  }
-
-  optional() {
-    return this.cloneWithType<Exclude<Flags, Required> | _Optional>({
-      ...this.type,
-      optional: true,
-    });
   }
 
   required() {

@@ -1,4 +1,4 @@
-import { Schema } from "./Schema";
+import { CloneWithFlagsReturn, Schema } from "./Schema";
 import {
   FlagsType,
   CustomTypes,
@@ -55,20 +55,13 @@ export class OneOf<
     return new OneOf<Flags, T, PublicType, NotDerivedType, AutoType>(
       this.alternatives,
       type
-    );
+    ) as unknown as CloneWithFlagsReturn<this, Flags>;
   }
   clone(type: Type) {
     return new OneOf<Flags, T, PublicType, NotDerivedType, AutoType>(
       this.alternatives,
       type
     ) as this;
-  }
-
-  optional() {
-    return this.cloneWithType<Exclude<Flags, Required> | _Optional>({
-      ...this.type,
-      optional: true,
-    });
   }
 
   required() {

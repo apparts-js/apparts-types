@@ -1,5 +1,49 @@
 import { fillInDefaults } from "../utils/fillInDefaults";
-import { FlagsType, Type } from "./utilTypes";
+import { FlagsType, Type, Required, _Optional } from "./utilTypes";
+import { Obj } from "./obj";
+import { ObjValues } from "./objValues";
+import { Array } from "./array";
+import { OneOf } from "./oneOf";
+import { Value } from "./value";
+import { BaseType } from "./baseType";
+
+export type CloneWithFlagsReturn<X, Flags extends FlagsType> = X extends Obj<
+  any,
+  infer SchemaType,
+  infer PublicType,
+  infer NotDerivedType,
+  infer AutoType
+>
+  ? Obj<Flags, SchemaType, PublicType, NotDerivedType, AutoType>
+  : X extends ObjValues<
+      any,
+      infer SchemaType,
+      infer PublicType,
+      infer NotDerivedType,
+      infer AutoType
+    >
+  ? ObjValues<Flags, SchemaType, PublicType, NotDerivedType, AutoType>
+  : X extends Array<
+      any,
+      infer SchemaType,
+      infer PublicType,
+      infer NotDerivedType,
+      infer AutoType
+    >
+  ? Array<Flags, SchemaType, PublicType, NotDerivedType, AutoType>
+  : X extends OneOf<
+      any,
+      infer SchemaType,
+      infer PublicType,
+      infer NotDerivedType,
+      infer AutoType
+    >
+  ? OneOf<Flags, SchemaType, PublicType, NotDerivedType, AutoType>
+  : X extends Value<any, infer SchemaType>
+  ? Value<Flags, SchemaType>
+  : X extends BaseType<any, infer SchemaType>
+  ? BaseType<Flags, SchemaType>
+  : never;
 
 export abstract class Schema<
   Flags extends FlagsType,
@@ -16,7 +60,7 @@ export abstract class Schema<
   // can (and has to be) used.
   abstract cloneWithType<Flags extends FlagsType>(
     type: Type
-  ): Schema<Flags, SchemaType, PublicType, NotDerivedType, AutoType>;
+  ): CloneWithFlagsReturn<this, Flags>;
 
   // Clone can be used here as it returns the instance type
   // (this). This is possible as we do not need to change any flags.
@@ -72,5 +116,12 @@ export abstract class Schema<
 
   fillInDefaults(subject: unknown) {
     return fillInDefaults(this.type, subject, subject);
+  }
+
+  optional() {
+    return this.cloneWithType<Exclude<Flags, Required> | _Optional>({
+      ...this.type,
+      optional: true,
+    });
   }
 }
