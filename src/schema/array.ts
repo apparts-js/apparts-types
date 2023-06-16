@@ -61,10 +61,7 @@ export class Array<
   }
 
   clone(type: Type) {
-    return new Array<Flags, T, PublicType, NotDerivedType, AutoType>(
-      this.items,
-      type
-    ) as this;
+    return this.cloneWithType<Flags>(type) as this;
   }
 
   optional() {

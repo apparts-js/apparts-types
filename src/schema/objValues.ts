@@ -48,11 +48,9 @@ export class ObjValues<
       type
     );
   }
+
   clone(type: Type) {
-    return new ObjValues<Flags, T, PublicType, NotDerivedType, AutoType>(
-      this.values,
-      type
-    ) as this;
+    return this.cloneWithType<Flags>(type) as this;
   }
 
   protected type: Type;

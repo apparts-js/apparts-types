@@ -25,7 +25,7 @@ export class BaseType<Flags extends FlagsType, T> extends Schema<Flags, T> {
   }
 
   clone(type: Type) {
-    return new BaseType<Flags, T>(type) as this;
+    return this.cloneWithType<Flags>(type) as this;
   }
 
   optional() {

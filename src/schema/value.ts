@@ -27,7 +27,7 @@ export class Value<Flags extends FlagsType, T> extends Schema<Flags, T> {
   }
 
   clone(type: Type) {
-    return new Value<Flags, T>(this.value, type) as this;
+    return this.cloneWithType<Flags>(type) as this;
   }
 
   getValue() {

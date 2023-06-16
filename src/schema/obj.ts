@@ -85,10 +85,7 @@ export class Obj<
   }
 
   clone(type: Type) {
-    return new Obj<Flags, T, PublicType, NotDerivedType, AutoType>(
-      this.keys,
-      type
-    ) as this;
+    return this.cloneWithType<Flags>(type) as this;
   }
 
   protected type: Type;

@@ -58,10 +58,7 @@ export class OneOf<
     );
   }
   clone(type: Type) {
-    return new OneOf<Flags, T, PublicType, NotDerivedType, AutoType>(
-      this.alternatives,
-      type
-    ) as this;
+    return this.cloneWithType<Flags>(type) as this;
   }
 
   optional() {
