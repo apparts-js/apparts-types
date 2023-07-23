@@ -70,6 +70,7 @@ const types = {
       }
       return conved;
     },
+    check: (x) => Array.isArray(x),
   },
   object: {
     conv: (x) => {
