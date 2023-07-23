@@ -44,7 +44,11 @@ export const explainCheck = (response: unknown, type: Type) => {
     return `❌ Custom check failed: '${resultKeyName}' ${result.reason}`;
   }
 
-  return `❌ Type missmatch: '${resultKeyName}' is ${prettyValue} but should be of type '${result.shouldType}'`;
+  return `❌ Type missmatch: '${resultKeyName}' is ${prettyValue} but should be of type '${JSON.stringify(
+    result.shouldType,
+    undefined,
+    2
+  )}'`;
 };
 
 export const explainSchemaCheck = (response, schema) => {
