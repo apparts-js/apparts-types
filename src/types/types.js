@@ -73,6 +73,7 @@ const types = {
     check: (x) => Array.isArray(x),
   },
   object: {
+    check: (x) => typeof x === "object" && x !== null && !Array.isArray(x),
     conv: (x) => {
       const conved = JSON.parse(x);
       if (!types.object.check(conved)) {
