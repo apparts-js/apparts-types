@@ -8,6 +8,7 @@ import {
   Derived,
   Auto,
   HasDefault,
+  IsKey,
 } from "./utilTypes";
 
 export class Value<Flags extends FlagsType, T> extends Schema<Flags, T> {
@@ -78,6 +79,10 @@ export class Value<Flags extends FlagsType, T> extends Schema<Flags, T> {
 
   auto() {
     return this.cloneWithType<Flags | Auto>({ ...this.type, auto: true });
+  }
+
+  key() {
+    return this.cloneWithType<Flags | IsKey>({ ...this.type, key: true });
   }
 }
 export const value = <T extends string | number | boolean>(

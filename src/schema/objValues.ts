@@ -5,6 +5,7 @@ import {
   Derived,
   FlagsType,
   HasDefault,
+  IsKey,
   Public,
   Required,
   Type,
@@ -123,6 +124,10 @@ export class ObjValues<
 
   auto() {
     return this.cloneWithType<Flags | Auto>({ ...this.type, auto: true });
+  }
+
+  key() {
+    return this.cloneWithType<Flags | IsKey>({ ...this.type, key: true });
   }
 }
 

@@ -44,10 +44,6 @@ export abstract class Schema<
     return this.clone({ ...this.type, title });
   }
 
-  key() {
-    return this.clone({ ...this.type, key: true });
-  }
-
   mapped(mapped: string) {
     return this.clone({ ...this.type, mapped });
   }

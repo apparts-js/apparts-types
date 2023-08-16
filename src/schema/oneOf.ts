@@ -9,6 +9,7 @@ import {
   _Optional,
   Auto,
   HasDefault,
+  IsKey,
 } from "./utilTypes";
 
 // https://dev.to/shakyshane/2-ways-to-create-a-union-from-an-array-in-typescript-1kd6
@@ -118,6 +119,10 @@ export class OneOf<
 
   auto() {
     return this.cloneWithType<Flags | Auto>({ ...this.type, auto: true });
+  }
+
+  key() {
+    return this.cloneWithType<Flags | IsKey>({ ...this.type, key: true });
   }
 
   getAlternatives() {

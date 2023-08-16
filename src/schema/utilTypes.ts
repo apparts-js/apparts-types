@@ -78,6 +78,7 @@ export type Public = "__public";
 export type Derived = "__derived";
 export type Auto = "__auto";
 export type HasDefault = "__default";
+export type IsKey = "__key";
 
 export type FlagsType =
   | Public
@@ -86,6 +87,7 @@ export type FlagsType =
   | HasDefault
   | Required
   | Derived
+  | IsKey
   // __all is for enabling a default value on the WOFlag type in
   // obj.ts. It should not be used manually anywhere and does not
   // transport meaning. It just makes sure, that no Flag combination

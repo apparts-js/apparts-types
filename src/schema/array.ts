@@ -9,6 +9,7 @@ import {
   Derived,
   Auto,
   HasDefault,
+  IsKey,
 } from "./utilTypes";
 
 type ArrayType<
@@ -120,6 +121,10 @@ export class Array<
 
   auto() {
     return this.cloneWithType<Flags | Auto>({ ...this.type, auto: true });
+  }
+
+  key() {
+    return this.cloneWithType<Flags | IsKey>({ ...this.type, key: true });
   }
 }
 export const array = <T extends Schema<Required, any>>(

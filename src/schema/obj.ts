@@ -10,6 +10,7 @@ import {
   _Optional,
   Auto,
   HasDefault,
+  IsKey,
 } from "./utilTypes";
 
 interface Keys {
@@ -55,7 +56,8 @@ export class Obj<
   PublicType extends Keys = T,
   NotDerivedType extends Keys = T,
   AutoType extends Keys = T,
-  DefaultType extends Keys = T
+  DefaultType extends Keys = T,
+  KeyType extends Keys = T
 > extends Schema<
   Flags,
   ObjKeyTypeWithFlags<T, "__type", never>,
@@ -81,10 +83,15 @@ export class Obj<
     this.keys = keys;
   }
   cloneWithType<Flags extends FlagsType>(type: Type) {
-    return new Obj<Flags, T, PublicType, NotDerivedType, AutoType, DefaultType>(
-      this.keys,
-      type
-    );
+    return new Obj<
+      Flags,
+      T,
+      PublicType,
+      NotDerivedType,
+      AutoType,
+      DefaultType,
+      KeyType
+    >(this.keys, type);
   }
 
   clone(type: Type) {
@@ -115,6 +122,8 @@ export class Obj<
     "__defaultType",
     HasDefault
   >;
+  // @ts-expect-error This value is just here to make the type accessible
+  readonly __keyType: ObjKeyTypeWithFlags<KeyType, "__type", IsKey>;
 
   // @ts-expect-error This value is just here to make the type accessible
   readonly __Flags: Flags;
@@ -185,6 +194,9 @@ export class Obj<
   }
   auto() {
     return this.cloneWithType<Flags | Auto>({ ...this.type, auto: true });
+  }
+  key() {
+    return this.cloneWithType<Flags | IsKey>({ ...this.type, key: true });
   }
 }
 

@@ -17,6 +17,7 @@ import {
   InferType,
   InferPublicType,
   InferNotDerivedType,
+  InferIsKeyType,
 } from "./index";
 import { InferAutoType } from "./infer";
 
@@ -259,6 +260,34 @@ describe("deep inference", () => {
         },
       ],
     });
+  });
+
+  it("should infer key correctly on object", () => {
+    const testSchema = obj({
+      isKey: int().key(),
+      isNotKey: int(),
+      anObj: obj({
+        isKey: int().key(),
+        isNotKey: int(),
+      }),
+      aKeyObj: obj({
+        isKey: int().key(),
+        isNotKey: int(),
+      }).key(),
+    });
+
+    type IsKeys = InferIsKeyType<typeof testSchema>;
+    const f = (a: IsKeys) => a;
+
+    f({ isKey: 3, aKeyObj: { isKey: 1, isNotKey: 1 } });
+    // @ts-expect-error test type
+    f({ isKey: 3 });
+    // @ts-expect-error test type
+    f({ aKeyObj: { isKey: 1, isNotKey: 1 } });
+    // @ts-expect-error test type
+    f({ isKey: 3, aKeyObj: { isKey: 1 } });
+    // @ts-expect-error test type
+    f({});
   });
 });
 
