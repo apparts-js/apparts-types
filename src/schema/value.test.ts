@@ -107,3 +107,20 @@ describe("fillInDefaults", () => {
     value(3).default(3).fillInDefaults(undefined);
   });
 });
+
+describe("getPruned", () => {
+  it("should get pruned", async () => {
+    const schema = value(199);
+
+    // @ts-expect-error wrong type
+    schema.getPruned([{}]);
+
+    const content = 199;
+    const res = schema.getPruned(content);
+
+    expect(res).toBe(199);
+
+    // @ts-expect-error too much
+    res.b;
+  });
+});

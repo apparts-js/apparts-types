@@ -97,3 +97,20 @@ describe("fillInDefaults", () => {
     boolean().default(true).fillInDefaults(undefined);
   });
 });
+
+describe("getPruned", () => {
+  it("should get pruned", async () => {
+    const schema = boolean();
+
+    // @ts-expect-error wrong type
+    schema.getPruned([{}]);
+
+    const content = true;
+    const res = schema.getPruned(content);
+
+    expect(typeof res).toBe("boolean");
+
+    // @ts-expect-error too much
+    res.b;
+  });
+});

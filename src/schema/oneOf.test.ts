@@ -125,3 +125,20 @@ describe("fillInDefaults", () => {
     oneOf([int()]).default(3).fillInDefaults(undefined);
   });
 });
+
+describe("getPruned", () => {
+  it("should get pruned", async () => {
+    const schema = oneOf([obj({ a: int() }), obj({ a: int(), c: int() })]);
+
+    // @ts-expect-error wrong type
+    schema.getPruned([{}]);
+
+    const content = { a: 1, b: 2 };
+    const res = schema.getPruned(content);
+
+    res.a;
+
+    // @ts-expect-error too much
+    res.b;
+  });
+});

@@ -1,5 +1,4 @@
-import { fillInDefaultsSchema } from "../utils/fillInDefaults";
-import { SubjectMaybe } from "../utils/fillInDefaultsShared";
+import { getPruned } from "../utils/getPruned";
 import { FlagsType, Type } from "./utilTypes";
 
 export abstract class Schema<
@@ -77,18 +76,7 @@ export abstract class Schema<
     return this.type;
   }
 
-  // fillInDefaults(
-  //   subject: SubjectMaybe<
-  //     Schema<
-  //       Flags,
-  //       SchemaType,
-  //       PublicType,
-  //       NotDerivedType,
-  //       AutoType,
-  //       DefaultType
-  //     >
-  //   >
-  // ): SchemaType {
-  //   return fillInDefaultsSchema(this, subject, subject);
-  // }
+  getPruned(content: SchemaType): SchemaType {
+    return getPruned(this.getType(), content);
+  }
 }

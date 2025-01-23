@@ -260,3 +260,19 @@ describe("fillInDefaults", () => {
     obj({}).default({}).fillInDefaults(undefined);
   });
 });
+
+describe("getPruned", () => {
+  it("should get pruned", async () => {
+    const schema = obj({ a: int() });
+
+    // @ts-expect-error not enough content
+    schema.getPruned({});
+
+    const content = { a: 1, b: 2 };
+    const res = schema.getPruned(content);
+
+    res.a;
+    // @ts-expect-error b not on result
+    res.b;
+  });
+});

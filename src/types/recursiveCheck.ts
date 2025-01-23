@@ -1,5 +1,5 @@
 import { types as checkTypes } from "./types";
-import { Type } from "../schema";
+import { Type, Schema } from "../schema";
 
 const unique = (list: string[]) => {
   const set: Record<string, true> = {};
@@ -134,6 +134,9 @@ export const recursiveCheck = (
   return { key, shouldType: type, isValue: response };
 };
 
-export const recursiveCheckSchema = (response, schema) => {
+export const recursiveCheckSchema = (
+  response: unknown,
+  schema: Schema<any, any>
+) => {
   return recursiveCheck(schema.getType(), response);
 };
