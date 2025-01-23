@@ -1,4 +1,6 @@
 import { Schema } from "./Schema";
+import { fillInDefaults } from "../utils/fillInDefaults";
+import { SubjectMaybe } from "../utils/fillInDefaultsShared";
 import {
   FlagsType,
   CustomTypes,
@@ -127,6 +129,21 @@ export class OneOf<
 
   getAlternatives() {
     return this.alternatives;
+  }
+
+  fillInDefaults(
+    subject: SubjectMaybe<
+      Schema<
+        Flags,
+        InferOneOf<T, "__type">,
+        InferOneOf<T, "__publicType">,
+        InferOneOf<T, "__notDerivedType">,
+        InferOneOf<T, "__autoType">,
+        InferOneOf<T, "__defaultType">
+      >
+    >
+  ): InferOneOf<T, "__type"> {
+    return fillInDefaults(this.getType(), subject, subject);
   }
 }
 export const oneOf = <T extends Schema<Required, any>[]>(

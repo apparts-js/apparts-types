@@ -1,4 +1,6 @@
 import { Schema } from "./Schema";
+import { fillInDefaults } from "../utils/fillInDefaults";
+import { SubjectMaybe } from "../utils/fillInDefaultsShared";
 import {
   Required,
   _Optional,
@@ -125,6 +127,21 @@ export class Array<
 
   key() {
     return this.cloneWithType<Flags | IsKey>({ ...this.type, key: true });
+  }
+
+  fillInDefaults(
+    subject: SubjectMaybe<
+      Schema<
+        Flags,
+        ArrayType<T, "__type">,
+        ArrayType<T, "__publicType">,
+        ArrayType<T, "__notDerivedType">,
+        ArrayType<T, "__autoType">,
+        ArrayType<T, "__defaultType">
+      >
+    >
+  ): ArrayType<T, "__type"> {
+    return fillInDefaults(this.getType(), subject, subject);
   }
 }
 export const array = <T extends Schema<Required, any>>(

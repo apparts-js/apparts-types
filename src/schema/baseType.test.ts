@@ -80,3 +80,20 @@ describe("baseType type", () => {
     f({});
   });
 });
+
+describe("fillInDefaults", () => {
+  it("should have correct input/output types", async () => {
+    const schema = boolean();
+
+    const res = schema.fillInDefaults(false);
+
+    expect(typeof res === "boolean").toBeTruthy();
+
+    // @ts-expect-error not optional
+    boolean().fillInDefaults(undefined);
+
+    boolean().optional().fillInDefaults(undefined);
+
+    boolean().default(true).fillInDefaults(undefined);
+  });
+});

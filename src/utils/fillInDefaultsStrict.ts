@@ -1,11 +1,17 @@
-import { Type } from "../schema";
+import { InferType, Schema, Type } from "../schema";
 import { checkType } from "../types/checkType";
+import { getDefaultFromType, SubjectMaybe } from "./fillInDefaultsShared";
 
-const getDefaultFromType = (type: Type, defaultFnParam?: unknown) =>
-  typeof type.default === "function"
-    ? type.default(defaultFnParam)
-    : type.default;
+export const fillInDefaultsStrictSchema = <FullS extends Schema<any, any>>(
+  schema: FullS,
+  subject: SubjectMaybe<FullS>,
+  defaultFnParam?: unknown
+): InferType<FullS> => {
+  const type = schema.getType();
+  return fillInDefaultsStrict(type, subject, defaultFnParam);
+};
 
+// Strict version does not overwrite existing values
 export const fillInDefaultsStrict = (
   type: Type,
   subject: unknown,

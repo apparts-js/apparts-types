@@ -1,4 +1,5 @@
 import {
+  int,
   boolean,
   array,
   InferType,
@@ -101,5 +102,24 @@ describe("array type", () => {
     f({ test: [true] });
     // @ts-expect-error test type
     f({});
+  });
+});
+
+describe("fillInDefaults", () => {
+  it("should have correct input/output types", async () => {
+    const schema = array(int());
+
+    const res = schema.fillInDefaults([3]);
+
+    const a = res[0];
+    Math.abs(a);
+    expect(typeof a === "number").toBeTruthy();
+
+    // @ts-expect-error not optional
+    array(int()).fillInDefaults(undefined);
+
+    array(int()).optional().fillInDefaults(undefined);
+
+    array(int()).default([]).fillInDefaults(undefined);
   });
 });

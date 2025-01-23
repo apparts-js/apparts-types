@@ -1,4 +1,6 @@
 import { Schema } from "./Schema";
+import { fillInDefaults } from "../utils/fillInDefaults";
+import { SubjectMaybe } from "../utils/fillInDefaultsShared";
 import {
   Auto,
   CustomTypes,
@@ -128,6 +130,21 @@ export class ObjValues<
 
   key() {
     return this.cloneWithType<Flags | IsKey>({ ...this.type, key: true });
+  }
+
+  fillInDefaults(
+    subject: SubjectMaybe<
+      Schema<
+        Flags,
+        ObjValueType<T, "__type">,
+        ObjValueType<T, "__publicType">,
+        ObjValueType<T, "__notDerivedType">,
+        ObjValueType<T, "__autoType">,
+        ObjValueType<T, "__defaultType">
+      >
+    >
+  ): ObjValueType<T, "__type"> {
+    return fillInDefaults(this.getType(), subject, subject);
   }
 }
 

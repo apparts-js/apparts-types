@@ -1,4 +1,5 @@
 import {
+  int,
   boolean,
   InferAutoType,
   InferHasDefaultType,
@@ -104,5 +105,22 @@ describe("objValues type", () => {
     f({ test: { test: true } });
     // @ts-expect-error test type
     f({});
+  });
+});
+describe("fillInDefaults", () => {
+  it("should have correct input/output types", async () => {
+    const schema = objValues(int());
+
+    const res = schema.fillInDefaults({ c: 3 });
+
+    res.a;
+    Math.abs(res.a);
+
+    // @ts-expect-error not optional
+    objValues(int()).fillInDefaults(undefined);
+
+    objValues(int()).optional().fillInDefaults(undefined);
+
+    objValues(int()).default({}).fillInDefaults(undefined);
   });
 });

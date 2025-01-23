@@ -108,3 +108,20 @@ describe("obj type", () => {
     f({});
   });
 });
+
+describe("fillInDefaults", () => {
+  it("should have correct input/output types", async () => {
+    const schema = oneOf([int()]);
+
+    const res = schema.fillInDefaults(3);
+
+    expect(typeof res === "number").toBeTruthy();
+
+    // @ts-expect-error not optional
+    oneOf([int()]).fillInDefaults(undefined);
+
+    oneOf([int()]).optional().fillInDefaults(undefined);
+
+    oneOf([int()]).default(3).fillInDefaults(undefined);
+  });
+});

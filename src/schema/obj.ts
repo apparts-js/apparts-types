@@ -1,3 +1,5 @@
+import { fillInDefaults } from "../utils/fillInDefaults";
+import { SubjectMaybeObj } from "../utils/fillInDefaultsShared";
 import { Schema } from "./Schema";
 import {
   Required,
@@ -197,6 +199,21 @@ export class Obj<
   }
   key() {
     return this.cloneWithType<Flags | IsKey>({ ...this.type, key: true });
+  }
+
+  fillInDefaults(
+    subject: SubjectMaybeObj<
+      Schema<
+        Flags,
+        ObjKeyTypeWithFlags<T, "__type", never>,
+        ObjKeyTypeWithFlags<PublicType, "__publicType", Public>,
+        ObjKeyTypeWithFlags<NotDerivedType, "__notDerivedType", never, Derived>,
+        ObjKeyTypeWithFlags<AutoType, "__autoType", Auto>,
+        ObjKeyTypeWithFlags<DefaultType, "__defaultType", HasDefault>
+      >
+    >
+  ): ObjKeyTypeWithFlags<T, "__type", never> {
+    return fillInDefaults(this.getType(), subject, subject);
   }
 }
 

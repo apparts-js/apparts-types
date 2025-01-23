@@ -1,5 +1,6 @@
 import {
   boolean,
+  string,
   InferNotDerivedType,
   InferPublicType,
   InferType,
@@ -229,5 +230,33 @@ describe("obj type", () => {
     f({ test: { content: true } });
     // @ts-expect-error test type
     f({});
+  });
+});
+
+describe("fillInDefaults", () => {
+  it("should have correct input/output types", async () => {
+    const schema = obj({
+      a: string().default("test"),
+      c: int(),
+    });
+
+    const res = schema.fillInDefaults({ c: 3 });
+
+    res.a;
+    // @ts-expect-error b not on result
+    res.b;
+
+    // @ts-expect-error c missing
+    schema.fillInDefaults({ a: 3 });
+
+    // @ts-expect-error a wrong type
+    obj({ a: string().default("test") }).fillInDefaults({ a: 3 });
+
+    // @ts-expect-error not optional
+    obj({}).fillInDefaults(undefined);
+
+    obj({}).optional().fillInDefaults(undefined);
+
+    obj({}).default({}).fillInDefaults(undefined);
   });
 });

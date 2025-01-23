@@ -1,4 +1,6 @@
 import { Schema } from "./Schema";
+import { fillInDefaults } from "../utils/fillInDefaults";
+import { SubjectMaybe } from "../utils/fillInDefaultsShared";
 import {
   Required,
   FlagsType,
@@ -77,6 +79,10 @@ export class BaseType<Flags extends FlagsType, T> extends Schema<Flags, T> {
 
   key() {
     return this.cloneWithType<Flags | IsKey>({ ...this.type, key: true });
+  }
+
+  fillInDefaults(subject: SubjectMaybe<Schema<Flags, T>>): T {
+    return fillInDefaults(this.getType(), subject, subject);
   }
 }
 

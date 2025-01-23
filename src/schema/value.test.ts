@@ -1,4 +1,5 @@
 import {
+  int,
   value,
   InferType,
   obj,
@@ -87,5 +88,22 @@ describe("value type", () => {
     f({ test: true });
     // @ts-expect-error test type
     f({});
+  });
+});
+
+describe("fillInDefaults", () => {
+  it("should have correct input/output types", async () => {
+    const schema = value(3);
+
+    const res = schema.fillInDefaults(3);
+
+    expect(typeof res === "number").toBeTruthy();
+
+    // @ts-expect-error not optional
+    value(3).fillInDefaults(undefined);
+
+    value(3).optional().fillInDefaults(undefined);
+
+    value(3).default(3).fillInDefaults(undefined);
   });
 });
