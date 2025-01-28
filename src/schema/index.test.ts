@@ -372,3 +372,13 @@ describe("sub-schema arithmetic", () => {
     });
   });
 });
+
+describe("check", () => {
+  it("should use check function in validation", async () => {
+    const checkFn = (v: number) => v === 3;
+    const testSchema = obj({
+      customCheck: int().check(checkFn),
+    });
+    expect(testSchema.getType().keys.customCheck.check).toBe(checkFn);
+  });
+});

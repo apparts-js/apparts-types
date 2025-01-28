@@ -56,6 +56,13 @@ export abstract class Schema<
     return this.clone({ ...this.type, semantic });
   }
 
+  check(checkFn: (value: SchemaType) => boolean | string) {
+    return this.clone({
+      ...this.type,
+      check: checkFn as (value: unknown) => boolean | string,
+    });
+  }
+
   // @ts-expect-error This value is just here to make the type accessible
   readonly __type: SchemaType;
   // @ts-expect-error This value is just here to make the type accessible
