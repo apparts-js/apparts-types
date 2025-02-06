@@ -15,7 +15,8 @@ type TypeParameters = {
 
 export type BaseTypeName =
   | "id"
-  | "uuidv4"
+  | "uuidv4" // uuidv4 is depricated, use uuid instead
+  | "uuid"
   | "int"
   | "time"
   | "daytime"

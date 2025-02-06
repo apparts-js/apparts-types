@@ -116,9 +116,16 @@ export const hex = (): BaseType<Required, string> => {
   });
 };
 
+// Depricated
 export const uuidv4 = (): BaseType<Required, string> => {
   return new BaseType({
     type: "uuidv4",
+  });
+};
+
+export const uuid = (): BaseType<Required, string> => {
+  return new BaseType({
+    type: "uuid",
   });
 };
 

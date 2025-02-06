@@ -11,7 +11,7 @@ import {
   base64,
   hex,
   float,
-  uuidv4,
+  uuid,
   int,
   any,
   value,
@@ -138,7 +138,7 @@ describe("recursiveCheck should accept valid input", () => {
     int(checkType);
   });
   it("should correctly classify uuid", async () => {
-    uuidv4(checkType);
+    uuid(checkType);
   });
 
   it("should correctly classify float", async () => {

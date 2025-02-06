@@ -33,7 +33,8 @@ as they can also be used to *infer TypeScript types.*
 - ~null~
 - ~phoneISD~ (phone number with country code prefix)
 - ~string~
-- ~uuidv4~
+- ~uuid~
+- (~uuidv4~, depricated, use =uuid= instead)
 
 The type definition for each of the atomic types looks like: ={ type: <atomic type> }=.
 
@@ -45,7 +46,7 @@ const floatSchema = schema.float();
 const booleanSchema = schema.boolean(); 
 const stringSchema = schema.string();
 const hexSchema = schema.hex();
-const uuidv4Schema = schema.uuidv4();
+const uuidSchema = schema.uuid();
 const base64Schema = schema.base64();
 const emailSchema = schema.email();
 const phoneISDSchema = schema.phoneISD();
@@ -160,7 +161,7 @@ import {
   boolean,
   string,
   hex,
-  uuidv4,
+  uuid,
   base64,
   email,
   nill,

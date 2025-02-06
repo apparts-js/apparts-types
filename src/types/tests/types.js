@@ -57,8 +57,8 @@ export const int = (checkType) => {
   expect(checkType(type, 10)).toBe(true);
 };
 
-export const uuidv4 = (checkType) => {
-  const type = { type: "uuidv4" };
+export const uuid = (checkType) => {
+  const type = { type: "uuid" };
   expect(checkType(type, "7ce767a4-ec6e-4ff5-b163-f501165eaf83")).toBe(true);
   expect(checkType(type, 4)).toBe(false);
   expect(checkType(type, 4.4)).toBe(false);
@@ -66,7 +66,7 @@ export const uuidv4 = (checkType) => {
   expect(checkType(type, ["a", 3])).toBe(false);
   expect(checkType(type, { an: "object" })).toBe(false);
   expect(checkType(type, "its a string")).toBe(false);
-  expect(checkType(type, "7ce767a4-ec6e-5ff5-b163-f501165eaf83")).toBe(false);
+  expect(checkType(type, "7ce767a4-ec6e-5ff5-b163-f501165eaf83")).toBe(true);
   expect(checkType(type, "7ce767a4ec6e-4ff5-b163-f501165eaf83")).toBe(false);
   expect(checkType(type, "7ce767a4-ec6e-4ff5-b163-f501165eaf8")).toBe(false);
   expect(checkType(type, "7ce767a4-ec6e-4ff5-b163-g501165eaf83")).toBe(false);
