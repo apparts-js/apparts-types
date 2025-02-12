@@ -9,6 +9,9 @@ describe("deepClone should be equal", () => {
       obj: obj({
         pwDeep: string().optional(),
       }),
+      objOpt: obj({
+        inner: string(),
+      }).optional(),
     });
     const val = {
       id: 1,

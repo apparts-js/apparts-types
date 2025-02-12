@@ -12,6 +12,10 @@ export const deepEqual = <S extends Schema<any, any>>(
   value2: InferType<S>,
   type: Type
 ) => {
+  if ((value1 === undefined || value2 === undefined) && type.optional) {
+    return value2 === value1;
+  }
+
   if ("value" in type) {
     return value1 === value2;
   }

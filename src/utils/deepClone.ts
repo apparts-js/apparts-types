@@ -12,6 +12,9 @@ export const deepClone = <S extends Schema<any, any>>(
   value: InferType<S>,
   type: Type
 ) => {
+  if (value === undefined && type.optional) {
+    return undefined;
+  }
   if ("value" in type) {
     return value;
   }
