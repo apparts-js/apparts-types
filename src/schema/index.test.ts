@@ -382,3 +382,13 @@ describe("check", () => {
     expect(testSchema.getType().keys.customCheck.check).toBe(checkFn);
   });
 });
+
+describe("deepEqual", () => {
+  it("should use deepEqual function", async () => {
+    const testSchema = obj({
+      num: int(),
+    });
+    expect(testSchema.deepEqual({ num: 3 }, { num: 3 })).toBe(true);
+    expect(testSchema.deepEqual({ num: 4 }, { num: 3 })).toBe(false);
+  });
+});

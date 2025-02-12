@@ -1,4 +1,5 @@
-import { getPruned } from "../utils/getPruned";
+import { getPruned, deepEqualSchema } from "../utils";
+
 import { FlagsType, Type } from "./utilTypes";
 
 export abstract class Schema<
@@ -85,5 +86,9 @@ export abstract class Schema<
 
   getPruned(content: SchemaType): SchemaType {
     return getPruned(this.getType(), content);
+  }
+
+  deepEqual(content: SchemaType, other: SchemaType) {
+    return deepEqualSchema(content, other, this);
   }
 }
