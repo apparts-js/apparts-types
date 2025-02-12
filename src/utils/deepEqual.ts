@@ -46,6 +46,7 @@ export const deepEqual = <S extends Schema<any, any>>(
         return false;
       }
     }
+    return true;
   }
   if (type.type === "oneOf") {
     for (const alt of type.alternatives) {

@@ -392,3 +392,12 @@ describe("deepEqual", () => {
     expect(testSchema.deepEqual({ num: 4 }, { num: 3 })).toBe(false);
   });
 });
+
+describe("deepClone", () => {
+  it("should use deepClone function", async () => {
+    const testSchema = obj({
+      num: int(),
+    });
+    expect(testSchema.deepClone({ num: 3 })).toMatchObject({ num: 3 });
+  });
+});

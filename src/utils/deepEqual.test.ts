@@ -99,6 +99,11 @@ describe("deepCompare should say equal", () => {
     expect(deepEqualSchema(val, val, testSchema)).toBe(true);
     expect(deepEqualSchema(val, { ...val }, testSchema)).toBe(true);
   });
+
+  it("array", async () => {
+    const testSchema = array(int());
+    expect(deepEqualSchema([1, 2, 3], [1, 2, 3], testSchema)).toBe(true);
+  });
 });
 
 describe("deepCompare should say not equal", () => {
