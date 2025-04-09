@@ -1,6 +1,6 @@
 {
   "name": "@apparts/types",
-  "version": "9.14.1",
+  "version": "9.14.2",
   "description": "A Typechecking Library",
   "main": "build/index.js",
   "files": [
