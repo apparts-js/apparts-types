@@ -13,7 +13,7 @@ export const deepClone = <S extends Schema<any, any>>(
   type: Type
 ) => {
   if ((value === undefined || value === null) && type.optional) {
-    return undefined;
+    return value;
   }
   if ("value" in type) {
     return value;
