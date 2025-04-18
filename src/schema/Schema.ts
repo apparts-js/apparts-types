@@ -53,6 +53,10 @@ export abstract class Schema<
     return this.clone({ ...this.type, readOnly: true });
   }
 
+  readWrite() {
+    return this.clone({ ...this.type, readOnly: false });
+  }
+
   semantic(semantic: string) {
     return this.clone({ ...this.type, semantic });
   }
