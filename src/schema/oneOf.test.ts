@@ -54,14 +54,11 @@ describe("obj type", () => {
     oneOfSchema.default("string");
   });
 
-  it("should reject wrongly typed derived values", async () => {
+  it("should make derived", async () => {
     const oneOfSchema = oneOf([boolean(), int()]);
 
-    oneOfSchema.derived(() => true);
-    oneOfSchema.derived(() => 43);
-
-    // @ts-expect-error test type
-    oneOfSchema.derived("string");
+    expect(oneOfSchema.derived().getType().derived).toBe(true);
+    expect(oneOfSchema.getType().derived).not.toBe(true);
   });
 
   it("should correctly make optional/required", async () => {

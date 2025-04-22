@@ -5,7 +5,7 @@ type TypeParameters = {
   public?: boolean;
   auto?: boolean;
   key?: boolean;
-  derived?: (...ps: any) => any;
+  derived?: boolean;
   default?: any | ((...ps: any) => any);
   check?: (value: unknown) => boolean | string;
   mapped?: string;

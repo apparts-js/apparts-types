@@ -113,12 +113,8 @@ export class Array<
     });
   }
 
-  derived(
-    derived: (
-      ...ps: any
-    ) => ArrayType<T, "__type"> | Promise<ArrayType<T, "__type">>
-  ) {
-    return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
+  derived() {
+    return this.cloneWithType<Flags | Derived>({ ...this.type, derived: true });
   }
 
   auto() {

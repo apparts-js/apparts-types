@@ -185,14 +185,8 @@ export class Obj<
     });
   }
 
-  derived(
-    derived: (
-      ...ps: any
-    ) =>
-      | ObjKeyTypeWithFlags<T, "__type", never>
-      | Promise<ObjKeyTypeWithFlags<T, "__type", never>>
-  ) {
-    return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
+  derived() {
+    return this.cloneWithType<Flags | Derived>({ ...this.type, derived: true });
   }
   auto() {
     return this.cloneWithType<Flags | Auto>({ ...this.type, auto: true });

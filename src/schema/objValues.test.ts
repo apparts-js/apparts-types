@@ -42,20 +42,12 @@ describe("objValues type", () => {
     // @ts-expect-error test type
     objSchema.default(3);
   });
-  it("should reject wrongly typed derived values", async () => {
+
+  it("should make derived", async () => {
     const objSchema = objValues(boolean());
 
-    objSchema.derived(() => ({
-      isBool: true,
-    }));
-
-    objSchema.derived(() => ({
-      // @ts-expect-error test type
-      isNumber: 3,
-    }));
-
-    // @ts-expect-error test type
-    objSchema.derived(() => 3);
+    expect(objSchema.derived().getType().derived).toBe(true);
+    expect(objSchema.getType().derived).not.toBe(true);
   });
 
   it("should correctly make optional/required", async () => {

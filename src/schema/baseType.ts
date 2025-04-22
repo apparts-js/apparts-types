@@ -69,8 +69,8 @@ export class BaseType<Flags extends FlagsType, T> extends Schema<Flags, T> {
     });
   }
 
-  derived(derived: (...ps: any) => T | Promise<T>) {
-    return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
+  derived() {
+    return this.cloneWithType<Flags | Derived>({ ...this.type, derived: true });
   }
 
   auto() {

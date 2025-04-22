@@ -116,12 +116,8 @@ export class ObjValues<
     });
   }
 
-  derived(
-    derived: (
-      ...ps: any
-    ) => ObjValueType<T, "__type"> | Promise<ObjValueType<T, "__type">>
-  ) {
-    return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
+  derived() {
+    return this.cloneWithType<Flags | Derived>({ ...this.type, derived: true });
   }
 
   auto() {

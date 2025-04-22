@@ -37,13 +37,11 @@ describe("value type", () => {
     baseSchema.default(4);
   });
 
-  it("should reject wrongly typed derived values", async () => {
-    const baseSchema = value(3);
+  it("should make derived", async () => {
+    const valueSchema = value(3);
 
-    baseSchema.derived(() => 3);
-
-    // @ts-expect-error test type
-    baseSchema.derived(4);
+    expect(valueSchema.derived().getType().derived).toBe(true);
+    expect(valueSchema.getType().derived).not.toBe(true);
   });
 
   it("should correctly make optional/required", async () => {

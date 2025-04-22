@@ -110,12 +110,8 @@ export class OneOf<
     });
   }
 
-  derived(
-    derived: (
-      ...ps: any
-    ) => InferOneOf<T, "__type"> | Promise<InferOneOf<T, "__type">>
-  ) {
-    return this.cloneWithType<Flags | Derived>({ ...this.type, derived });
+  derived() {
+    return this.cloneWithType<Flags | Derived>({ ...this.type, derived: true });
   }
   private alternatives: T;
 

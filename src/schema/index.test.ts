@@ -22,7 +22,6 @@ import {
 import { InferAutoType } from "./infer";
 
 describe("schema", () => {
-  const deriveIsTrue = () => true;
   const isFour = () => 4;
   const testSchema = obj({
     id: int().auto().key().public(),
@@ -38,7 +37,7 @@ describe("schema", () => {
     aPhoneISD: phoneISD(),
     aNill: nill(),
     aAny: any(),
-    isTrue: boolean().derived(deriveIsTrue),
+    isTrue: boolean().derived(),
     isMaybeTrue: boolean().optional(),
     isMaybeThree: int().optional(),
     anObj: obj({
@@ -115,7 +114,7 @@ describe("schema", () => {
         aPhoneISD: { type: "phoneISD" },
         aNill: { type: "null" },
         aAny: { type: "/" },
-        isTrue: { type: "boolean", derived: deriveIsTrue },
+        isTrue: { type: "boolean", derived: true },
         isMaybeTrue: { type: "boolean", optional: true },
         isMaybeThree: { type: "int", optional: true },
         anObj: {
@@ -205,7 +204,7 @@ describe("deep inference", () => {
           oneOf([
             obj({
               nonDerived: string(),
-              isDerived: string().derived(() => "a"),
+              isDerived: string().derived(),
             }),
           ])
         )
@@ -300,7 +299,7 @@ describe("modification", () => {
     testBool.public();
     testBool.auto();
     testBool.key();
-    testBool.derived(() => true);
+    testBool.derived();
     testBool.mapped("abc");
     testBool.readOnly();
 

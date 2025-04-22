@@ -26,13 +26,11 @@ describe("baseType type", () => {
     baseSchema.default(3);
   });
 
-  it("should reject wrongly typed derived values", async () => {
+  it("should make derived", async () => {
     const baseSchema = boolean();
 
-    baseSchema.derived(() => true);
-
-    // @ts-expect-error test type
-    baseSchema.derived(4);
+    expect(baseSchema.derived().getType().derived).toBe(true);
+    expect(baseSchema.getType().derived).not.toBe(true);
   });
 
   it("should correctly make optional/required", async () => {

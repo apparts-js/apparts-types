@@ -45,10 +45,17 @@ describe("obj type", () => {
     f({ isPrivateOptional: true, isPublic: true });
   });
 
+  it("should make derived", async () => {
+    const objSchema = obj({});
+
+    expect(objSchema.derived().getType().derived).toBe(true);
+    expect(objSchema.getType().derived).not.toBe(true);
+  });
+
   it("should defer not-derived correctly", async () => {
     const hasDerived = obj({
       isNotDerived: boolean(),
-      isDerived: boolean().derived(() => false),
+      isDerived: boolean().derived(),
     });
 
     type HasNoDerived = InferNotDerivedType<typeof hasDerived>;
@@ -150,33 +157,6 @@ describe("obj type", () => {
     objSchema.default({
       isMaybeTrue: false,
     });
-  });
-  it("should reject wrongly typed derived values", async () => {
-    const objSchema = obj({
-      isMaybeTrue: boolean().optional(),
-      isThree: int(),
-    });
-
-    objSchema.derived(() => ({
-      isThree: 4,
-    }));
-    objSchema.derived(() => ({
-      isThree: 4,
-      isMaybeTrue: false,
-    }));
-
-    // @ts-expect-error test type
-    objSchema.derived(() => ({
-      isMaybeTrue: false,
-    }));
-
-    objSchema.derived({
-      // @ts-expect-error test type
-      isThree: 3,
-    });
-
-    // @ts-expect-error test type
-    objSchema.derived(() => 3);
   });
 
   it("should correctly make optional/required", async () => {

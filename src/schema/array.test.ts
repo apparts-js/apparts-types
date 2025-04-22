@@ -43,18 +43,11 @@ describe("array type", () => {
     arraySchema.default(3);
   });
 
-  it("should reject wrongly typed derived values", async () => {
+  it("should make derived", async () => {
     const arraySchema = array(boolean());
 
-    arraySchema.derived(() => [true, false]);
-
-    arraySchema.derived(() => [
-      // @ts-expect-error test type
-      4,
-    ]);
-
-    // @ts-expect-error test type
-    arraySchema.derived(4);
+    expect(arraySchema.derived().getType().derived).toBe(true);
+    expect(arraySchema.getType().derived).not.toBe(true);
   });
 
   it("should correctly make optional/required", async () => {
