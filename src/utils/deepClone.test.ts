@@ -57,6 +57,26 @@ describe("deepClone should be equal", () => {
     val.val = "test2";
     expect(testSchema.deepEqual(val, valDeep)).toBe(false);
   });
+  it("oneOf with nested objects", async () => {
+    const schema = oneOf([
+      obj({
+        type: value("type1"),
+        type1: obj({
+          inner: string(),
+        }),
+      }),
+      obj({
+        type: value("type2"),
+        type2: obj({
+          inner: string(),
+        }),
+      }),
+    ]);
+
+    const clone = schema.deepClone({ type: "type2", type2: { inner: "test" } });
+
+    expect(clone).toEqual({ type: "type2", type2: { inner: "test" } });
+  });
   it("value", () => {
     const testSchema = value("test");
     const val = "test";

@@ -40,7 +40,7 @@ export const deepClone = <S extends Schema<any, any>>(
   }
   if (type.type === "oneOf") {
     for (const alt of type.alternatives) {
-      if (recursiveCheck(alt, value)) {
+      if (recursiveCheck(alt, value) === true) {
         return deepClone(value, alt);
       }
     }
