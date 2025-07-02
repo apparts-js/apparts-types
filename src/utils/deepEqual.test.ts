@@ -140,6 +140,26 @@ describe("deepCompare should say not equal", () => {
     ).toBe(false);
   });
 
+  it("objValues with different keys but same length", async () => {
+    const testSchema = objValues(
+      obj({
+        val: string(),
+      })
+    );
+    expect(
+      deepEqualSchema({ isNonOptional: { val: "test" } }, {}, testSchema)
+    ).toBe(false);
+    expect(
+      deepEqualSchema(
+        { isNonOptional: { val: "test" } },
+        {
+          isNonOptional1: { val: "test" },
+        },
+        testSchema
+      )
+    ).toBe(false);
+  });
+
   it("array", async () => {
     const testSchema = array(int());
     // missing value

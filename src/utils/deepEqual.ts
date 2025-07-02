@@ -34,7 +34,10 @@ export const deepEqual = <S extends Schema<any, any>>(
         return false;
       }
       for (const key of keys1) {
-        if (!deepEqual(value1[key], value2[key], type.values)) {
+        if (
+          !(key in value2) ||
+          !deepEqual(value1[key], value2[key], type.values)
+        ) {
           return false;
         }
       }
