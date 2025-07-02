@@ -156,6 +156,17 @@ describe("deepCompare should say not equal", () => {
     expect(deepEqualSchema(1, 2, testSchema)).toBe(false);
   });
 
+  it("oneOf with types", async () => {
+    const testSchema = oneOf([
+      string(),
+      array(string()),
+      int(),
+      float(),
+      boolean(),
+    ]);
+    expect(deepEqualSchema(false, true, testSchema)).toBe(false);
+  });
+
   it("value", async () => {
     const testSchema = value(1);
     // different value
