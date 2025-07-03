@@ -11,13 +11,13 @@ import {
 import { fillInDefaultsSchema } from "./fillInDefaults";
 
 describe("obj", () => {
-  it("should fill empty input with", async () => {
+  it("should keep empty input w/o direct default", async () => {
     expect(
       fillInDefaultsSchema(
         obj({ a: string().default("test") }).optional(),
         undefined
       )
-    ).toStrictEqual({ a: "test" });
+    ).toStrictEqual(undefined);
     expect(
       fillInDefaultsSchema(
         obj({ a: string().default("test") }).default({ a: "deftest" }),
@@ -71,10 +71,10 @@ describe("obj", () => {
 });
 
 describe("objValues", () => {
-  it("should fill in empty valueObj", async () => {
+  it("should keep empty input w/o direct default", async () => {
     expect(
       fillInDefaultsSchema(objValues(string()).optional(), undefined)
-    ).toStrictEqual({});
+    ).toStrictEqual(undefined);
   });
   it("should fill in valueObj with default", async () => {
     expect(

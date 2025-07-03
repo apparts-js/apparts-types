@@ -17,7 +17,9 @@ export const fillInDefaults = (
   defaultFnParam?: unknown
 ) => {
   if (checkType(subject, type)) {
+    //    if (!(type.optional && subject === undefined)) {
     return subject;
+    //    }
   }
 
   if ("value" in type) {
