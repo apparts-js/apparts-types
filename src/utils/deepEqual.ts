@@ -57,10 +57,12 @@ export const deepEqual = <S extends Schema<any, any>>(
   }
   if (type.type === "oneOf") {
     for (const alt of type.alternatives) {
-      if (recursiveCheck(alt, value1) === true) {
-        if (deepEqual(value1, value2, alt)) {
-          return true;
-        }
+      if (
+        recursiveCheck(alt, value1) === true &&
+        recursiveCheck(alt, value2) === true &&
+        deepEqual(value1, value2, alt)
+      ) {
+        return true;
       }
     }
     return false;
