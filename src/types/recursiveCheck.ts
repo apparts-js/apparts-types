@@ -39,6 +39,9 @@ export const recursiveCheck = (
   if (!type) {
     return { key, shouldType: type, isValue: response };
   }
+  if (type.optional && response === undefined) {
+    return true;
+  }
 
   if ("value" in type) {
     const matches = JSON.stringify(type.value) === JSON.stringify(response);

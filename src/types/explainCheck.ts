@@ -37,7 +37,9 @@ export const explainCheck = (response: unknown, type: Type) => {
   }
 
   if (!checkTypes[result.shouldType.type]) {
-    return `❌ Unkown type: ${resultKeyName} has unknown type '${result.shouldType.type}'`;
+    return `❌ Unkown type: ${resultKeyName} has unknown type '${JSON.stringify(
+      result.shouldType.type
+    )}'`;
   }
 
   if (result.reason) {
