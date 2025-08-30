@@ -67,5 +67,8 @@ export const deepEqual = <S extends Schema<any, any>>(
     }
     return false;
   }
+  if (type.type === "/") {
+    return JSON.stringify(value1) === JSON.stringify(value2);
+  }
   return value1 === value2;
 };

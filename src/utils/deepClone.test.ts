@@ -1,4 +1,14 @@
-import { array, int, obj, objValues, oneOf, string, value } from "../schema";
+import {
+  any,
+  array,
+  InferType,
+  int,
+  obj,
+  objValues,
+  oneOf,
+  string,
+  value,
+} from "../schema";
 import { deepCloneSchema } from "./deepClone";
 
 describe("deepClone should be equal", () => {
@@ -36,6 +46,17 @@ describe("deepClone should be equal", () => {
 
     expect(testSchema.deepEqual(val, valDeep)).toBe(true);
     val.test.val = "test2";
+    expect(testSchema.deepEqual(val, valDeep)).toBe(false);
+  });
+
+  it("objValues with any", () => {
+    const testSchema = objValues(any());
+    const val = {
+      c: { d: 3 },
+    } as InferType<typeof testSchema>;
+    const valDeep = deepCloneSchema(val, testSchema);
+    expect(testSchema.deepEqual(val, valDeep)).toBe(true);
+    val.c.e = 4;
     expect(testSchema.deepEqual(val, valDeep)).toBe(false);
   });
 

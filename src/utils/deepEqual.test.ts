@@ -160,6 +160,17 @@ describe("deepCompare should say not equal", () => {
     ).toBe(false);
   });
 
+  it("objValues with any values", async () => {
+    const testSchema = objValues(any());
+    expect(
+      deepEqualSchema(
+        { a: 1, b: "test", c: { d: 3 } },
+        { a: 1, b: "test", c: { d: 3, e: 5 } },
+        testSchema
+      )
+    ).toBe(false);
+  });
+
   it("array", async () => {
     const testSchema = array(int());
     // missing value
@@ -204,5 +215,12 @@ describe("deepCompare should say not equal", () => {
     const testSchema = int();
     // different value
     expect(deepEqualSchema(2, 1, testSchema)).toBe(false);
+  });
+
+  it("any", async () => {
+    const testSchema = any();
+    // different value
+    expect(deepEqualSchema(1, 2, testSchema)).toBe(false);
+    expect(deepEqualSchema({ a: 1 }, { a: 1 }, testSchema)).toBe(true);
   });
 });
