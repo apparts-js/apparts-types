@@ -164,7 +164,7 @@ describe("deepCompare should say not equal", () => {
     const testSchema = objValues(any());
     expect(
       deepEqualSchema(
-        { a: 1, b: "test", c: { d: 3 } },
+        { a: 1, b: "test", c: { d: 3 }, f: undefined },
         { a: 1, b: "test", c: { d: 3, e: 5 } },
         testSchema
       )

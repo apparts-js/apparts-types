@@ -45,7 +45,7 @@ export const deepClone = <S extends Schema<any, any>>(
       }
     }
   }
-  if (type.type === "/") {
+  if (type.type === "/" && value) {
     return JSON.parse(JSON.stringify(value));
   }
   return value;

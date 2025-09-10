@@ -53,6 +53,7 @@ describe("deepClone should be equal", () => {
     const testSchema = objValues(any());
     const val = {
       c: { d: 3 },
+      d: undefined,
     } as InferType<typeof testSchema>;
     const valDeep = deepCloneSchema(val, testSchema);
     expect(testSchema.deepEqual(val, valDeep)).toBe(true);
