@@ -14,12 +14,15 @@ import {
   _Optional,
 } from "./utilTypes";
 
+/* this seems to force TS to show the full type instead of all the wrapped generics */
+type _<T> = T extends object ? { [k in keyof T]: T[k] } : T;
+
 type ObjValueType<
   T extends Schema<any, any, Required, any, any>,
   CustomType extends CustomTypes
-> = {
+> = _<{
   [key: string]: T[CustomType];
-};
+}>;
 
 export class ObjValues<
   Flags extends FlagsType,

@@ -14,10 +14,13 @@ import {
   IsKey,
 } from "./utilTypes";
 
+/* this seems to force TS to show the full type instead of all the wrapped generics */
+type _<T> = T extends object ? { [k in keyof T]: T[k] } : T;
+
 type ArrayType<
   T extends Schema<any, Required>,
   CustomType extends CustomTypes
-> = T[CustomType][];
+> = _<T[CustomType][]>;
 
 export class Array<
   Flags extends FlagsType,
