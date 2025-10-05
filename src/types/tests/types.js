@@ -46,6 +46,9 @@ export const int = (checkType) => {
   expect(checkType(type, true)).toBe(false);
   expect(checkType(type, false)).toBe(false);
   expect(checkType(type, null)).toBe(false);
+  expect(checkType(type, NaN)).toBe(false);
+  expect(checkType(type, Infinity)).toBe(false);
+  expect(checkType(type, -Infinity)).toBe(false);
   expect(checkType(type, "ABCDEF1234567890")).toBe(false);
   expect(checkType(type, "dGVzdA==")).toBe(false);
 
@@ -97,6 +100,9 @@ export const float = (checkType) => {
   expect(checkType(type, true)).toBe(false);
   expect(checkType(type, false)).toBe(false);
   expect(checkType(type, null)).toBe(false);
+  expect(checkType(type, NaN)).toBe(false);
+  expect(checkType(type, Infinity)).toBe(false);
+  expect(checkType(type, -Infinity)).toBe(false);
   expect(checkType(type, "ABCDEF1234567890")).toBe(false);
   expect(checkType(type, "dGVzdA==")).toBe(false);
 };

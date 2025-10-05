@@ -9,7 +9,10 @@ const bfalse = function (value) {
 const types = {
   "/": { check: () => true },
   int: {
-    check: (x) => typeof x === "number" && Math.round(x) === x,
+    check: (x) =>
+      typeof x === "number" &&
+      Math.round(x) === x &&
+      parseInt(JSON.stringify(x)) === x,
     conv: (x) => {
       const parsed = parseInt(x);
       if (parsed != x || !types.int.check(parsed)) {
@@ -19,7 +22,7 @@ const types = {
     },
   },
   float: {
-    check: (x) => typeof x === "number",
+    check: (x) => typeof x === "number" && parseFloat(JSON.stringify(x)) === x,
     conv: (x) => {
       const parsed = parseFloat(x);
       if (parsed != x || !types.float.check(parsed)) {
