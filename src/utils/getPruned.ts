@@ -12,6 +12,10 @@ export const getPruned = <TypeSchema extends Schema<Required, any>>(
   type: Type,
   content: InferType<TypeSchema>
 ): InferType<TypeSchema> => {
+  if (content === undefined || content === null) {
+    return content;
+  }
+
   if ("value" in type) {
     return type.value;
   }
